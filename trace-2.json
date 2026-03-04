@@ -1,0 +1,223 @@
+{
+    "id": "c9afa7490e57473db439352d33460699",
+    "timestamp": "2026-03-04T21:20:50.65Z",
+    "sessionId": "ecad058842b14dfe978caeca797009fe",
+    "taskId": null,
+    "userInput": "HOME ASSISTANT CONTEXT:\n\nREQUEST_CONTEXT:\n{\n  \"timestamp\": \"2026-03-04 21:20:50\",\n  \"day_of_week\": \"Wednesday\",\n  \"location\": \"Home\",\n  \"device\": {\n    \"id\": \"conversation.lucia\",\n    \"area\": \"Zack's Office\",\n    \"type\": \"conversation\"\n  }\n}\n\nThe user is requesting assistance with their Home Assistant-controlled smart home. Use the entity IDs above to reference specific devices when delegating to specialized agents. Consider the current time and device states when planning actions.\n\nplay some music in the office",
+    "conversationHistory": [],
+    "systemPrompt": null,
+    "routing": {
+        "selectedAgentId": "music-agent",
+        "additionalAgentIds": [],
+        "confidence": 0.94,
+        "reasoning": "The request is explicitly about playing music, matching the music-agent domain.",
+        "routingDurationMs": 6.6587,
+        "modelDeploymentName": null,
+        "agentInstructions": []
+    },
+    "agentExecutions": [
+        {
+            "agentId": "orchestration",
+            "modelDeploymentName": null,
+            "messages": [],
+            "toolCalls": [],
+            "executionDurationMs": 6.6587,
+            "success": true,
+            "errorMessage": null,
+            "responseContent": null
+        },
+        {
+            "agentId": "music-agent",
+            "modelDeploymentName": null,
+            "messages": [],
+            "toolCalls": [],
+            "executionDurationMs": 4666,
+            "success": true,
+            "errorMessage": null,
+            "responseContent": "Shuffling some music in the office!"
+        }
+    ],
+    "finalResponse": "Shuffling some music in the office!",
+    "totalDurationMs": 4674.8603,
+    "label": {
+        "status": 0,
+        "reviewerNotes": null,
+        "correctionText": null,
+        "labeledAt": null
+    },
+    "isErrored": false,
+    "errorMessage": null,
+    "metadata": {
+        "traceType": "orchestrator"
+    },
+    "spans": [
+        {
+            "spanId": "a42a30107d565df0",
+            "parentSpanId": "41b70660ca746272",
+            "operationName": "LuciaOrchestrator.ExecuteWorkflow",
+            "source": "Lucia.Orchestration",
+            "startTimeUtc": "2026-03-04T21:20:50.651Z",
+            "durationMs": 4672.9457,
+            "tags": {
+                "workflow.name": "LuciaOrchestratorWorkflow",
+                "workflow.start.executor": "RouterExecutor"
+            }
+        },
+        {
+            "spanId": "be2aaf0e5a71a209",
+            "parentSpanId": "a42a30107d565df0",
+            "operationName": "AgentDispatch.InvokeAgent",
+            "source": "Lucia.AgentDispatch",
+            "startTimeUtc": "2026-03-04T21:20:50.656Z",
+            "durationMs": 4666.7654,
+            "tags": {
+                "agent.id": "music-agent",
+                "agent.result": "success"
+            }
+        },
+        {
+            "spanId": "4088048c564b62f2",
+            "parentSpanId": "be2aaf0e5a71a209",
+            "operationName": "AgentInvoker.Invoke",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:20:50.656Z",
+            "durationMs": 4666.7271,
+            "tags": {
+                "agent.id": "music-agent"
+            }
+        },
+        {
+            "spanId": "40aae63d818f33e0",
+            "parentSpanId": "4088048c564b62f2",
+            "operationName": "AgentInvoker.SaveSession",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:20:55.323Z",
+            "durationMs": 0.0161,
+            "tags": {
+                "agent.id": "music-agent",
+                "session.context_id": "7f3a715fe1da436daed62d3694d17f8f"
+            }
+        },
+        {
+            "spanId": "46c521c0b22559a7",
+            "parentSpanId": "4088048c564b62f2",
+            "operationName": "AgentInvoker.RunAgent",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:20:50.657Z",
+            "durationMs": 4666.4886,
+            "tags": {
+                "agent.id": "music-agent"
+            }
+        },
+        {
+            "spanId": "fb88f8a604df5371",
+            "parentSpanId": "46c521c0b22559a7",
+            "operationName": "ChatCache.GetResponse",
+            "source": "Lucia.ChatCache",
+            "startTimeUtc": "2026-03-04T21:20:54.991Z",
+            "durationMs": 330.381,
+            "tags": {
+                "cache.round": "tool_summary",
+                "cache.result": "bypass",
+                "cache.bypass_reason": "tool_results_present"
+            }
+        },
+        {
+            "spanId": "1b433112644ae413",
+            "parentSpanId": "46c521c0b22559a7",
+            "operationName": "ChatCache.GetResponse",
+            "source": "Lucia.ChatCache",
+            "startTimeUtc": "2026-03-04T21:20:51.704Z",
+            "durationMs": 445.95,
+            "tags": {
+                "cache.round": "tool_summary",
+                "cache.result": "bypass",
+                "cache.bypass_reason": "tool_results_present"
+            }
+        },
+        {
+            "spanId": "ecd8d26c46db136d",
+            "parentSpanId": "46c521c0b22559a7",
+            "operationName": "MusicPlaybackSkill.FindPlayer",
+            "source": "Lucia.Skills.MusicPlayback",
+            "startTimeUtc": "2026-03-04T21:20:51.702Z",
+            "durationMs": 0.0517,
+            "tags": {
+                "search.player_name": "Office",
+                "match.entity_id": "media_player.zack_s_office_satellite1_media_player",
+                "match.friendly_name": "Zack's Office Satellite1 Media Player"
+            }
+        },
+        {
+            "spanId": "ee4f25e3c54062cd",
+            "parentSpanId": "46c521c0b22559a7",
+            "operationName": "ChatCache.GetResponse",
+            "source": "Lucia.ChatCache",
+            "startTimeUtc": "2026-03-04T21:20:50.657Z",
+            "durationMs": 1044.2763,
+            "tags": {
+                "cache.round": "planning",
+                "cache.result": "miss"
+            }
+        },
+        {
+            "spanId": "eab23dfc3d9d4373",
+            "parentSpanId": "ee4f25e3c54062cd",
+            "operationName": "CacheChatResponseAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:20:51.441Z",
+            "durationMs": 260.4497,
+            "tags": {
+                "cache.key": "lucia:chat-cache:37318efbb37ee669f3b3cf88b3d27060cac63ef14736d209a89e24845f2cafb6"
+            }
+        },
+        {
+            "spanId": "a6cdddced2b836fe",
+            "parentSpanId": "ee4f25e3c54062cd",
+            "operationName": "TryGetCachedChatResponseAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:20:50.658Z",
+            "durationMs": 256.5734,
+            "tags": {
+                "cache.key": "lucia:chat-cache:37318efbb37ee669f3b3cf88b3d27060cac63ef14736d209a89e24845f2cafb6",
+                "cache.miss_reason": "below_threshold"
+            }
+        },
+        {
+            "spanId": "af78fa9bd5f5d6dc",
+            "parentSpanId": "4088048c564b62f2",
+            "operationName": "AgentInvoker.LoadSession",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:20:50.657Z",
+            "durationMs": 0.0136,
+            "tags": {
+                "agent.id": "music-agent",
+                "session.context_id": "7f3a715fe1da436daed62d3694d17f8f"
+            }
+        },
+        {
+            "spanId": "305fbafc6bc267cc",
+            "parentSpanId": "a42a30107d565df0",
+            "operationName": "HandleAsync",
+            "source": "Lucia.RouterCache",
+            "startTimeUtc": "2026-03-04T21:20:50.652Z",
+            "durationMs": 3.8299,
+            "tags": {
+                "router.cache": "hit",
+                "router.agent_id": "music-agent"
+            }
+        },
+        {
+            "spanId": "7a9f320a845f58b5",
+            "parentSpanId": "305fbafc6bc267cc",
+            "operationName": "TryGetCachedRoutingDecisionAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:20:50.652Z",
+            "durationMs": 3.4818,
+            "tags": {
+                "cache.key": "lucia:prompt-cache:3796b360bb91000a509fc0e9a052079c9315a85908049e347c0b92be5ff7c2b8",
+                "cache.match_type": "exact"
+            }
+        }
+    ]
+}

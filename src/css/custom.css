@@ -1,0 +1,253 @@
+/**
+ * Lucia brand colors — teal/amber palette
+ * Derived from the Lucia dashboard and logo identity
+ */
+
+:root {
+  --ifm-color-primary: #1a9e9e;
+  --ifm-color-primary-dark: #178b8b;
+  --ifm-color-primary-darker: #147a7a;
+  --ifm-color-primary-darkest: #0f5e5e;
+  --ifm-color-primary-light: #1db1b1;
+  --ifm-color-primary-lighter: #24c4c4;
+  --ifm-color-primary-lightest: #4dd4d4;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #3ecbcb;
+  --ifm-color-primary-dark: #2fb5b5;
+  --ifm-color-primary-darker: #259e9e;
+  --ifm-color-primary-darkest: #1a7a7a;
+  --ifm-color-primary-light: #5ad6d6;
+  --ifm-color-primary-lighter: #7ee2e2;
+  --ifm-color-primary-lightest: #a8eded;
+  --ifm-background-color: #0d0b08;
+  --ifm-background-surface-color: #1a1610;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* ── Ambient animated background ────────────── */
+
+@keyframes ambientShift {
+  0%   { background-position: 0% 50%, 100% 50%, 0% 0%; }
+  25%  { background-position: 30% 30%, 70% 70%, 0% 0%; }
+  50%  { background-position: 100% 50%, 0% 50%, 0% 0%; }
+  75%  { background-position: 70% 70%, 30% 30%, 0% 0%; }
+  100% { background-position: 0% 50%, 100% 50%, 0% 0%; }
+}
+
+/* Hero section — animated ambient gradient */
+.hero--primary {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(62, 203, 203, 0.15), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(212, 164, 74, 0.12), transparent 70%),
+    linear-gradient(135deg, #0d0b08 0%, #1a1610 40%, #162020 100%);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: ambientShift 20s ease-in-out infinite;
+  color: #e8e2d8;
+}
+
+[data-theme='light'] .hero--primary {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(26, 158, 158, 0.08), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(212, 164, 74, 0.06), transparent 70%),
+    linear-gradient(135deg, #faf9f7 0%, #f0eeea 50%, #e8e4dc 100%);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: ambientShift 20s ease-in-out infinite;
+  color: #1a1610;
+}
+
+/* Dark mode body — subtle ambient tint */
+[data-theme='dark'] body {
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(62, 203, 203, 0.03), transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(212, 164, 74, 0.02), transparent 60%),
+    #0d0b08;
+}
+
+/* Light mode body — warm cream */
+[data-theme='light'] body {
+  background: #faf9f7;
+}
+
+/* ── Glass-morphism utility ─────────────────── */
+
+.glass-card {
+  background: rgba(26, 22, 16, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 164, 74, 0.15);
+  border-radius: 12px;
+}
+
+[data-theme='light'] .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(26, 158, 158, 0.12);
+}
+
+/* ── Gradient text utility ──────────────────── */
+
+.gradient-text {
+  background: linear-gradient(135deg, #3ecbcb, #6366f1, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='light'] .gradient-text {
+  background: linear-gradient(135deg, #1a7a7a, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Sparkle motif ──────────────────────────── */
+
+.sparkle {
+  color: #d4a44a;
+  font-style: normal;
+  text-shadow: 0 0 8px rgba(212, 164, 74, 0.4);
+}
+
+[data-theme='light'] .sparkle {
+  color: #b8862e;
+  text-shadow: 0 0 6px rgba(184, 134, 46, 0.3);
+}
+
+/* ── Feature cards — glass treatment ────────── */
+
+.feature-card {
+  background: rgba(26, 22, 16, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 164, 74, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 164, 74, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='light'] .feature-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(26, 158, 158, 0.12);
+}
+
+[data-theme='light'] .feature-card:hover {
+  border-color: rgba(26, 158, 158, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Plugin cards — glass treatment ─────────── */
+
+.plugin-card {
+  background: rgba(26, 22, 16, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 164, 74, 0.12);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.plugin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(212, 164, 74, 0.12);
+  border-color: rgba(212, 164, 74, 0.3);
+}
+
+[data-theme='light'] .plugin-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(26, 158, 158, 0.1);
+}
+
+[data-theme='light'] .plugin-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  border-color: rgba(26, 158, 158, 0.25);
+}
+
+/* ── Section styling ────────────────────────── */
+
+.section {
+  padding: 4rem 0;
+}
+
+.section--alt {
+  background: rgba(26, 22, 16, 0.3);
+}
+
+[data-theme='light'] .section--alt {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* ── Quick start steps ──────────────────────── */
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: 0.75rem;
+}
+
+/* ── Screenshot container ───────────────────── */
+
+.screenshot-container {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 164, 74, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.screenshot-container img {
+  width: 100%;
+  display: block;
+}
+
+/* ── Architecture diagram ───────────────────── */
+
+.architecture-diagram {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* ── Footer ─────────────────────────────────── */
+
+.footer--dark {
+  --ifm-footer-background-color: #1a1610;
+  border-top: 1px solid rgba(212, 164, 74, 0.1);
+}
+
+/* ── CTA section — glass treatment ──────────── */
+
+.cta-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(26, 22, 16, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 164, 74, 0.15);
+  border-radius: 16px;
+  margin: 2rem 0;
+}
+
+[data-theme='light'] .cta-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(26, 158, 158, 0.12);
+}

@@ -1,0 +1,8 @@
+node_modules
+.git
+.github
+build
+.docusaurus
+.cache-loader
+*.md
+!README.md

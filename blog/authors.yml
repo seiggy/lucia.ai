@@ -1,0 +1,11 @@
+seiggy:
+  name: Seiggy
+  title: Lucia Creator
+  url: https://github.com/seiggy
+  image_url: https://github.com/seiggy.png
+
+lucia-team:
+  name: Lucia Team
+  title: Core Contributors
+  url: https://github.com/seiggy/lucia-dotnet
+  image_url: https://github.com/seiggy.png

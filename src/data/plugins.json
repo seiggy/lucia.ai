@@ -1,0 +1,24 @@
+[
+  {
+    "id": "metamcp",
+    "name": "MetaMCP Bridge",
+    "description": "Bridges MetaMCP tool aggregation into Lucia agents via the MetaMCP proxy. Automatically seeds MCP tool server definitions from your MetaMCP instance.",
+    "version": "1.0.1",
+    "author": "Lucia Team",
+    "tags": ["tools", "mcp", "integration"],
+    "path": "plugins/metamcp",
+    "docsUrl": "/docs/plugins/official-plugins#metamcp-bridge",
+    "repoUrl": "https://github.com/seiggy/lucia-dotnet/tree/main/plugins/metamcp"
+  },
+  {
+    "id": "searxng",
+    "name": "SearXNG Web Search",
+    "description": "Privacy-respecting web search skill using a SearXNG instance. Registers IWebSearchSkill so the GeneralAgent gains a web_search tool.",
+    "version": "1.0.0",
+    "author": "Lucia Team",
+    "tags": ["search", "privacy", "web"],
+    "path": "plugins/searxng",
+    "docsUrl": "/docs/plugins/official-plugins#searxng-web-search",
+    "repoUrl": "https://github.com/seiggy/lucia-dotnet/tree/main/plugins/searxng"
+  }
+]

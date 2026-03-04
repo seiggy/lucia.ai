@@ -1,0 +1,210 @@
+{
+    "id": "e34b27e8f43644348a39189b57aab9fe",
+    "timestamp": "2026-03-04T21:19:38.06Z",
+    "sessionId": "13eab084e5164e8190995b4dffddf12b",
+    "taskId": null,
+    "userInput": "HOME ASSISTANT CONTEXT:\n\nREQUEST_CONTEXT:\n{\n  \"timestamp\": \"2026-03-04 21:19:38\",\n  \"day_of_week\": \"Wednesday\",\n  \"location\": \"Home\",\n  \"device\": {\n    \"id\": \"conversation.lucia\",\n    \"area\": \"Zack's Office\",\n    \"type\": \"conversation\"\n  }\n}\n\nThe user is requesting assistance with their Home Assistant-controlled smart home. Use the entity IDs above to reference specific devices when delegating to specialized agents. Consider the current time and device states when planning actions.\n\nturn on the office lights",
+    "conversationHistory": [],
+    "systemPrompt": null,
+    "routing": {
+        "selectedAgentId": "light-agent",
+        "additionalAgentIds": [],
+        "confidence": 0.95,
+        "reasoning": "The user explicitly asks to turn on the office lights, matching the light control domain.",
+        "routingDurationMs": 8.8212,
+        "modelDeploymentName": null,
+        "agentInstructions": []
+    },
+    "agentExecutions": [
+        {
+            "agentId": "orchestration",
+            "modelDeploymentName": null,
+            "messages": [],
+            "toolCalls": [],
+            "executionDurationMs": 8.8212,
+            "success": true,
+            "errorMessage": null,
+            "responseContent": null
+        },
+        {
+            "agentId": "light-agent",
+            "modelDeploymentName": null,
+            "messages": [],
+            "toolCalls": [],
+            "executionDurationMs": 1734,
+            "success": true,
+            "errorMessage": null,
+            "responseContent": "Done — office lights turned on."
+        }
+    ],
+    "finalResponse": "Done — office lights turned on.",
+    "totalDurationMs": 1744.806,
+    "label": {
+        "status": 0,
+        "reviewerNotes": null,
+        "correctionText": null,
+        "labeledAt": null
+    },
+    "isErrored": false,
+    "errorMessage": null,
+    "metadata": {
+        "traceType": "orchestrator"
+    },
+    "spans": [
+        {
+            "spanId": "53f02632654f6ac5",
+            "parentSpanId": "c63d0dbc6c02e66a",
+            "operationName": "ChatCache.GetResponse",
+            "source": "Lucia.ChatCache",
+            "startTimeUtc": "2026-03-04T21:19:38.069Z",
+            "durationMs": 1140.669,
+            "tags": {
+                "cache.round": "planning",
+                "cache.result": "miss"
+            }
+        },
+        {
+            "spanId": "6f2aa8f7468b8a03",
+            "parentSpanId": "53f02632654f6ac5",
+            "operationName": "CacheChatResponseAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:19:38.955Z",
+            "durationMs": 254.639,
+            "tags": {
+                "cache.key": "lucia:chat-cache:b08ff48f1fa8338d825f88e0094fbcea9ea4bcf185bfe6592f4a72871245b0bb"
+            }
+        },
+        {
+            "spanId": "ecb81b65477187e6",
+            "parentSpanId": "f448ac30ad36297c",
+            "operationName": "LuciaOrchestrator.ExecuteWorkflow",
+            "source": "Lucia.Orchestration",
+            "startTimeUtc": "2026-03-04T21:19:38.062Z",
+            "durationMs": 1742.3995,
+            "tags": {
+                "workflow.name": "LuciaOrchestratorWorkflow",
+                "workflow.start.executor": "RouterExecutor"
+            }
+        },
+        {
+            "spanId": "be1580ea7617459f",
+            "parentSpanId": "ecb81b65477187e6",
+            "operationName": "AgentDispatch.InvokeAgent",
+            "source": "Lucia.AgentDispatch",
+            "startTimeUtc": "2026-03-04T21:19:38.069Z",
+            "durationMs": 1734.3308,
+            "tags": {
+                "agent.id": "light-agent",
+                "agent.result": "success"
+            }
+        },
+        {
+            "spanId": "49f6eb994f438f1f",
+            "parentSpanId": "be1580ea7617459f",
+            "operationName": "AgentInvoker.Invoke",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:19:38.069Z",
+            "durationMs": 1734.2987,
+            "tags": {
+                "agent.id": "light-agent"
+            }
+        },
+        {
+            "spanId": "23f83cba191613a8",
+            "parentSpanId": "49f6eb994f438f1f",
+            "operationName": "AgentInvoker.SaveSession",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:19:39.803Z",
+            "durationMs": 0.0076,
+            "tags": {
+                "agent.id": "light-agent",
+                "session.context_id": "c60c3853c2154efba65e203f80810cd9"
+            }
+        },
+        {
+            "spanId": "c63d0dbc6c02e66a",
+            "parentSpanId": "49f6eb994f438f1f",
+            "operationName": "AgentInvoker.RunAgent",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:19:38.069Z",
+            "durationMs": 1733.8485,
+            "tags": {
+                "agent.id": "light-agent"
+            }
+        },
+        {
+            "spanId": "23a7b4e2c4198d07",
+            "parentSpanId": "c63d0dbc6c02e66a",
+            "operationName": "ChatCache.GetResponse",
+            "source": "Lucia.ChatCache",
+            "startTimeUtc": "2026-03-04T21:19:39.4Z",
+            "durationMs": 400.8303,
+            "tags": {
+                "cache.round": "tool_summary",
+                "cache.result": "bypass",
+                "cache.bypass_reason": "tool_results_present"
+            }
+        },
+        {
+            "spanId": "a5dfbc118d19eef7",
+            "parentSpanId": "c63d0dbc6c02e66a",
+            "operationName": "ControlLightsAsync",
+            "source": "Lucia.Skills.LightControl",
+            "startTimeUtc": "2026-03-04T21:19:39.21Z",
+            "durationMs": 189.8824,
+            "tags": {
+                "search.terms": "office lights",
+                "desired.state": "on",
+                "resolution.office lights": "Entity"
+            }
+        },
+        {
+            "spanId": "052ab7705781c006",
+            "parentSpanId": "53f02632654f6ac5",
+            "operationName": "TryGetCachedChatResponseAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:19:38.079Z",
+            "durationMs": 254.6418,
+            "tags": {
+                "cache.key": "lucia:chat-cache:b08ff48f1fa8338d825f88e0094fbcea9ea4bcf185bfe6592f4a72871245b0bb",
+                "cache.miss_reason": "below_threshold"
+            }
+        },
+        {
+            "spanId": "8e865c03e7e3491b",
+            "parentSpanId": "49f6eb994f438f1f",
+            "operationName": "AgentInvoker.LoadSession",
+            "source": "Lucia.AgentInvoker",
+            "startTimeUtc": "2026-03-04T21:19:38.069Z",
+            "durationMs": 0.0111,
+            "tags": {
+                "agent.id": "light-agent",
+                "session.context_id": "c60c3853c2154efba65e203f80810cd9"
+            }
+        },
+        {
+            "spanId": "6565dca694f1425c",
+            "parentSpanId": "ecb81b65477187e6",
+            "operationName": "HandleAsync",
+            "source": "Lucia.RouterCache",
+            "startTimeUtc": "2026-03-04T21:19:38.063Z",
+            "durationMs": 5.3793,
+            "tags": {
+                "router.cache": "hit",
+                "router.agent_id": "light-agent"
+            }
+        },
+        {
+            "spanId": "058af51c64720aa3",
+            "parentSpanId": "6565dca694f1425c",
+            "operationName": "TryGetCachedRoutingDecisionAsync",
+            "source": "Lucia.Services.PromptCache",
+            "startTimeUtc": "2026-03-04T21:19:38.063Z",
+            "durationMs": 5.0526,
+            "tags": {
+                "cache.key": "lucia:prompt-cache:2de0198582ab60762e2b1c9e3d6e1b2fb00f747a72b6f240692d36a240e17fe9",
+                "cache.match_type": "exact"
+            }
+        }
+    ]
+}
