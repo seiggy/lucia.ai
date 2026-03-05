@@ -18,8 +18,6 @@ jobs:
 
     env:
       PROJECT_PATH: functions/repo-stats-function/RepoStatsFunction.csproj
-      OUTPUT_PATH: ${{ runner.temp }}/repo-stats-publish
-      ZIP_PATH: ${{ runner.temp }}/repo-stats-function.zip
 
     steps:
       - uses: actions/checkout@v4
@@ -35,12 +33,12 @@ jobs:
         run: dotnet build $PROJECT_PATH --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish $PROJECT_PATH --configuration Release --no-build --output $OUTPUT_PATH
+        run: dotnet publish $PROJECT_PATH --configuration Release --no-build --output "$RUNNER_TEMP/repo-stats-publish"
 
       - name: Archive publish output
         run: |
-          cd "$OUTPUT_PATH"
-          zip -r "$ZIP_PATH" .
+          cd "$RUNNER_TEMP/repo-stats-publish"
+          zip -r "$RUNNER_TEMP/repo-stats-function.zip" .
 
       - name: Azure Login
         uses: azure/login@v2
@@ -54,4 +52,4 @@ jobs:
           az functionapp deployment source config-zip \
             --resource-group "${{ vars.AZURE_FUNCTIONAPP_RESOURCE_GROUP }}" \
             --name "${{ vars.AZURE_FUNCTIONAPP_NAME }}" \
-            --src "$ZIP_PATH"
+            --src "$RUNNER_TEMP/repo-stats-function.zip"
