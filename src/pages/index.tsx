@@ -1669,6 +1669,7 @@ function DisappointmentMeter() {
     stars: number;
     forks: number;
     openIssues: number;
+    dockerPulls: number;
   } | null>(null);
   const [statsError, setStatsError] = useState<string | null>(null);
 
@@ -1687,12 +1688,14 @@ function DisappointmentMeter() {
           typeof data?.stars === 'number' &&
           typeof data?.forks === 'number' &&
           typeof data?.openIssues === 'number' &&
+          (typeof data?.dockerPulls === 'number' || typeof data?.dockerPulls === 'undefined') &&
           isMounted
         ) {
           setRepoStats({
             stars: data.stars,
             forks: data.forks,
             openIssues: data.openIssues,
+            dockerPulls: typeof data.dockerPulls === 'number' ? data.dockerPulls : 0,
           });
           setStatsError(null);
           return;
@@ -1716,7 +1719,7 @@ function DisappointmentMeter() {
     return (
       <div className={styles.disappointmentMeter}>
         <Heading as="h3" className={styles.disappointmentTitle}>
-          Surveillance Capitalism Disappointment Meter&trade;
+          The “I Installed It, Forgot to Star It” Meter&trade;
         </Heading>
         <p className={styles.disappointmentQuip}>
           {statsError
@@ -1727,7 +1730,7 @@ function DisappointmentMeter() {
     );
   }
 
-  const {stars, forks, openIssues} = repoStats;
+  const {stars, forks, openIssues, dockerPulls} = repoStats;
   const msPerDay = 24 * 60 * 60 * 1000;
   const launchDate = new Date('2026-02-20T00:00:00.000Z');
   const daysSinceLaunch = Math.max(
@@ -1737,21 +1740,33 @@ function DisappointmentMeter() {
 
   const requestsPerStarPerDay = 55; // midpoint of 50-60
   const familySizePerStar = 3.5;
+  const requestsPerDockerPull = 42;
+  const peoplePerDockerPull = 1.2;
   const adsPerPersonPerDay = 2;
 
-  const estimatedRequests = Math.round(stars * requestsPerStarPerDay * daysSinceLaunch);
-  const estimatedPeople = stars * familySizePerStar;
+  const estimatedRequests = Math.round(
+    stars * requestsPerStarPerDay * daysSinceLaunch + dockerPulls * requestsPerDockerPull,
+  );
+  const estimatedPeople = stars * familySizePerStar + dockerPulls * peoplePerDockerPull;
   const adsAverted = Math.round(estimatedPeople * adsPerPersonPerDay * daysSinceLaunch);
-  const lightsToggled = Math.round(estimatedRequests * 0.46 + forks * 37 * daysSinceLaunch);
-  const playlistsStarted = Math.round(estimatedRequests * 0.19 + forks * 121 + openIssues * 13);
-  const timersSet = Math.round(estimatedRequests * 0.11 + openIssues * 9 * daysSinceLaunch);
+  const lightsToggled = Math.round(
+    estimatedRequests * 0.46 + forks * 37 * daysSinceLaunch + dockerPulls * 28,
+  );
+  const playlistsStarted = Math.round(
+    estimatedRequests * 0.19 + forks * 121 + openIssues * 13 + dockerPulls * 0.65,
+  );
+  const timersSet = Math.round(
+    estimatedRequests * 0.11 + openIssues * 9 * daysSinceLaunch + dockerPulls * 0.38,
+  );
   const boardroomPanicIndex = Math.max(
     1,
-    Math.round(((lightsToggled + adsAverted) / Math.max(openIssues, 1)) * 0.018),
+    Math.round(((lightsToggled + adsAverted + dockerPulls * 75) / Math.max(openIssues, 1)) * 0.018),
   );
+  const starsToPullsRatio = (stars + 1) / (dockerPulls + 1);
+  const missedStarPressure = 1 / starsToPullsRatio;
   const barPercent = Math.max(
     5,
-    Math.min(100, Math.round(Math.log10(Math.max(adsAverted, 10)) * 17 + forks * 1.5)),
+    Math.min(100, Math.round(Math.log10(Math.max(missedStarPressure, 1)) * 55 + 15)),
   );
 
   const quip =
@@ -1766,7 +1781,7 @@ function DisappointmentMeter() {
   return (
     <div className={styles.disappointmentMeter}>
       <Heading as="h3" className={styles.disappointmentTitle}>
-        Surveillance Capitalism Disappointment Meter&trade;
+        The “I Installed It, Forgot to Star It” Meter&trade;
       </Heading>
       <div className={styles.disappointmentBarTrack}>
         <div className={styles.disappointmentBarFill} style={{width: `${barPercent}%`}} />
@@ -1777,13 +1792,15 @@ function DisappointmentMeter() {
         </span>
         <span className={styles.disappointmentVs}>vs</span>
         <span>
-          <strong>{daysSinceLaunch}</strong> days since launch
+          <strong>{dockerPulls.toLocaleString()}</strong> Docker pulls
         </span>
       </div>
+      <p className={styles.disappointmentDaysSinceLaunch}>
+        <strong>{daysSinceLaunch}</strong> days since launch
+      </p>
       <div className={styles.disappointmentRawStats}>
         <span><strong>{forks.toLocaleString()}</strong> repo remixes in the wild</span>
         <span><strong>{openIssues.toLocaleString()}</strong> active “what if Lucia also…” ideas</span>
-        <span><strong>{daysSinceLaunch}</strong> days of cheerful automation chaos</span>
       </div>
       <div className={styles.disappointmentMetricsGrid}>
         <article className={styles.disappointmentMetricCard}>
@@ -1799,7 +1816,7 @@ function DisappointmentMeter() {
         <article className={styles.disappointmentMetricCard}>
           <p className={styles.disappointmentMetricLabel}>Lights Toggled</p>
           <p className={styles.disappointmentMetricValue}>{lightsToggled.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>weighted by forks, because why not</p>
+          <p className={styles.disappointmentMetricNote}>calibrated by vibes, moon phases, and suspiciously busy weekends</p>
         </article>
         <article className={styles.disappointmentMetricCard}>
           <p className={styles.disappointmentMetricLabel}>Playlists Started</p>
