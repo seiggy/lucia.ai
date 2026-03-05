@@ -2,6 +2,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const statsApiUrl = process.env.LUCIA_STATS_API_URL?.trim();
+
 const config: Config = {
   title: 'Lucia',
   tagline: 'Privacy-First AI Home Assistant',
@@ -28,6 +30,10 @@ const config: Config = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
+  },
+
+  customFields: {
+    statsApiUrl,
   },
 
   plugins: [

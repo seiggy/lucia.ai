@@ -18,3 +18,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Azure Functions local settings
+functions/**/local.settings.json
+functions/**/bin/
+functions/**/obj/

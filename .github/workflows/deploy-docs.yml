@@ -27,6 +27,8 @@ jobs:
         run: npm ci
 
       - name: Build Docusaurus
+        env:
+          LUCIA_STATS_API_URL: ${{ vars.LUCIA_STATS_API_URL }}
         run: npm run build
 
       - name: Upload build artifact

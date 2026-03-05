@@ -3,6 +3,7 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
@@ -1657,7 +1658,13 @@ function ComparisonSection() {
 }
 
 function DisappointmentMeter() {
-  const statsUrl = useBaseUrl('/data/repo-stats.json');
+  const {siteConfig} = useDocusaurusContext();
+  const fallbackStatsUrl = useBaseUrl('/data/repo-stats.json');
+  const configuredStatsUrl =
+    typeof siteConfig.customFields?.statsApiUrl === 'string'
+      ? siteConfig.customFields.statsApiUrl.trim()
+      : '';
+  const statsUrl = configuredStatsUrl.length > 0 ? configuredStatsUrl : fallbackStatsUrl;
   const [repoStats, setRepoStats] = useState<{
     stars: number;
     forks: number;
