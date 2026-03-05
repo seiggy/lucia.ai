@@ -23,3 +23,9 @@ yarn-error.log*
 functions/**/local.settings.json
 functions/**/bin/
 functions/**/obj/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
