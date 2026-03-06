@@ -59,9 +59,6 @@ connectionStrings:
   routingModel: "Endpoint=https://api.openai.com;AccessKey=sk-proj-abc123;Model=gpt-4o-mini;Provider=openai"
 
 agents:
-  musicAgent:
-    enabled: true
-    replicas: 1
   timerAgent:
     enabled: true
     replicas: 1
@@ -114,8 +111,6 @@ helm install lucia infra/kubernetes/helm/lucia-helm \
 | `homeassistant.accessToken` | -- | HA long-lived access token |
 | `connectionStrings.chatModel` | -- | Chat model connection string |
 | `connectionStrings.routingModel` | -- | Routing model connection string |
-| `agents.musicAgent.enabled` | `true` | Deploy MusicAgent |
-| `agents.musicAgent.replicas` | `1` | MusicAgent replicas |
 | `agents.timerAgent.enabled` | `true` | Deploy TimerAgent |
 | `agents.timerAgent.replicas` | `1` | TimerAgent replicas |
 | `ingress.enabled` | `false` | Enable Ingress resource |

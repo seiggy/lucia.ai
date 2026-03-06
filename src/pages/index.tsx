@@ -194,7 +194,8 @@ const agentCards = [
   {name: 'SceneAgent', focus: 'Scenes and automation triggers'},
   {name: 'ListsAgent', focus: 'Shopping lists, todos, notes'},
   {name: 'GeneralAgent', focus: 'Fallback and general conversation'},
-  {name: 'MusicAgent / TimerAgent', focus: 'Default A2A-hosted satellite agents'},
+  {name: 'MusicAgent', focus: 'Media playback and queue control'},
+  {name: 'TimerAgent', focus: 'Default A2A-hosted satellite agent'},
 ];
 
 type DemoStep = {
@@ -501,7 +502,7 @@ function buildHeroFlowGraph(): {nodes: Node[]; edges: Edge[]} {
       id: 'music',
       width: 140,
       height: 66,
-      data: {label: 'MusicAgent', sub: 'A2A hosted', kind: 'agent', icon: 'music', inbound: true, outbound: true},
+      data: {label: 'MusicAgent', sub: 'in-process', kind: 'agent', icon: 'music', inbound: true, outbound: true},
     },
     {
       id: 'lights',

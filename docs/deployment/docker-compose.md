@@ -128,20 +128,9 @@ The repo's `docker-compose.yml` builds the image from the local Dockerfile.
 
 ## Adding Satellite Agents
 
-To run MusicAgent and TimerAgent alongside the AgentHost, add them to your `docker-compose.yml`:
+To run TimerAgent alongside the AgentHost, add it to your `docker-compose.yml`. Note that MusicAgent runs in-process inside the AgentHost and does not require a separate container.
 
 ```yaml
-  music-agent:
-    image: seiggy/lucia-musicagent:latest
-    container_name: lucia-music-agent
-    networks: [lucia-network]
-    restart: unless-stopped
-    ports:
-      - "5200:8080"
-    environment:
-      - ConnectionStrings__chat-model=Endpoint=https://api.openai.com;AccessKey=${OPENAI_API_KEY};Model=gpt-4o;Provider=openai
-      - MUSIC_ASSISTANT_URL=http://music-assistant:8095
-
   timer-agent:
     image: seiggy/lucia-timeragent:latest
     container_name: lucia-timer-agent

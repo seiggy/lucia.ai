@@ -36,16 +36,6 @@ Returns an array of **Agent Cards** describing the agents hosted by that process
 {
   "agents": [
     {
-      "name": "MusicAgent",
-      "description": "Plays, pauses, skips, and queues music on media players.",
-      "domains": ["music", "media", "playback"],
-      "version": "1.2.0",
-      "capabilities": {
-        "tools": ["play_music", "pause_music", "skip_track", "queue_track", "search_music"],
-        "streaming": false
-      }
-    },
-    {
       "name": "TimerAgent",
       "description": "Sets countdown timers, named timers, and one-shot reminders.",
       "domains": ["timer", "reminder", "alarm"],
@@ -148,14 +138,14 @@ sequenceDiagram
     participant A2A as A2AHost
 
     AH->>A2A: GET /agents
-    A2A-->>AH: Agent Cards (MusicAgent, TimerAgent)
+    A2A-->>AH: Agent Cards (TimerAgent)
     AH->>AH: Merge into agent registry
 
-    Note over AH: User says "Play jazz"
+    Note over AH: User says "Set a timer for 10 minutes"
 
-    AH->>AH: Router selects MusicAgent (remote)
-    AH->>A2A: POST /a2a/MusicAgent (JSON-RPC)
-    A2A->>A2A: MusicAgent processes request
+    AH->>AH: Router selects TimerAgent (remote)
+    AH->>A2A: POST /a2a/TimerAgent (JSON-RPC)
+    A2A->>A2A: TimerAgent processes request
     A2A-->>AH: JSON-RPC result
     AH->>AH: Aggregator formats response
 ```

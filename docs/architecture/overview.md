@@ -28,11 +28,11 @@ graph TB
         Dispatch --> SA[SceneAgent]
         Dispatch --> LiA[ListsAgent]
         Dispatch --> GA[GeneralAgent]
+        Dispatch --> MA[MusicAgent]
     end
 
     subgraph A2A Satellite
         Dispatch <--> A2AHost[A2AHost]
-        A2AHost --> MA[MusicAgent]
         A2AHost --> TA[TimerAgent]
     end
 

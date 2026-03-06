@@ -30,6 +30,7 @@ These agents run inside the AgentHost process. They are the default and require 
 | **SceneAgent** | Scenes & Automations | Activate Home Assistant scenes, trigger automations, manage scene presets. |
 | **ListsAgent** | Lists & Notes | Create and manage shopping lists, to-do lists, and freeform notes. Persisted to MongoDB. |
 | **GeneralAgent** | Fallback / Conversation | Handles general knowledge questions, casual conversation, and any request that does not match a specialized agent. |
+| **MusicAgent** | Media Playback | Play, pause, skip, and queue music on media players. Supports search by artist, album, track, or playlist. |
 
 ### A2A Agents (Satellite)
 
@@ -37,7 +38,6 @@ These agents run in a separate **A2AHost** process. They communicate with the Ag
 
 | Agent | Domain | Responsibilities |
 |---|---|---|
-| **MusicAgent** | Media Playback | Play, pause, skip, and queue music on media players. Supports search by artist, album, track, or playlist. |
 | **TimerAgent** | Timers & Reminders | Set countdown timers, named timers, and one-shot reminders. Maintains an in-memory ActiveTimerStore. |
 
 :::info

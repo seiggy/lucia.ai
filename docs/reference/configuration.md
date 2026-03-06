@@ -230,7 +230,7 @@ Defines the set of registered agents and their configuration.
     { "name": "SceneAgent", "enabled": true, "mode": "inprocess" },
     { "name": "ListsAgent", "enabled": true, "mode": "inprocess" },
     { "name": "GeneralAgent", "enabled": true, "mode": "inprocess" },
-    { "name": "MusicAgent", "enabled": true, "mode": "a2a", "endpoint": "http://localhost:5200" },
+    { "name": "MusicAgent", "enabled": true, "mode": "inprocess" },
     { "name": "TimerAgent", "enabled": true, "mode": "a2a", "endpoint": "http://localhost:5201" }
   ]
 }

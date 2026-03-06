@@ -5,15 +5,7 @@ title: Music Agent
 
 # Music Agent
 
-The Music Agent controls media playback through [Music Assistant](https://music-assistant.io/), a dedicated music server that integrates with Home Assistant. It runs as an **A2A satellite agent** in its own container, communicating with the Lucia orchestrator over the Agent-to-Agent protocol.
-
-## Why A2A?
-
-Music playback involves long-running sessions, streaming state, and tight integration with the Music Assistant API. Running as a satellite allows the Music Agent to:
-
-- Maintain a persistent connection to the Music Assistant server.
-- Manage queue state independently of the orchestrator lifecycle.
-- Be updated or restarted without affecting other agents.
+The Music Agent controls media playback through [Music Assistant](https://music-assistant.io/), a dedicated music server that integrates with Home Assistant. It runs **in-process** inside the AgentHost, like all other core agents.
 
 ## Capabilities
 
@@ -30,10 +22,7 @@ Music playback involves long-running sessions, streaming state, and tight integr
 ## Architecture
 
 ```
-Lucia Orchestrator
-      |  (A2A / JSON-RPC over HTTP)
-      v
-Music Agent (satellite container)
+Lucia AgentHost (in-process)
       |  (Music Assistant API)
       v
 Music Assistant Server
@@ -122,7 +111,7 @@ Lists all available media players.
 ```
 User: "Play some chill music in the living room"
 
-Orchestrator -> MusicAgent (A2A)
+Orchestrator -> MusicAgent (in-process)
 
 MusicAgent:
   1. Resolves "living room" -> media_player.living_room
@@ -131,27 +120,17 @@ MusicAgent:
   4. Responds: "Now playing Chill Vibes playlist on Living Room."
 ```
 
-## Deployment
+## Configuration
 
-The Music Agent runs as a separate container alongside the Lucia Agent Host. Add it to your `docker-compose.yml`:
+The Music Agent runs in-process inside the AgentHost. Configure Music Assistant connection details through the AgentHost's environment variables or configuration file:
 
 ```yaml
-services:
-  lucia-music-agent:
-    image: seiggy/lucia-music-agent:latest
-    container_name: lucia-music-agent
-    restart: unless-stopped
-    ports:
-      - "7240:8080"
-    environment:
-      - MusicAssistant__Url=http://music-assistant:8095
-      - Lucia__AgentHostUrl=http://lucia:8080
+environment:
+  - MusicAssistant__Url=http://music-assistant:8095
 ```
 
 :::info
 The Music Agent requires a running [Music Assistant](https://music-assistant.io/) instance. See the Music Assistant documentation for setup instructions.
 :::
 
-## Configuration
-
-After deployment, the Music Agent registers itself with the orchestrator via its A2A Agent Card. You can verify the connection from the [Agents](/docs/dashboard/agents-page) page in the dashboard.
+You can verify the Music Agent is active from the [Agents](/docs/dashboard/agents-page) page in the dashboard.

@@ -29,8 +29,7 @@ This installs the following service units:
 
 | Unit | Description |
 |---|---|
-| `lucia-agenthost.service` | Main AgentHost process |
-| `lucia-music-agent.service` | MusicAgent satellite (optional) |
+| `lucia-agenthost.service` | Main AgentHost process (includes MusicAgent) |
 | `lucia-timer-agent.service` | TimerAgent satellite (optional) |
 
 ## Configuration
@@ -114,9 +113,6 @@ sudo systemctl enable lucia-agenthost
 sudo systemctl start lucia-agenthost
 
 # Optionally enable satellite agents
-sudo systemctl enable lucia-music-agent
-sudo systemctl start lucia-music-agent
-
 sudo systemctl enable lucia-timer-agent
 sudo systemctl start lucia-timer-agent
 ```

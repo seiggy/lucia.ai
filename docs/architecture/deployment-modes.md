@@ -69,14 +69,12 @@ In mesh mode, one or more agents run in **separate A2AHost containers**. The Age
 graph TB
     subgraph Kubernetes / Docker Compose
         AH[AgentHost<br/>Core agents in-process]
-        A2A1[A2AHost: Media<br/>MusicAgent]
         A2A2[A2AHost: Timers<br/>TimerAgent]
         Redis[(Redis)]
         Mongo[(MongoDB)]
     end
 
     HA[Home Assistant] <--> AH
-    AH <--> A2A1
     AH <--> A2A2
     AH <--> Redis
     AH <--> Mongo
@@ -104,10 +102,6 @@ Then configure the remote host endpoints:
   "A2A": {
     "RemoteHosts": [
       {
-        "Name": "media-host",
-        "BaseUrl": "http://lucia-a2a-media:5100"
-      },
-      {
         "Name": "timer-host",
         "BaseUrl": "http://lucia-a2a-timers:5101"
       }
@@ -126,22 +120,12 @@ services:
       - "5000:5000"
     environment:
       - Deployment__Mode=mesh
-      - A2A__RemoteHosts__0__Name=media-host
-      - A2A__RemoteHosts__0__BaseUrl=http://lucia-a2a-media:5100
-      - A2A__RemoteHosts__1__Name=timer-host
-      - A2A__RemoteHosts__1__BaseUrl=http://lucia-a2a-timers:5101
+      - A2A__RemoteHosts__0__Name=timer-host
+      - A2A__RemoteHosts__0__BaseUrl=http://lucia-a2a-timers:5101
     depends_on:
       - redis
       - mongo
-      - lucia-a2a-media
       - lucia-a2a-timers
-
-  lucia-a2a-media:
-    image: lucia/a2a-host:latest
-    ports:
-      - "5100:5100"
-    environment:
-      - Agents__Enabled=MusicAgent
 
   lucia-a2a-timers:
     image: lucia/a2a-host:latest

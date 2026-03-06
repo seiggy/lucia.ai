@@ -5,7 +5,7 @@ title: A2A Protocol
 
 # A2A Protocol
 
-Lucia uses the **Agent-to-Agent (A2A) Protocol** for communication between the AgentHost and satellite agents (such as MusicAgent and TimerAgent). A2A is built on **JSON-RPC 2.0** and provides a standardized way for agents to discover each other and exchange messages.
+Lucia uses the **Agent-to-Agent (A2A) Protocol** for communication between the AgentHost and satellite agents (such as TimerAgent). A2A is built on **JSON-RPC 2.0** and provides a standardized way for agents to discover each other and exchange messages.
 
 ## Agent Discovery
 
@@ -14,7 +14,7 @@ Satellite agents expose a discovery endpoint that returns their capabilities and
 ### Request
 
 ```bash
-curl http://localhost:5200/agents
+curl http://localhost:5201/agents
 ```
 
 ### Response
@@ -22,9 +22,9 @@ curl http://localhost:5200/agents
 ```json
 [
   {
-    "name": "MusicAgent",
-    "description": "Controls music playback via Music Assistant",
-    "capabilities": ["music.play", "music.pause", "music.skip", "music.queue"],
+    "name": "TimerAgent",
+    "description": "Sets countdown timers, named timers, and one-shot reminders",
+    "capabilities": ["timer.set", "timer.cancel", "timer.list", "reminder.set"],
     "version": "1.0.0",
     "protocol": "a2a"
   }
@@ -108,10 +108,10 @@ POST /a2a/{agent-name}
 
 ## Full curl Examples
 
-### Send a Message to MusicAgent
+### Send a Message to TimerAgent
 
 ```bash
-curl -X POST http://localhost:5200/a2a/MusicAgent \
+curl -X POST http://localhost:5201/a2a/TimerAgent \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -124,7 +124,7 @@ curl -X POST http://localhost:5200/a2a/MusicAgent \
         "parts": [
           {
             "type": "text",
-            "text": "Play some jazz music in the living room"
+            "text": "Set a timer for 5 minutes"
           }
         ]
       },
@@ -134,7 +134,7 @@ curl -X POST http://localhost:5200/a2a/MusicAgent \
   }'
 ```
 
-### Send a Message to TimerAgent
+### Send Another Message to TimerAgent
 
 ```bash
 curl -X POST http://localhost:5201/a2a/TimerAgent \
@@ -163,9 +163,6 @@ curl -X POST http://localhost:5201/a2a/TimerAgent \
 ### Discover Available Agents
 
 ```bash
-# MusicAgent discovery
-curl http://localhost:5200/agents
-
 # TimerAgent discovery
 curl http://localhost:5201/agents
 ```
@@ -218,7 +215,7 @@ The `contextId` field ties related messages together into a conversation. All me
 
 ```bash
 # First message in a context
-curl -X POST http://localhost:5200/a2a/MusicAgent \
+curl -X POST http://localhost:5201/a2a/TimerAgent \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -228,7 +225,7 @@ curl -X POST http://localhost:5200/a2a/MusicAgent \
       "message": {
         "kind": "text",
         "role": "user",
-        "parts": [{"type": "text", "text": "What is currently playing?"}]
+        "parts": [{"type": "text", "text": "Set a timer for 10 minutes"}]
       },
       "messageId": "msg-010",
       "contextId": "ctx-session-001"
@@ -236,7 +233,7 @@ curl -X POST http://localhost:5200/a2a/MusicAgent \
   }'
 
 # Follow-up in the same context
-curl -X POST http://localhost:5200/a2a/MusicAgent \
+curl -X POST http://localhost:5201/a2a/TimerAgent \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -246,7 +243,7 @@ curl -X POST http://localhost:5200/a2a/MusicAgent \
       "message": {
         "kind": "text",
         "role": "user",
-        "parts": [{"type": "text", "text": "Skip to the next track"}]
+        "parts": [{"type": "text", "text": "Cancel that timer"}]
       },
       "messageId": "msg-011",
       "contextId": "ctx-session-001"
@@ -264,7 +261,7 @@ A2A errors follow the JSON-RPC 2.0 error format:
   "id": "req-001",
   "error": {
     "code": -32603,
-    "message": "Agent timeout: MusicAgent did not respond within 30s"
+    "message": "Agent timeout: TimerAgent did not respond within 30s"
   }
 }
 ```

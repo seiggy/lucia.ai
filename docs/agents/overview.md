@@ -14,7 +14,7 @@ Lucia uses a **multi-agent architecture** where a central orchestrator delegates
 | **LightAgent** | Lighting | In-process | Turn lights on/off, set brightness, color, and color temperature |
 | **ClimateAgent** | HVAC / Fans | In-process | Temperature control, mode selection, fan speed |
 | **SceneAgent** | Scenes | In-process | Discover and activate Home Assistant scenes |
-| **MusicAgent** | Media Playback | A2A | Control Music Assistant -- play, pause, skip, volume, queue |
+| **MusicAgent** | Media Playback | In-process | Control Music Assistant -- play, pause, skip, volume, queue |
 | **TimerAgent** | Timers / Alarms | A2A | Create timers, schedule alarms, voice dismiss/snooze |
 | **ListsAgent** | Lists | In-process | Manage todo and reminder lists |
 | **GeneralAgent** | Fallback | In-process | Open-ended questions, general knowledge, web search |
@@ -50,7 +50,7 @@ Orchestrator (router LLM)
     +---> SceneAgent       [in-process]
     +---> ListsAgent       [in-process]
     +---> GeneralAgent     [in-process]
-    +---> MusicAgent       [A2A satellite]
+    +---> MusicAgent       [in-process]
     +---> TimerAgent       [A2A satellite]
 ```
 

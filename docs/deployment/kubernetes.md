@@ -5,7 +5,7 @@ title: Kubernetes
 
 # Kubernetes
 
-Deploy Lucia on Kubernetes for high-availability and production workloads. Kubernetes deployment runs in **mesh mode** by default, with MusicAgent and TimerAgent as separate pods communicating via the A2A protocol.
+Deploy Lucia on Kubernetes for high-availability and production workloads. Kubernetes deployment runs in **mesh mode** by default, with TimerAgent as a separate pod communicating via the A2A protocol. MusicAgent runs in-process inside the AgentHost.
 
 ## Prerequisites
 
@@ -32,8 +32,6 @@ This creates the following resources:
 | `lucia-mongo` | Service | Headless service for MongoDB |
 | `lucia-redis` | Deployment | Redis cache |
 | `lucia-redis` | Service | ClusterIP service for Redis |
-| `lucia-music-agent` | Deployment | MusicAgent satellite |
-| `lucia-music-agent` | Service | ClusterIP service for MusicAgent |
 | `lucia-timer-agent` | Deployment | TimerAgent satellite |
 | `lucia-timer-agent` | Service | ClusterIP service for TimerAgent |
 | `lucia-config` | ConfigMap | Non-sensitive configuration |
@@ -59,7 +57,6 @@ NAME                                  READY   STATUS    RESTARTS   AGE
 lucia-agenthost-7d8f9c6b4d-abc12     1/1     Running   0          2m
 lucia-mongo-0                         1/1     Running   0          2m
 lucia-redis-5f6g7h8i9j-klm01         1/1     Running   0          2m
-lucia-music-agent-3a4b5c6d7e-fgh89   1/1     Running   0          2m
 lucia-timer-agent-1b2c3d4e5f-ijk01   1/1     Running   0          2m
 ```
 
@@ -113,9 +110,9 @@ kubectl apply -f lucia-config.yaml
 
 Kubernetes deployments use mesh mode (`Deployment__Mode=mesh`) by default. This means:
 
-- AgentHost runs as the main pod
-- MusicAgent and TimerAgent run as separate pods
-- Agents communicate over the A2A protocol via Kubernetes service DNS
+- AgentHost runs as the main pod with MusicAgent in-process
+- TimerAgent runs as a separate pod
+- TimerAgent communicates over the A2A protocol via Kubernetes service DNS
 
 :::warning Single-Instance Constraint
 The AgentHost must run as a **single replica**. The in-memory `ScheduledTaskStore` and `ActiveTimerStore` cannot be shared across instances.
