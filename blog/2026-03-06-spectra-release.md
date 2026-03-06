@@ -1,58 +1,44 @@
 ---
 slug: spectra-release
-title: "v1.1.0-preview.1 Spectra — HybridEntityMatcher & Prompt Cache Overhaul"
+title: "v1.1.0 Spectra — Smarter Matching, Stronger Reliability, and Brave Search"
 authors: [seiggy]
-tags: [release, feature]
+tags: [release, feature, stability]
 ---
 
-**Spectra** overhauls Lucia's entity matching and prompt caching infrastructure. Just as a spectrum reveals the distinct wavelengths hidden in a beam of light, this release decomposes the monolithic entity lookup into a multi-signal search pipeline.
+**Spectra (v1.1.0)** is rolling out with Lucia's biggest entity-intelligence upgrade yet, plus a wide set of stability and usability improvements across setup, plugins, Home Assistant conversation flow, and CI.
 
 <!-- truncate -->
 
 ## Highlights
 
-- **Unified Entity Model** — All Home Assistant entity types now share a common `HomeAssistantEntity` base with domain-specific subtypes, replacing fragmented per-skill entity caches.
-- **HybridEntityMatcher** — Multi-weighted entity search using Levenshtein distance, Jaro-Winkler similarity, phonetic (Soundex/Metaphone) matching, and alias resolution — all tunable via `HybridMatchOptions`.
-- **Prompt Cache Embedding Fix** — Embeddings are now correctly persisted to Redis, making semantic cache matching fully functional for the first time.
-- **Split Cache Thresholds** — Routing cache and chat cache now have independent similarity thresholds, preventing dangerous cross-action cache hits like "turn off" matching "turn on".
-- **Entity Visibility Filtering** — New API and dashboard controls for filtering entities by HA's exposed entity list.
-- **Preview Docker Releases** — CI/CD now supports `-preview.N` suffixed tags for pre-release testing.
+- **HybridEntityMatcher + unified entities** for much better Home Assistant entity resolution
+- **Prompt cache overhaul** with fixed embedding persistence, split routing/chat thresholds, and hot-reload config
+- **Embedding resiliency and live progress UI** with throttled background generation and per-item regenerate controls
+- **Home Assistant multi-turn continuity** fixes for stronger follow-up behavior
+- **OpenRouter support + model discovery** improvements
+- **Brave Search API plugin** with dashboard-managed API key configuration
+- **Plugin/setup/dashboard stabilization** and CI hardening
 
-## HybridEntityMatcher
+## What's improved in day-to-day use
 
-The new matcher combines multiple signals into a weighted composite score:
+- Better matching when users use nicknames, partial names, or phrasing variations
+- More reliable prompt cache behavior (and fewer risky semantic collisions)
+- Smoother embedding generation for larger homes with clear progress visibility
+- Cleaner setup/plugin flows and stronger release pipeline reliability
 
-- **Levenshtein distance** — Edit distance normalization
-- **Jaro-Winkler similarity** — Prefix-weighted string comparison
-- **Token overlap** — Shared word matching
-- **Phonetic matching** — Soundex and Double Metaphone
-- **Exact/prefix bonuses** — For high-confidence matches
+## Upgrade notes
 
-All weights are configurable via `HybridMatchOptions`, letting you tune matching behavior per search context.
+After upgrading to **v1.1.0**, we recommend:
 
-## Prompt Cache Overhaul
+1. **Evict prompt/chat caches** once to clear old entries that were stored without embeddings
+2. Review the new cache settings:
+   - `RouterExecutor:SemanticSimilarityThreshold` (routing)
+   - `RouterExecutor:ChatCacheSemanticThreshold` (chat)
+3. If you maintain custom skills, migrate any legacy entity lookup paths to the unified `EntityLocationService` flow
 
-The prompt cache system was rearchitected to fix several critical issues:
+## Read the full release notes
 
-- **Embedding persistence** — `[JsonIgnore]` attributes were silently preventing embeddings from being serialized to Redis. Removed.
-- **Split thresholds** — `SemanticSimilarityThreshold` (0.95) for routing and `ChatCacheSemanticThreshold` (0.98) for chat, independently configurable.
-- **Hot-reload** — Thresholds update within 5 seconds of a dashboard config change via `IOptionsMonitor`.
-- **Hit count tracking** — Routing cache exact-match hits now correctly persist to Redis.
+For complete technical detail, including file-level changes and full bug-fix/test coverage, see:
 
-## Bug Fixes
-
-- Prompt cache embeddings never persisted (b7e9c3d)
-- Chat cache replaying wrong action due to overly-liberal matching (6a6a375)
-- Routing cache hit count always 0 (a429ede)
-- Config changes required restart (6a6a375)
-- Embedding provider race condition (0d044bf)
-- Tracing duration always 0ms (0d044bf)
-- Dashboard dependency vulnerabilities patched (26a4a90)
-
-## Upgrade Notes
-
-1. **Evict caches** after upgrading via the dashboard or API to clear entries without embeddings.
-2. **New config properties**: `RouterExecutor:SemanticSimilarityThreshold` (0.95) and `RouterExecutor:ChatCacheSemanticThreshold` (0.98).
-3. **Breaking**: Skills using `FindLightsByAreaAsync`, `FindLightAsync`, or `GetCachedEntitiesAsync` must migrate to unified entity tools.
-
-Full release notes: [GitHub Release](https://github.com/seiggy/lucia-dotnet/releases)
+- [Lucia v1.1.0 Release Notes](https://github.com/seiggy/lucia-dotnet/blob/master/RELEASE_NOTES.md)
+- [GitHub Releases](https://github.com/seiggy/lucia-dotnet/releases)
