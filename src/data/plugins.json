@@ -11,6 +11,17 @@
     "repoUrl": "https://github.com/seiggy/lucia-dotnet/tree/main/plugins/metamcp"
   },
   {
+    "id": "brave-search",
+    "name": "Brave Search",
+    "description": "Privacy-respecting web search skill using the Brave Search API. Registers IWebSearchSkill so the GeneralAgent gains a web_search tool.",
+    "version": "1.0.0",
+    "author": "Lucia Team",
+    "tags": ["search", "privacy", "web"],
+    "path": "plugins/brave-search",
+    "docsUrl": "/docs/plugins/official-plugins#brave-search",
+    "repoUrl": "https://github.com/seiggy/lucia-dotnet/tree/main/plugins/brave-search"
+  },
+  {
     "id": "searxng",
     "name": "SearXNG Web Search",
     "description": "Privacy-respecting web search skill using a SearXNG instance. Registers IWebSearchSkill so the GeneralAgent gains a web_search tool.",

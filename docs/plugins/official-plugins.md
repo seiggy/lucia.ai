@@ -66,6 +66,69 @@ new MetaMcpBridgePlugin()
 
 ---
 
+## Brave Search
+
+Provides privacy-respecting web search capabilities to Lucia agents through the [Brave Search API](https://brave.com/search/api/). An alternative to SearXNG that requires no self-hosted infrastructure — just an API key.
+
+| Field | Value |
+|---|---|
+| **ID** | `brave-search` |
+| **Version** | `1.0.0` |
+| **Author** | Lucia Team |
+| **Tags** | `search`, `privacy`, `web` |
+
+### What It Does
+
+Brave Search is a privacy-focused search engine with its own independent index. This plugin connects Lucia to the Brave Search API and registers an `IWebSearchSkill` so the GeneralAgent gains a `web_search` tool. Unlike SearXNG, it does not require a self-hosted instance — you just need a Brave Search API key.
+
+### Example
+
+```csharp
+public class BraveSearchPlugin : ILuciaPlugin
+{
+    public string Name => "Brave Search";
+    public string Version => "1.0.0";
+
+    public void ConfigureServices(IHostApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient("brave-search", client =>
+        {
+            var config = builder.Configuration;
+            var apiKey = config["Plugins:BraveSearch:ApiKey"]
+                ?? throw new InvalidOperationException("Brave Search API key is required.");
+            client.BaseAddress = new Uri("https://api.search.brave.com/");
+            client.DefaultRequestHeaders.Add("X-Subscription-Token", apiKey);
+        });
+
+        builder.Services.AddSingleton<IWebSearchSkill, BraveSearchSkill>();
+    }
+
+    public async Task OnSystemReadyAsync(IServiceProvider services, CancellationToken cancellationToken)
+    {
+        var search = services.GetRequiredService<IWebSearchSkill>();
+        var logger = services.GetRequiredService<ILogger<BraveSearchPlugin>>();
+
+        var healthy = await search.HealthCheckAsync(cancellationToken);
+        if (healthy)
+        {
+            logger.LogInformation("Brave Search API connection verified.");
+        }
+        else
+        {
+            logger.LogWarning("Brave Search API is not reachable. Web search will be unavailable.");
+        }
+    }
+}
+
+new BraveSearchPlugin()
+```
+
+:::tip
+You can get a free Brave Search API key at [brave.com/search/api](https://brave.com/search/api/). The free tier includes up to 2,000 queries per month.
+:::
+
+---
+
 ## SearXNG Web Search
 
 Provides privacy-respecting web search capabilities to Lucia agents through a self-hosted [SearXNG](https://docs.searxng.org/) instance. Agents can search the web without sending queries to commercial search engines.
@@ -140,10 +203,14 @@ You can run SearXNG alongside Lucia using Docker Compose. Add a `searxng` servic
 
 ## Installing Official Plugins
 
-Install either plugin through the API:
+Install any plugin through the API:
 
 ```http
 POST /api/plugins/store/metamcp-bridge/install
+```
+
+```http
+POST /api/plugins/store/brave-search/install
 ```
 
 ```http

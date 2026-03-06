@@ -22,6 +22,7 @@ const config: Config = {
   onBrokenLinks: 'throw',
 
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },
@@ -51,6 +52,7 @@ const config: Config = {
         docsRouteBasePath: '/docs',
       },
     ],
+    '@docusaurus/theme-mermaid',
   ],
 
   presets: [
