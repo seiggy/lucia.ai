@@ -7,6 +7,8 @@ title: Alarms
 
 The Alarms page lets you create and manage scheduled alarms with advanced audio controls.
 
+![Alarms](/img/dashboard/alarms.png)
+
 ## Scheduling
 
 Alarms use CRON expressions for flexible scheduling. Set one-time alarms or recurring patterns (weekdays only, every morning, etc.). The next trigger time is displayed alongside each alarm.

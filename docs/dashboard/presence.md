@@ -7,6 +7,8 @@ title: Presence Detection
 
 The Presence Detection page shows real-time occupancy information for rooms in your home, powered by auto-discovered sensors from Home Assistant.
 
+![Presence Detection](/img/dashboard/presence.png)
+
 ## Sensor Discovery
 
 Lucia automatically discovers compatible sensors from your Home Assistant instance, including:

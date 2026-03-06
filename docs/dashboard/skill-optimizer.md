@@ -7,6 +7,8 @@ title: Skill Optimizer
 
 The Skill Optimizer page helps you refine and test the skills assigned to your agents for better routing accuracy and response quality.
 
+![Skill Optimizer](/img/dashboard/skill-optimizer.png)
+
 ## Optimizing Skills
 
 Select an agent to view its current skill definitions. Each skill includes a name, description, and example phrases. The optimizer analyzes your trace history to suggest improvements:

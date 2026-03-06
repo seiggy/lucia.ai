@@ -7,6 +7,8 @@ title: Entity Location
 
 The Entity Location page lets you manage the hierarchical organization of Home Assistant entities within Lucia.
 
+![Entity Location](/img/dashboard/entity-location.png)
+
 ## Hierarchy
 
 Entities are organized into a three-level hierarchy:

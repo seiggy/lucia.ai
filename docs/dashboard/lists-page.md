@@ -7,6 +7,8 @@ title: Lists
 
 The Lists page lets you manage todo and reminder lists that Lucia uses to track items on your behalf.
 
+![Lists](/img/dashboard/lists.png)
+
 ## Todo Lists
 
 Create and organize todo lists for different purposes (grocery shopping, home projects, etc.). Each list contains items that can be checked off, reordered, or deleted. Items can be added manually from the dashboard or created by Lucia during conversations.

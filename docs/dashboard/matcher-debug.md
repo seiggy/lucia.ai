@@ -7,6 +7,8 @@ title: Matcher Debug
 
 The Matcher Debug page provides an interactive testing interface for Lucia's **HybridEntityMatcher**, the system responsible for resolving natural language references to Home Assistant entities.
 
+![Matcher Debug](/img/dashboard/matcher-debug.png)
+
 ## How to Use
 
 1. Enter a natural language query in the input field (e.g., "living room lights" or "upstairs thermostat").

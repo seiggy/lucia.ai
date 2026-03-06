@@ -7,6 +7,8 @@ title: Plugins
 
 The Plugins page lets you extend Lucia's functionality through a plugin ecosystem. It is organized into three tabs.
 
+![Plugins](/img/dashboard/plugins.png)
+
 ## Installed
 
 The **Installed** tab lists all plugins currently installed on your Lucia instance. For each plugin you can:
