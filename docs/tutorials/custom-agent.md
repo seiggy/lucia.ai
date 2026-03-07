@@ -16,60 +16,60 @@ This tutorial walks you through creating a custom agent entirely from the Lucia 
 
 Before you can assign tools to an agent, the tool servers must be registered in Lucia.
 
-Navigate to **MCP Servers** in the dashboard sidebar. Click **Add Server** and fill in the transport details.
+Navigate to **MCP Servers** in the dashboard sidebar. You'll see any servers already configured.
 
-### stdio (Local Tools)
+![MCP Servers List](/img/tutorials/mcp-servers-list.png)
 
-Use stdio transport for tools that run on the same host as Lucia. The tool process is spawned and managed by the agent host.
+Click **+ Add Server** to register a new tool server.
 
-| Field | Example Value |
+![Add MCP Server](/img/tutorials/mcp-add-server.png)
+
+Fill in the form fields:
+
+| Field | Description |
 |---|---|
-| Name | `dotnet-tools` |
-| Transport | stdio |
-| Command | `dnx` |
-| Arguments | `run --project /tools/MyTools.csproj` |
+| **Name** | A human-readable name for the server (e.g., `search-service`). |
+| **Transport Type** | **stdio** for tools running on the same host (Lucia spawns the process), or **HTTP/SSE** for remote tool servers. |
+| **Command** *(stdio only)* | The command to start the tool process (e.g., `npx`, `dnx`, `python`). |
+| **Arguments** *(stdio only)* | Command arguments (e.g., `-y @modelcontextprotocol/server-github`). |
+| **URL** *(HTTP/SSE only)* | The remote server endpoint (e.g., `http://search-tools:8080/mcp`). |
+| **Environment Variables** | Any env vars the tool process needs (e.g., API keys). |
 
-### HTTP/SSE (Remote Tools)
-
-Use HTTP/SSE transport for tools running as standalone services, on other machines, or in separate containers.
-
-| Field | Example Value |
-|---|---|
-| Name | `search-service` |
-| Transport | HTTP/SSE |
-| URL | `http://search-tools:8080/mcp` |
-
-After adding each server, click **Connect** and then **Discover Tools** to pull the tool manifest.
+After creating the server, click **Connect** and then **Discover Tools** to pull the tool manifest.
 
 ## Step 2 -- Create the Agent Definition
 
-Navigate to **Agent Definitions** in the dashboard sidebar and click **New Agent**.
+Navigate to **Definitions** in the dashboard sidebar. You'll see the list of existing agents.
+
+![Agent Definitions List](/img/tutorials/agent-definitions-list.png)
+
+Click **+ New Agent** to open the creation form.
+
+![Create Agent Form](/img/tutorials/agent-create-form.png)
 
 Fill in the following fields:
 
 | Field | Description |
 |---|---|
-| **Name** | Internal identifier used by the orchestrator for routing (e.g. `SecurityAgent`). Must be unique. |
-| **Display Name** | Human-readable name shown in the dashboard and conversation UI (e.g. `Security Agent`). |
+| **Name** | Internal identifier used by the orchestrator for routing (e.g., `weather-agent`). Must be unique. |
+| **Display Name** | Human-readable name shown in the dashboard (e.g., `Weather Agent`). |
+| **Model Provider** | *(Optional)* Override the default model provider for this agent. Leave blank to use the system default. |
+| **Embedding Provider** | *(Optional)* Override the embedding provider for skills that use vector search. |
+| **Description** | A short summary of what the agent does. |
 | **Instructions** | The system prompt that defines the agent's personality, domain expertise, and behavioral rules. |
-| **Model Connection** | *(Optional)* Override the default model provider for this agent. Leave blank to use the system default. |
-| **MCP Tools** | Select the tools this agent should have access to from the discovered tool list. |
+| **MCP Tools** | Select the tools this agent should have access to from discovered tool servers. |
 
-### Example: Weather Agent
+### Example: A Completed Agent
 
-| Field | Value |
-|---|---|
-| Name | `WeatherAgent` |
-| Display Name | `Weather Agent` |
-| Instructions | `You are a weather assistant. Use the get_forecast tool to answer questions about current and upcoming weather conditions. Always include the location and time range in your response.` |
-| Model Connection | *(blank -- use system default)* |
-| MCP Tools | `get_forecast`, `get_current_conditions` |
+Here's what a configured custom agent looks like -- in this case a "Dad Joke Agent" with a detailed system prompt and a specific model override:
+
+![Edit Agent Example](/img/tutorials/agent-edit-example.png)
 
 ## Step 3 -- Save and Verify
 
-Click **Save**. The agent is immediately registered with the orchestrator and available for routing -- no restart required.
+Click **Create Agent**. The agent is immediately registered with the orchestrator and available for routing -- no restart required.
 
-To verify, open the **Conversations** page and send a message that matches your agent's domain. The conversation trace will show which agent handled the request.
+To verify, open the **Traces** page and send a message through Home Assistant that matches your agent's domain. The conversation trace will show which agent handled the request.
 
 ## Extending the Container for Non-.NET Runtimes
 

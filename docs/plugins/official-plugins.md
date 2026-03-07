@@ -68,18 +68,37 @@ new MetaMcpBridgePlugin()
 
 ## Brave Search
 
-Provides privacy-respecting web search capabilities to Lucia agents through the [Brave Search API](https://brave.com/search/api/). An alternative to SearXNG that requires no self-hosted infrastructure — just an API key.
+Provides LLM-optimized web search capabilities to Lucia agents through the [Brave LLM Context API](https://api-dashboard.search.brave.com/documentation/services/llm-context). An alternative to SearXNG that requires no self-hosted infrastructure — just an API key.
 
 | Field | Value |
 |---|---|
 | **ID** | `brave-search` |
-| **Version** | `1.0.0` |
+| **Version** | `1.1.0` |
 | **Author** | Lucia Team |
-| **Tags** | `search`, `privacy`, `web` |
+| **Tags** | `search`, `privacy`, `web`, `llm` |
 
 ### What It Does
 
-Brave Search is a privacy-focused search engine with its own independent index. This plugin connects Lucia to the Brave Search API and registers an `IWebSearchSkill` so the GeneralAgent gains a `web_search` tool. Unlike SearXNG, it does not require a self-hosted instance — you just need a Brave Search API key.
+Unlike traditional search APIs that return links and snippets, the Brave LLM Context API delivers **pre-extracted web content** — text chunks, tables, code blocks, and structured data — optimized for grounding LLM responses. This means Lucia's agents can reason over actual page content directly, without needing to scrape or fetch individual URLs.
+
+Key capabilities:
+
+- **Pre-extracted content** — Get actual page content ready for LLM consumption in a single API call.
+- **Token budget control** — Configure `maximum_number_of_tokens` (1024–32768) and URL limits to control context size.
+- **Relevance filtering** — Adjustable `context_threshold_mode` (`strict`, `balanced`, `lenient`, `disabled`) ensures only relevant content reaches the agent.
+- **Goggles support** — Use Brave's [Goggles](https://api-dashboard.search.brave.com/documentation/resources/goggles) to control which sources ground your LLM responses.
+- **Location-aware queries** — Provide location headers for local/POI results.
+
+### Configuration
+
+| Key | Description | Default |
+|---|---|---|
+| `Plugins:BraveSearch:ApiKey` | Brave API subscription token (required) | — |
+| `Plugins:BraveSearch:MaxTokens` | Approximate maximum tokens in context | `8192` |
+| `Plugins:BraveSearch:MaxUrls` | Maximum URLs in the response | `20` |
+| `Plugins:BraveSearch:ThresholdMode` | Relevance filtering mode | `balanced` |
+
+These can also be set via the `BRAVE_SEARCH_API_KEY` environment variable and the plugin config GUI in the dashboard.
 
 ### Example
 
@@ -87,7 +106,7 @@ Brave Search is a privacy-focused search engine with its own independent index. 
 public class BraveSearchPlugin : ILuciaPlugin
 {
     public string Name => "Brave Search";
-    public string Version => "1.0.0";
+    public string Version => "1.1.0";
 
     public void ConfigureServices(IHostApplicationBuilder builder)
     {
@@ -96,11 +115,12 @@ public class BraveSearchPlugin : ILuciaPlugin
             var config = builder.Configuration;
             var apiKey = config["Plugins:BraveSearch:ApiKey"]
                 ?? throw new InvalidOperationException("Brave Search API key is required.");
-            client.BaseAddress = new Uri("https://api.search.brave.com/");
+            client.BaseAddress = new Uri("https://api.search.brave.com/res/v1/llm/");
             client.DefaultRequestHeaders.Add("X-Subscription-Token", apiKey);
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
         });
 
-        builder.Services.AddSingleton<IWebSearchSkill, BraveSearchSkill>();
+        builder.Services.AddSingleton<IWebSearchSkill, BraveLlmContextSkill>();
     }
 
     public async Task OnSystemReadyAsync(IServiceProvider services, CancellationToken cancellationToken)
@@ -111,11 +131,11 @@ public class BraveSearchPlugin : ILuciaPlugin
         var healthy = await search.HealthCheckAsync(cancellationToken);
         if (healthy)
         {
-            logger.LogInformation("Brave Search API connection verified.");
+            logger.LogInformation("Brave LLM Context API connection verified.");
         }
         else
         {
-            logger.LogWarning("Brave Search API is not reachable. Web search will be unavailable.");
+            logger.LogWarning("Brave LLM Context API is not reachable. Web search will be unavailable.");
         }
     }
 }
@@ -124,7 +144,7 @@ new BraveSearchPlugin()
 ```
 
 :::tip
-You can get a free Brave Search API key at [brave.com/search/api](https://brave.com/search/api/). The free tier includes up to 2,000 queries per month.
+You can get a Brave Search API key at [brave.com/search/api](https://brave.com/search/api/). The free tier includes up to 2,000 queries per month. For details on the LLM Context endpoint, see the [API documentation](https://api-dashboard.search.brave.com/documentation/services/llm-context).
 :::
 
 ---

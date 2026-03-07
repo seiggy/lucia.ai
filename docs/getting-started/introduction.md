@@ -33,7 +33,8 @@ Lucia supports a wide range of LLM providers through the Microsoft Agent Framewo
 | OpenRouter | Supported |
 | Inception | Supported |
 | GitHub Copilot SDK | Experimental |
-| ONNX | Unsupported (no function calling) |
+
+All providers must support **function calling** (tool use), which is required for Lucia's agentic architecture. For Ollama, use models with tool support such as `llama3.1` or `qwen2.5`. For OpenRouter, the dashboard pre-filters to tool-calling models — if a model is missing from the list, it likely doesn't support function calling.
 
 :::tip
 For the best privacy-first experience, pair Lucia with [Ollama](https://ollama.com/) running a local model. For the best overall performance, Azure OpenAI or OpenAI with GPT-OSS-120b is recommended.

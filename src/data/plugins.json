@@ -13,10 +13,10 @@
   {
     "id": "brave-search",
     "name": "Brave Search",
-    "description": "Privacy-respecting web search skill using the Brave Search API. Registers IWebSearchSkill so the GeneralAgent gains a web_search tool.",
-    "version": "1.0.0",
+    "description": "LLM-optimized web search using the Brave LLM Context API. Returns pre-extracted page content for direct agent reasoning — no scraping needed.",
+    "version": "1.1.0",
     "author": "Lucia Team",
-    "tags": ["search", "privacy", "web"],
+    "tags": ["search", "privacy", "web", "llm"],
     "path": "plugins/brave-search",
     "docsUrl": "/docs/plugins/official-plugins#brave-search",
     "repoUrl": "https://github.com/seiggy/lucia-dotnet/tree/main/plugins/brave-search"

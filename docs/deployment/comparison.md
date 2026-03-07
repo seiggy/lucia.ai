@@ -19,23 +19,6 @@ A detailed comparison of all supported deployment methods to help you choose the
 | **Rolling Updates** | No | Yes | No |
 | **Resource Overhead** | Low | Medium | Lowest |
 
-## Performance
-
-All methods tested on 4 CPU / 8 GB RAM with 100 HA devices:
-
-| Metric | Docker Compose | Kubernetes | systemd |
-|---|---|---|---|
-| **p50 latency** | 45 ms | 65 ms | 35 ms |
-| **p95 latency** | 120 ms | 180 ms | 95 ms |
-| **p99 latency** | 120 ms | 180 ms | 95 ms |
-| **Throughput** | 850 req/s | 790 req/s | 920 req/s |
-| **Memory** | 180 MB | 210 MB | 160 MB |
-| **Startup** | 15-30s | 30-60s | 5-10s |
-
-:::info
-Differences are negligible for typical home automation workloads. LLM inference time (500-3000 ms) dominates total request latency regardless of deployment method. Choose based on operational fit, not performance.
-:::
-
 ## Feature Comparison
 
 | Feature | Docker Compose | Kubernetes | systemd |

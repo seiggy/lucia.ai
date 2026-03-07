@@ -158,26 +158,18 @@ Home Assistant will still display or speak the error message, so the user receiv
 
 ## Sequence Diagram
 
-```
-User          Home Assistant       Lucia Component      Lucia Agent Host
- |                 |                     |                     |
- |  "Turn off      |                     |                     |
- |   the lights"   |                     |                     |
- |────────────────>|                     |                     |
- |                 |   async_process()   |                     |
- |                 |────────────────────>|                     |
- |                 |                     |   JSON-RPC request  |
- |                 |                     |────────────────────>|
- |                 |                     |                     |
- |                 |                     |                     |-- Orchestrator
- |                 |                     |                     |-- Agent executes
- |                 |                     |                     |-- HA service call
- |                 |                     |                     |
- |                 |                     |  JSON-RPC response  |
- |                 |                     |<-────────────────────|
- |                 | ConversationResult  |                     |
- |                 |<────────────────────|                     |
- |  "Done. Lights  |                     |                     |
- |   are off."     |                     |                     |
- |<────────────────|                     |                     |
+```mermaid
+sequenceDiagram
+    actor User
+    participant HA as Home Assistant
+    participant LC as Lucia Component
+    participant Agent as Lucia Agent Host
+
+    User->>HA: "Turn off the lights"
+    HA->>LC: async_process()
+    LC->>Agent: JSON-RPC request
+    Note right of Agent: Orchestrator routes<br/>Agent executes<br/>HA service call
+    Agent-->>LC: JSON-RPC response
+    LC-->>HA: ConversationResult
+    HA-->>User: "Done. Lights are off."
 ```

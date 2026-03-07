@@ -66,20 +66,10 @@ const phases: RoadmapPhase[] = [
     title: 'Current Sprint',
     description: 'Active development — these features are being built now.',
     items: [
-      {title: 'Unified Entity Search Pipeline', description: 'Replacing per-skill entity lookups with centralized HybridEntityMatcher across all agents', icon: '🔍'},
       {title: 'WebSocket Real-Time Events', description: 'Persistent WebSocket connection to Home Assistant for live entity state updates', icon: '🔌'},
-      {title: 'HACS Store Listing', description: 'Publishing the HA integration to the Home Assistant Community Store for one-click install', icon: '🏪'},
-    ],
-  },
-  {
-    status: 'planned',
-    label: 'Planned',
-    title: 'Up Next',
-    description: 'Designed and scoped — ready to build when current work lands.',
-    items: [
+      {title: 'Data Provider Abstraction', description: 'Support for SQLite and PostgreSQL as data providers in addition to MongoDB', icon: '🗄️'},
       {title: 'CalendarAgent', description: 'Calendar management with event creation, availability checking, and daily briefings', icon: '📅'},
       {title: 'SecurityAgent', description: 'Security system monitoring — arm/disarm, camera snapshots, and alerts', icon: '🔐'},
-      {title: 'Pattern Recognition', description: 'Learn user routines from conversation history and suggest automations', icon: '🧩'},
     ],
   },
   {
@@ -88,6 +78,7 @@ const phases: RoadmapPhase[] = [
     title: 'Future Vision',
     description: 'Long-term goals on the horizon.',
     items: [
+      {title: 'Home Assistant App', description: 'Mono-container deployment running directly as a Home Assistant add-on', icon: '🏠'},
       {title: 'Local LLM Optimization', description: 'Quantization profiles and prompt tuning for best local model performance with Ollama', icon: '🚀'},
       {title: 'Voice Integration', description: 'Local speech-to-text and text-to-speech pipelines for fully voice-first interaction', icon: '🎤'},
       {title: 'GitHub Copilot SDK', description: 'First-class LLM provider integration with the GitHub Copilot SDK', icon: '🤝'},

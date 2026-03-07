@@ -62,10 +62,6 @@ services:
       - ConnectionStrings__luciaconfig=mongodb://lucia-mongo:27017/luciaconfig
       - ConnectionStrings__luciatasks=mongodb://lucia-mongo:27017/luciatasks
       - ConnectionStrings__redis=lucia-redis:6379
-      - ConnectionStrings__chat-model=Endpoint=https://api.openai.com;AccessKey=${OPENAI_API_KEY};Model=gpt-4o;Provider=openai
-      - ConnectionStrings__routing-model=Endpoint=https://api.openai.com;AccessKey=${OPENAI_API_KEY};Model=gpt-4o-mini;Provider=openai
-      - HOMEASSISTANT_URL=${HA_URL}
-      - HOMEASSISTANT_ACCESS_TOKEN=${HA_TOKEN}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -82,27 +78,13 @@ volumes:
   lucia-mongo-data:
 ```
 
-### Using a .env File
-
-Store sensitive values in a `.env` file alongside your `docker-compose.yml`:
-
-```bash title=".env"
-OPENAI_API_KEY=sk-proj-abc123
-HA_URL=http://homeassistant.local:8123
-HA_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOi...
-```
-
-:::warning
-Add `.env` to your `.gitignore` to prevent committing secrets to version control.
-:::
-
 ### Start the Stack
 
 ```bash
 docker compose up -d
 ```
 
-Open `http://localhost:7233` and follow the setup wizard.
+Open `http://localhost:7233` and follow the setup wizard to configure your LLM providers and Home Assistant connection.
 
 Verify the services are running:
 
@@ -130,6 +112,17 @@ The repo's `docker-compose.yml` builds the image from the local Dockerfile.
 
 To run TimerAgent alongside the AgentHost, add it to your `docker-compose.yml`. Note that MusicAgent runs in-process inside the AgentHost and does not require a separate container.
 
+You must also set the AgentHost to **mesh mode** by adding the `Deployment__Mode` environment variable to the `lucia` service:
+
+```yaml
+  lucia:
+    environment:
+      # ... existing environment variables ...
+      - Deployment__Mode=mesh
+```
+
+Then add the satellite agent service:
+
 ```yaml
   timer-agent:
     image: seiggy/lucia-timeragent:latest
@@ -140,8 +133,9 @@ To run TimerAgent alongside the AgentHost, add it to your `docker-compose.yml`. 
       - "5201:8080"
     environment:
       - ConnectionStrings__luciatasks=mongodb://lucia-mongo:27017/luciatasks
-      - ConnectionStrings__chat-model=Endpoint=https://api.openai.com;AccessKey=${OPENAI_API_KEY};Model=gpt-4o;Provider=openai
 ```
+
+See [Deployment Modes](../architecture/deployment-modes.md) for more details on standalone vs mesh mode.
 
 ## Common Operations
 

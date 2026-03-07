@@ -11,20 +11,22 @@ Lucia integrates with [Home Assistant](https://www.home-assistant.io/) through a
 
 The integration is a **Python custom component** that runs inside Home Assistant. It communicates with the Lucia .NET agent host over **JSON-RPC**, bridging the gap between HA's Python runtime and Lucia's multi-agent orchestration system.
 
-```
-┌──────────────────────┐         JSON-RPC         ┌──────────────────────┐
-│   Home Assistant      │ ◄─────────────────────► │   Lucia Agent Host    │
-│                       │                          │                       │
-│  ┌─────────────────┐  │                          │  ┌─────────────────┐  │
-│  │ Lucia Component  │  │    Request / Response    │  │  AgentHost      │  │
-│  │                  │──┼────────────────────────►│  │  Orchestrator   │  │
-│  │ Conversation API │  │                          │  │                  │  │
-│  └─────────────────┘  │                          │  └─────────────────┘  │
-│                       │                          │         │              │
-│  Entities, Areas,     │                          │    ┌────┴────┐        │
-│  Automations          │                          │    │ Agents  │        │
-└──────────────────────┘                          │    └─────────┘        │
-                                                   └──────────────────────┘
+```mermaid
+graph LR
+    subgraph HA["Home Assistant"]
+        LC["Lucia Component<br/>(Conversation API)"]
+        HAData["Entities, Areas,<br/>Automations"]
+    end
+
+    subgraph Lucia["Lucia Agent Host"]
+        Orch["AgentHost<br/>Orchestrator"]
+        Agents["Agents"]
+        Orch --> Agents
+    end
+
+    LC -- "JSON-RPC<br/>Request / Response" --> Orch
+    Orch -- "JSON-RPC<br/>Response" --> LC
+    Agents -. "Service Calls" .-> HAData
 ```
 
 ## How It Works
