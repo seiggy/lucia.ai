@@ -11,13 +11,14 @@ Lucia uses a **multi-agent architecture** where a central orchestrator delegates
 
 | Agent | Domain | Transport | Description |
 |---|---|---|---|
-| **LightAgent** | Lighting | In-process | Turn lights on/off, set brightness, color, and color temperature |
-| **ClimateAgent** | HVAC / Fans | In-process | Temperature control, mode selection, fan speed |
-| **SceneAgent** | Scenes | In-process | Discover and activate Home Assistant scenes |
-| **MusicAgent** | Media Playback | In-process | Control Music Assistant -- play, pause, skip, volume, queue |
-| **TimerAgent** | Timers / Alarms | A2A | Create timers, schedule alarms, voice dismiss/snooze |
-| **ListsAgent** | Lists | In-process | Manage todo and reminder lists |
-| **GeneralAgent** | Fallback | In-process | Open-ended questions, general knowledge, web search |
+| **[Orchestrator](./orchestrator-agent.md)** | Routing | In-process | Classifies intent and routes requests to specialized agents |
+| **[LightAgent](./light-agent.md)** | Lighting | In-process | Turn lights on/off, set brightness, color, and color temperature |
+| **[ClimateAgent](./climate-agent.md)** | HVAC / Fans | In-process | Temperature control, mode selection, fan speed |
+| **[SceneAgent](./scene-agent.md)** | Scenes | In-process | Discover and activate Home Assistant scenes |
+| **[MusicAgent](./music-agent.md)** | Media Playback | In-process | Control Music Assistant -- play, pause, skip, volume, queue |
+| **[TimerAgent](./timer-agent.md)** | Timers / Alarms | A2A | Create timers, schedule alarms, voice dismiss/snooze |
+| **[ListsAgent](./lists-agent.md)** | Lists | In-process | Manage todo and reminder lists |
+| **[GeneralAgent](./general-agent.md)** | Fallback | In-process | Open-ended questions, general knowledge, web search |
 
 ## In-Process vs A2A Agents
 
@@ -66,6 +67,7 @@ You can add your own agents to the routing table at runtime through the dashboar
 
 Explore each agent in detail:
 
+- [Orchestrator Agent](./orchestrator-agent.md)
 - [Light Agent](./light-agent.md)
 - [Climate Agent](./climate-agent.md)
 - [Scene Agent](./scene-agent.md)

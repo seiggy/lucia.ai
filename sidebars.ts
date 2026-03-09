@@ -30,6 +30,7 @@ const sidebars: SidebarsConfig = {
       label: 'Agents',
       items: [
         'agents/overview',
+        'agents/orchestrator-agent',
         'agents/light-agent',
         'agents/climate-agent',
         'agents/scene-agent',
