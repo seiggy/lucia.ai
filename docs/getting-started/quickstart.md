@@ -25,34 +25,71 @@ Create a `docker-compose.yml` file in your project directory:
 
 ```yaml
 services:
-  redis:
+  lucia-redis:
     image: redis:8.2-alpine
     container_name: lucia-redis
+    networks: [lucia-network]
+    ports: ["127.0.0.1:6379:6379"]
+    command: >
+      redis-server --appendonly yes
+      --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes: [lucia-redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "PING"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: unless-stopped
-    ports:
-      - "6379:6379"
 
-  mongo:
+  lucia-mongo:
     image: mongo:8.0
     container_name: lucia-mongo
+    networks: [lucia-network]
+    ports: ["127.0.0.1:27017:27017"]
+    volumes: [lucia-mongo-data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: unless-stopped
-    ports:
-      - "27017:27017"
 
   lucia:
     image: seiggy/lucia-agenthost:latest
-    container_name: lucia-agenthost
-    restart: unless-stopped
-    ports:
-      - "7233:8080"
-    environment:
-      - ConnectionStrings__Traces=mongodb://mongo:27017/luciatraces
-      - ConnectionStrings__Config=mongodb://mongo:27017/luciaconfig
-      - ConnectionStrings__Tasks=mongodb://mongo:27017/luciatasks
-      - ConnectionStrings__Redis=redis:6379
+    container_name: lucia
     depends_on:
-      - redis
-      - mongo
+      lucia-redis: { condition: service_healthy }
+      lucia-mongo: { condition: service_healthy }
+    networks: [lucia-network]
+    ports: ["7233:8080"]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__luciatraces=mongodb://lucia-mongo:27017/luciatraces
+      - ConnectionStrings__luciaconfig=mongodb://lucia-mongo:27017/luciaconfig
+      - ConnectionStrings__luciatasks=mongodb://lucia-mongo:27017/luciatasks
+      - ConnectionStrings__redis=lucia-redis:6379
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  lucia-network:
+    driver: bridge
+
+volumes:
+  # Redis persistent data
+  lucia-redis-data:
+    driver: local
+  
+  # MongoDB persistent data
+  lucia-mongo-data:
+    driver: local
 ```
 
 ## Start Lucia

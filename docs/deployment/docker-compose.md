@@ -62,6 +62,8 @@ services:
       - ConnectionStrings__luciaconfig=mongodb://lucia-mongo:27017/luciaconfig
       - ConnectionStrings__luciatasks=mongodb://lucia-mongo:27017/luciatasks
       - ConnectionStrings__redis=lucia-redis:6379
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - DOTNET_RUNNING_IN_CONTAINER=true
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -74,8 +76,13 @@ networks:
     driver: bridge
 
 volumes:
+  # Redis persistent data
   lucia-redis-data:
+    driver: local
+  
+  # MongoDB persistent data
   lucia-mongo-data:
+    driver: local
 ```
 
 ### Start the Stack
