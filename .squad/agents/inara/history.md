@@ -1,0 +1,20 @@
+# Project Context
+
+- **Owner:** Zack Way
+- **Project:** Lucia marketing site (luciahome.net) — public-facing Docusaurus docs and blog for the Lucia Privacy-First AI Home Assistant
+- **Stack:** Docusaurus 3.9, React 19, TypeScript, MDX
+- **Application repo:** /mnt/games/github/lucia-dotnet
+- **Created:** 2026-04-14
+
+## Learnings
+
+- **Blog post structure:** Front matter (slug, title, authors, tags), opening paragraph, `<!-- truncate -->` marker, sections with ## headers, closing paragraph with links to full release notes and GitHub. Keep marketing-focused—feature benefits over implementation details.
+- **Author conventions:** Use `[seiggy]` for major releases, `[lucia-team]` for patches. Authors are defined in `authors.yml`.
+- **File naming:** Blog posts use `YYYY-MM-DD-{slug}.md` format.
+- **Voice Platform (v1.2.0):** Wyoming protocol, STT, speaker verification, wake words, speech enhancement, ONNX auto-detection, personality prompts, pluggable data providers (InMemory/SQLite), mono-container Dockerfile.ha, simplified HA integration.
+- **Quality/Eval (v1.2.1):** Router prompt engineering for small models (Gemma 4), eval suite expansion (7→56 scenarios), timer agent routing, multi-backend benchmarking.
+- **Patch pattern (v1.2.2):** Dashboard nav fix, scroll jitter fix, non-light device pattern matcher bail, temporal preposition fix.
+- **v1.2.0 Documentation updates:** Updated 4 reference/deployment docs to reflect v1.2.0 DataProvider and PersonalityPrompt features. DataProvider enables flexible backends (InMemory/SQLite for constrained deployments, Redis/MongoDB for HA). PersonalityPrompt allows tone customization with optional separate cheaper model for rewriting. Dashboard now supports textarea field type for multi-line config. Docker-compose docs now show minimal deployment patterns (InMemory+SQLite, CPU-only, HA mono-container) alongside full-stack production config.
+- **Blog Posts Session (2026-04-14):** Created 3 release blog posts for v1.2.0 ("Pulsar"), v1.2.1 ("Searchlight"), v1.2.2 ("Guardrail"). Posts cover Wyoming Voice Platform, Conversation Command Parser, Response Templates, Personality Prompt, and Pluggable Data Providers. Blog posts published to marketing site. Orchestration logged to `.squad/orchestration-log/2026-04-14T15:02:00Z-inara.md`.
+- **v1.2.x REST Migration (HIGH PRIORITY):** Updated all 4 HA-related docs to reflect breaking REST API migration. Removed "Agent Selection" UI sections entirely—orchestrator now auto-routes. Setup simplified to just host URL + API key. Replaced JSON-RPC with `POST /api/conversation` REST endpoint (instant JSON for parsed commands, SSE for LLM fallback). Documented structured context (deviceId, area, type, userId, timestamp, location). Added new Conversation section to REST API docs with examples for POST /api/conversation and GET /api/conversation/patterns. Added Response Templates section (CRUD endpoints). Documented pattern matching logic, template interpolation, multi-turn continuity via auto-generated conversationId. Marked legacy JSON-RPC as deprecated. All 4 docs preserve existing structure & style while correcting misleading/broken content.
+

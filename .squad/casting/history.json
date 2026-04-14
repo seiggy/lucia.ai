@@ -1,0 +1,21 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "Firefly",
+      "assignment_id": "lucia-ai-2026-04-14",
+      "used_at": "2026-04-14T13:12:43Z"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "lucia-ai-2026-04-14": {
+      "universe": "Firefly",
+      "agents": {
+        "lead": "Mal",
+        "frontend-dev": "Kaylee",
+        "content-writer": "Inara",
+        "tester": "Wash"
+      },
+      "created_at": "2026-04-14T13:12:43Z"
+    }
+  }
+}
