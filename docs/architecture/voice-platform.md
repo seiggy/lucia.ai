@@ -10,17 +10,31 @@ The Wyoming Voice Platform transforms Lucia into a **Home Assistant-compatible v
 ## Architecture Overview
 
 ```mermaid
-graph TD
-    A([Audio Input<br/>16 kHz, PCM]) --> B[Streaming STT]
-    B -->|preliminary transcript<br/>fast feedback| C["Speech Enhancement (GTCRN)"]
-    C -->|noise reduction on audio stream| D[Voice Activity Detection]
-    D -->|detects speech/silence boundaries| E([Transcript + Speaker ID])
-    E -->|identified speaker| F[Speaker Verification]
-    F -->|verified identity| G([Text Response])
-    G --> H[Lucia Command Parser]
+flowchart TD
+    A([Audio Input<br/>16 kHz PCM]) --> B["Per-Chunk Processing"]
+
+    B --> GTCRN["GTCRN Speech Enhancement<br/>noise reduction"]
+    B -->|"raw audio ¹"| STT["Streaming STT"]
+    B -->|"raw audio ¹"| VAD["Voice Activity Detection"]
+
+    GTCRN -->|enhanced audio| CLIPS[(Clip Storage)]
+    STT -.->|partial transcripts| PARTIAL([Streaming Feedback])
+
+    STT -->|"finalize on audio-stop"| FINAL([Final Transcript])
+    VAD -->|"flush on audio-stop"| FINAL
+
+    FINAL --> SV["Speaker Verification<br/>IdentifySpeakerAsync"]
+    SV -->|speaker-tagged transcript| STRIP["Strip Speaker Tag"]
+    STRIP --> CMD{Pattern matched?}
+    CMD -->|Yes| FAST["Direct Skill Execution<br/>sub-50ms"]
+    CMD -->|No| LLM["LLM Orchestrator<br/>fallback"]
+    FAST --> RESP([Text Response])
+    LLM --> RESP
 ```
 
-Audio flows through the pipeline in order: **Streaming STT** produces a fast preliminary transcript, **GTCRN speech enhancement** cleans the audio stream, **VAD** detects speech/silence boundaries, the system then resolves **Transcript + Speaker ID**, runs **Speaker Verification** against enrolled profiles, and finally delivers a **text response** to the Lucia Command Parser. The platform runs as a persistent TCP service advertising itself to Home Assistant via Zeroconf, making it trivial to add as a Wyoming satellite without manual DNS or IP configuration.
+> **¹** STT and VAD receive **raw** (unenhanced) audio — intentional to avoid spectral mismatch with speaker enrollment profiles. GTCRN-enhanced audio is only used for clip storage.
+
+Each audio chunk is processed in parallel by three components: **GTCRN speech enhancement** reduces noise (for clip storage only), **Streaming STT** produces partial transcripts from the raw audio, and **VAD** detects speech/silence boundaries — STT and VAD intentionally receive raw (unenhanced) audio to avoid spectral mismatch with speaker enrollment profiles. On audio-stop, VAD flushes and STT finalizes to produce a high-accuracy transcript. **Speaker Verification** then identifies the speaker via cosine similarity against enrolled profiles, tagging the transcript. Finally, the **Conversation Command Parser** strips the speaker tag and attempts a fast pattern match (sub-50ms); unrecognized commands fall back to the LLM orchestrator. The platform runs as a persistent TCP service advertising itself to Home Assistant via Zeroconf, making it trivial to add as a Wyoming satellite without manual DNS or IP configuration.
 
 ## Multi-Engine Speech-to-Text
 
