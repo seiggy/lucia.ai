@@ -10,16 +10,16 @@ Lucia can run on **minimal hardware** with in-memory caching and SQLite, or scal
 ## Why Pluggable Providers?
 
 Traditional Lucia deployment required:
-- **Redis** — for conversation caching, prompt caching, and task storage
-- **MongoDB** — for configuration, traces, voice profiles, and response templates
-- **Docker Compose** or **Kubernetes** — to orchestrate multiple containers
-- **Minimum 4GB RAM** — for all three services
+- **Redis**: for conversation caching, prompt caching, and task storage
+- **MongoDB**: for configuration, traces, voice profiles, and response templates
+- **Docker Compose** or **Kubernetes**: to orchestrate multiple containers
+- **Minimum 4GB RAM**: for all three services
 
 With pluggable providers:
-- **Standalone deployment** — single binary or container
-- **Home Assistant add-on** — embedded dashboard, no CLI setup
-- **Raspberry Pi compatible** — 1–2GB RAM deployments with InMemory + SQLite
-- **Production scalable** — swap to Redis plus PostgreSQL or MongoDB when needed
+- **Standalone deployment**: single binary or container
+- **Home Assistant add-on**: embedded dashboard, no CLI setup
+- **Raspberry Pi compatible**: 1–2GB RAM deployments with InMemory + SQLite
+- **Production scalable**: swap to Redis plus PostgreSQL or MongoDB when needed
 
 ## Provider Architecture
 
@@ -37,7 +37,7 @@ Providers replace Redis for ephemeral, TTL-based data:
 
 **InMemory characteristics:**
 - Data persists only in process memory
-- Lost on restart (acceptable—caches are ephemeral)
+- Lost on restart (acceptable, since caches are ephemeral)
 - Configurable TTL and periodic cleanup
 - No network latency (faster than Redis)
 - Perfect for HA add-on, limited by available RAM
@@ -421,7 +421,7 @@ PostgreSQL is also the persistent store in the v1.3 Jetson ARM64 CUDA voice stac
 
 Existing deployments work unchanged. To migrate to pluggable providers:
 
-1. **No data loss** — the system is backward compatible
+1. **No data loss**: the system is backward compatible
 2. **Choose your target:**
    - InMemory + SQLite (self-hosted, add-on)
    - Redis + PostgreSQL (production, Jetson)
@@ -498,7 +498,7 @@ public interface ITaskIdIndex
 }
 ```
 
-All API endpoints and internal services use these abstractions—no direct `IMongoClient` or `IConnectionMultiplexer` injection.
+All API endpoints and internal services use these abstractions, with no direct `IMongoClient` or `IConnectionMultiplexer` injection.
 
 **Example: ConfigSeeder**
 
@@ -517,7 +517,7 @@ public class ConfigSeeder
 
 ## Next Steps
 
-- [Deployment Guide](./overview.md) — full deployment scenarios
-- [Docker Compose](./docker-compose.md) — quick-start deployment
-- [Home Assistant Integration](../home-assistant/overview.md) — add-on installation
-- [Wyoming Voice Platform](../architecture/voice-platform.md) — voice model storage requirements
+- [Deployment Guide](./overview.md): full deployment scenarios
+- [Docker Compose](./docker-compose.md): quick-start deployment
+- [Home Assistant Integration](../home-assistant/overview.md): add-on installation
+- [Wyoming Voice Platform](../architecture/voice-platform.md): voice model storage requirements

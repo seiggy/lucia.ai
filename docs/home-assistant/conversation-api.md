@@ -93,10 +93,10 @@ data: {"type":"done","response":{"speech":{"plain":{"speech":"Let me help with t
 
 Lucia uses **response templates** to generate natural language responses. Templates support placeholder interpolation:
 
-- `` `{entity}` `` — friendly name of the target entity
-- `` `{action}` `` — the action performed (on, off, set to, etc.)
-- `` `{area}` `` — the area name
-- `` `{value}` `` — numeric value (brightness, temperature)
+- `` `{entity}` ``: friendly name of the target entity
+- `` `{action}` ``: the action performed (on, off, set to, etc.)
+- `` `{area}` ``: the area name
+- `` `{value}` ``: numeric value (brightness, temperature)
 
 Example template:
 ```

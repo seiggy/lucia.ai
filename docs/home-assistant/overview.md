@@ -40,14 +40,14 @@ graph LR
 
 ## Key Capabilities
 
-- **Natural language control** -- "Turn off the living room lights" or "Set the thermostat to 72" without rigid command syntax.
-- **Entity awareness** -- Lucia sees your exposed entities, areas, and floors, and uses them to understand context.
-- **Conversation history** -- Multi-turn conversations are maintained so you can issue follow-up commands naturally.
-- **Automatic routing** -- Lucia chooses the best specialized agent from the request and Home Assistant context.
+- **Natural language control**: "Turn off the living room lights" or "Set the thermostat to 72" without rigid command syntax.
+- **Entity awareness**: Lucia sees your exposed entities, areas, and floors, and uses them to understand context.
+- **Conversation history**: Multi-turn conversations are maintained so you can issue follow-up commands naturally.
+- **Automatic routing**: Lucia chooses the best specialized agent from the request and Home Assistant context.
 
 ## What's Next?
 
-- [Installation](./installation.md) -- install the custom component via HACS or manually.
-- [Configuration](./configuration.md) -- connect the component to your Lucia instance.
-- [Entity Management](./entity-management.md) -- control which entities Lucia can see and interact with.
-- [Conversation API](./conversation-api.md) -- understand the request/response flow in detail.
+- [Installation](./installation.md): install the custom component via HACS or manually.
+- [Configuration](./configuration.md): connect the component to your Lucia instance.
+- [Entity Management](./entity-management.md): control which entities Lucia can see and interact with.
+- [Conversation API](./conversation-api.md): understand the request/response flow in detail.

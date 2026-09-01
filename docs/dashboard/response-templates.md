@@ -9,7 +9,7 @@ Response Templates let you customize how Lucia responds to parsed commands. Inst
 
 ## Overview
 
-When the **Conversation Command Parser** matches a voice command to a skill action (e.g., "turn on the kitchen lights" → LightControl + Toggle action), it consults the Response Templates to compose a response. Multiple templates per action create variety—each request randomly selects one template to avoid repetitive outputs.
+When the **Conversation Command Parser** matches a voice command to a skill action (e.g., "turn on the kitchen lights" → LightControl + Toggle action), it consults the Response Templates to compose a response. Multiple templates per action create variety, since each request randomly selects one template to avoid repetitive outputs.
 
 Access templates at **Settings → Response Templates** on the dashboard.
 
@@ -17,12 +17,12 @@ Access templates at **Settings → Response Templates** on the dashboard.
 
 The Response Templates page is organized by **skill** and **action** grouping. Features include:
 
-- **Skill/Action navigation** — dropdowns pre-populated with registered command patterns
-- **Template preview** — see how your template renders with sample values
-- **Template editor** — textarea for multi-line template entry
-- **Token insertion buttons** — click `{entity}`, `{action}`, or `{area}` to insert placeholders at cursor
-- **CRUD operations** — add, edit, delete templates via dashboard
-- **Random variant selection** — multiple templates per action rotate automatically
+- **Skill/Action navigation**: dropdowns pre-populated with registered command patterns
+- **Template preview**: see how your template renders with sample values
+- **Template editor**: textarea for multi-line template entry
+- **Token insertion buttons**: click `{entity}`, `{action}`, or `{area}` to insert placeholders at cursor
+- **CRUD operations**: add, edit, delete templates via dashboard
+- **Random variant selection**: multiple templates per action rotate automatically
 
 ## Template Syntax
 
@@ -97,9 +97,9 @@ Use the token buttons (`{entity}`, `{action}`, `{area}`) to insert placeholders 
 
 On first launch, Lucia automatically seeds **default templates** for all supported command patterns. These defaults are functional and ready to use:
 
-- **LightControl** — "turned on", "dimmed", "set to warm white", etc.
-- **ClimateControl** — "set to 72°F", "adjusted humidity", "changed to cooling mode"
-- **SceneControl** — "activated the movie scene", "turned on the bedtime routine"
+- **LightControl**: "turned on", "dimmed", "set to warm white", etc.
+- **ClimateControl**: "set to 72°F", "adjusted humidity", "changed to cooling mode"
+- **SceneControl**: "activated the movie scene", "turned on the bedtime routine"
 
 Feel free to customize or replace these with your own.
 
@@ -121,11 +121,11 @@ Each time a command matches this action, the parser **randomly selects one templ
 
 Response templates are managed via REST API:
 
-- **`GET /api/response-templates`** — List all templates
-- **`GET /api/response-templates?skill={skillId}&action={action}`** — Filter by skill/action
-- **`POST /api/response-templates`** — Create new template
-- **`PUT /api/response-templates/{id}`** — Update template
-- **`DELETE /api/response-templates/{id}`** — Delete template
+- **`GET /api/response-templates`**: List all templates
+- **`GET /api/response-templates?skill={skillId}&action={action}`**: Filter by skill/action
+- **`POST /api/response-templates`**: Create new template
+- **`PUT /api/response-templates/{id}`**: Update template
+- **`DELETE /api/response-templates/{id}`**: Delete template
 
 ### Request Format
 
@@ -160,13 +160,13 @@ The dashboard's skill/action dropdown filters to show only relevant templates fo
 
 - **First launch:** Default templates are seeded for all supported actions
 - **Upgrade:** If new actions are added in a release, new default templates are seeded automatically
-- **Customization:** Your custom templates are preserved across upgrades—only missing defaults are added
+- **Customization:** Your custom templates are preserved across upgrades; only missing defaults are added
 
 To reset to defaults, delete your custom templates and restart the application (defaults will be re-seeded if missing).
 
 ## Performance
 
-Template rendering is extremely lightweight—simple string interpolation with negligible latency. The cost of parsing a command (< 50ms) dominates; template rendering adds microseconds.
+Template rendering is extremely lightweight: simple string interpolation with negligible latency. The cost of parsing a command (< 50ms) dominates; template rendering adds microseconds.
 
 ## Examples
 
@@ -205,8 +205,8 @@ Thermostat adjusted to {action}.
 
 ## Tips
 
-- **Keep it conversational** — avoid overly technical language; let the action speak
-- **Use variety** — define 3-5 templates per action for natural conversational flow
-- **Test with preview** — click Preview before saving to ensure tokens interpolate correctly
-- **Area context** — including `{area}` gives users spatial awareness of what just happened
-- **Action clarity** — descriptive actions (e.g., "set to warm white") are better than vague ones (e.g., "changed")
+- **Keep it conversational**: avoid overly technical language; let the action speak
+- **Use variety**: define 3-5 templates per action for natural conversational flow
+- **Test with preview**: click Preview before saving to ensure tokens interpolate correctly
+- **Area context**: including `{area}` gives users spatial awareness of what just happened
+- **Action clarity**: descriptive actions (e.g., "set to warm white") are better than vague ones (e.g., "changed")

@@ -7,11 +7,11 @@ title: Export Training Data
 
 Lucia records full conversation traces for every interaction. You can export these traces as structured datasets for fine-tuning models or reinforcement learning from human feedback (RLHF). This tutorial shows you how to filter, review, and download training data from the dashboard.
 
-## Step 1 -- Navigate to Exports
+## Step 1: Navigate to Exports
 
 Open the Lucia dashboard and click **Exports** in the sidebar. This page provides tools for filtering and downloading conversation data.
 
-## Step 2 -- Filter Conversations
+## Step 2: Filter Conversations
 
 Use the filter controls to narrow down the conversations you want to include in your dataset.
 
@@ -23,7 +23,7 @@ Use the filter controls to narrow down the conversations you want to include in 
 
 You can combine filters. For example, selecting label `good` + agent `LightAgent` + last 30 days gives you a curated set of successful lighting interactions.
 
-## Step 3 -- Include Human Corrections
+## Step 3: Include Human Corrections
 
 When reviewing conversations in the dashboard, you can provide corrected responses for messages where the agent's output was not ideal. These corrections are stored alongside the original traces.
 
@@ -45,16 +45,16 @@ Each corrected turn in the exported dataset includes:
 }
 ```
 
-## Step 4 -- Download the Dataset
+## Step 4: Download the Dataset
 
 Click **Export**. Lucia generates a structured dataset file and presents a download link.
 
 The exported file includes:
 
-- **System prompts** -- the instructions given to each agent.
-- **Conversation turns** -- the full message history (user, assistant, tool calls, tool results).
-- **Metadata** -- timestamps, agent name, model used, token counts.
-- **Corrections** -- human-provided corrections when the toggle is enabled.
+- **System prompts**: the instructions given to each agent.
+- **Conversation turns**: the full message history (user, assistant, tool calls, tool results).
+- **Metadata**: timestamps, agent name, model used, token counts.
+- **Corrections**: human-provided corrections when the toggle is enabled.
 
 :::tip
 Export regularly and label your conversations as you review them. A well-labeled dataset is far more valuable for fine-tuning than a large unlabeled one.
@@ -71,5 +71,5 @@ Export regularly and label your conversations as you review them. A well-labeled
 
 ## What's Next?
 
-- [Multi-LLM Setup](./multi-llm.md) -- configure the model providers you are fine-tuning for.
-- [Build a Custom Agent](./custom-agent.md) -- create agents that use your fine-tuned models.
+- [Multi-LLM Setup](./multi-llm.md): configure the model providers you are fine-tuning for.
+- [Build a Custom Agent](./custom-agent.md): create agents that use your fine-tuned models.

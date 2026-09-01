@@ -21,8 +21,8 @@ Lucia can be deployed using several methods depending on your infrastructure, sc
 
 Lucia supports two deployment topologies via `Deployment__Mode`:
 
-- **Standalone** (default) -- All agents run in the main AgentHost process. Storage and cache providers are selectable.
-- **Mesh** -- Agents run as separate A2A containers. Used for Kubernetes and multi-node deployments.
+- **Standalone** (default): All agents run in the main AgentHost process. Storage and cache providers are selectable.
+- **Mesh**: Agents run as separate A2A containers. Used for Kubernetes and multi-node deployments.
 
 ## CI/CD
 
@@ -61,7 +61,7 @@ graph TD
 ```
 
 :::tip
-If you are unsure which method to choose, **start with Docker Compose**. It is the fastest path to a working deployment. You can migrate to Kubernetes later if needed -- all configuration is portable across methods.
+If you're unsure which method to choose, **start with Docker Compose**. It's the fastest path to a working deployment. You can migrate to Kubernetes later if needed; all configuration is portable across methods.
 :::
 
 ## Minimum Requirements
@@ -79,9 +79,9 @@ These requirements cover AgentHost and lightweight providers. External databases
 
 ## Next Steps
 
-- [Docker Compose](./docker-compose.md) -- Recommended for most users
-- [Kubernetes](./kubernetes.md) -- For production and high-availability deployments
-- [Helm Chart](./helm.md) -- Kubernetes deployment with Helm
-- [systemd](./systemd.md) -- Bare metal deployment
-- [Observability](./observability.md) -- Remote telemetry and Grafana dashboards
-- [Deployment Comparison](./comparison.md) -- Detailed comparison of all methods
+- [Docker Compose](./docker-compose.md): Recommended for most users
+- [Kubernetes](./kubernetes.md): For production and high-availability deployments
+- [Helm Chart](./helm.md): Kubernetes deployment with Helm
+- [systemd](./systemd.md): Bare metal deployment
+- [Observability](./observability.md): Remote telemetry and Grafana dashboards
+- [Deployment Comparison](./comparison.md): Detailed comparison of all methods

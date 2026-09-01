@@ -13,8 +13,8 @@ The Prompt Cache page gives you visibility into Lucia's two-tier prompt caching 
 
 Lucia maintains two separate cache namespaces:
 
-- **Routing Cache** -- caches orchestrator routing decisions so repeated queries skip the routing LLM call.
-- **Chat Cache** -- caches agent responses for identical prompts to reduce latency and token usage.
+- **Routing Cache**: caches orchestrator routing decisions so repeated queries skip the routing LLM call.
+- **Chat Cache**: caches agent responses for identical prompts to reduce latency and token usage.
 
 ## Tabbed View
 
@@ -24,9 +24,9 @@ Each cache tier is displayed in its own tab. Switch between tabs to inspect entr
 
 Each tab shows key metrics:
 
-- **Total Entries** -- number of cached items.
-- **Hit Rate** -- percentage of requests served from cache.
-- **Memory Usage** -- approximate memory consumed by cached data.
+- **Total Entries**: number of cached items.
+- **Hit Rate**: percentage of requests served from cache.
+- **Memory Usage**: approximate memory consumed by cached data.
 
 ## Managing the Cache
 

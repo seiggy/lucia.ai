@@ -5,10 +5,10 @@ title: Wyoming Voice Platform
 
 # Wyoming Voice Platform
 
-The Wyoming Voice Platform transforms Lucia into a **Home Assistant-compatible voice satellite**, enabling local speech processing with zero cloud dependency. It implements the full [Wyoming protocol](https://github.com/rhasspy/wyoming), shipping a streaming speech pipeline, speaker verification, wake word detection, speech enhancement, and intelligent model management—all discoverable via Zeroconf/mDNS.
+The Wyoming Voice Platform transforms Lucia into a **Home Assistant-compatible voice satellite**, enabling local speech processing with zero cloud dependency. It implements the full [Wyoming protocol](https://github.com/rhasspy/wyoming), shipping a streaming speech pipeline, speaker verification, wake word detection, speech enhancement, and intelligent model management, all discoverable via Zeroconf/mDNS.
 
 :::note v1.3.1 defaults
-The generic AgentHost now leaves the VAD and wake-word pipelines disabled unless `FeatureManagement__VadPipeline=true` or `FeatureManagement__WakeWordPipeline=true`. Disabled pipelines do not register engines or activate models, reducing startup work for deployments that receive already-bounded utterances.
+The generic AgentHost now leaves the VAD and wake-word pipelines disabled unless `FeatureManagement__VadPipeline=true` or `FeatureManagement__WakeWordPipeline=true`. Disabled pipelines don't register engines or activate models, reducing startup work for deployments that receive already-bounded utterances.
 :::
 
 ## Architecture Overview
@@ -36,9 +36,9 @@ flowchart TD
     LLM --> RESP
 ```
 
-> **¹** STT and VAD receive **raw** (unenhanced) audio — intentional to avoid spectral mismatch with speaker enrollment profiles. GTCRN-enhanced audio is only used for clip storage.
+> **¹** STT and VAD receive **raw** (unenhanced) audio; this is intentional, avoiding spectral mismatch with speaker enrollment profiles. GTCRN-enhanced audio is only used for clip storage.
 
-Each audio chunk is processed in parallel by three components: **GTCRN speech enhancement** reduces noise (for clip storage only), **Streaming STT** produces partial transcripts from the raw audio, and **VAD** detects speech/silence boundaries — STT and VAD intentionally receive raw (unenhanced) audio to avoid spectral mismatch with speaker enrollment profiles. On audio-stop, VAD flushes and STT finalizes to produce a high-accuracy transcript. **Speaker Verification** then identifies the speaker via cosine similarity against enrolled profiles, tagging the transcript. Finally, the **Conversation Command Parser** strips the speaker tag and attempts a fast pattern match (sub-50ms); unrecognized commands fall back to the LLM orchestrator. The platform runs as a persistent TCP service advertising itself to Home Assistant via Zeroconf, making it trivial to add as a Wyoming satellite without manual DNS or IP configuration.
+Each audio chunk is processed in parallel by three components. **GTCRN speech enhancement** reduces noise (for clip storage only), **Streaming STT** produces partial transcripts from the raw audio, and **VAD** detects speech/silence boundaries. STT and VAD intentionally receive raw (unenhanced) audio to avoid spectral mismatch with speaker enrollment profiles. On audio-stop, VAD flushes and STT finalizes to produce a high-accuracy transcript. **Speaker Verification** then identifies the speaker via cosine similarity against enrolled profiles, tagging the transcript. Finally, the **Conversation Command Parser** strips the speaker tag and attempts a fast pattern match (sub-50ms); unrecognized commands fall back to the LLM orchestrator. The platform runs as a persistent TCP service advertising itself to Home Assistant via Zeroconf, making it trivial to add as a Wyoming satellite without manual DNS or IP configuration.
 
 ## Multi-Engine Speech-to-Text
 
@@ -60,7 +60,7 @@ Lucia supports four STT engines, each optimized for different latency/accuracy t
 - Pure streaming CTC/transducer inference with no offline re-transcription
 - Produces results character-by-character as audio arrives
 - Simpler pipeline, minimal memory footprint
-- Accuracy lower than Hybrid—use when latency < accuracy
+- Accuracy lower than Hybrid; use it when latency matters more than accuracy
 
 ### SherpaOfflineSttEngine
 **Best for:** Batch processing, highest accuracy
@@ -90,7 +90,7 @@ graph LR
     E -->|fallback| F[CPU]
 ```
 
-Each engine (Sherpa Diarization, HybridSTT, GraniteOnnx, GTCRN Speech Enhancer) independently detects and uses the best available provider. If a provider fails to initialize, the system gracefully falls back to CPU—no manual configuration needed.
+Each engine (Sherpa Diarization, HybridSTT, GraniteOnnx, GTCRN Speech Enhancer) independently detects and uses the best available provider. If a provider fails to initialize, the system falls back to CPU automatically, with no manual configuration needed.
 
 **Verification flow:** The detector attempts `SessionOptions.AppendExecutionProvider_*()` before committing, preventing silent crashes when GPU libraries (CUDA, cuDNN) are missing.
 
@@ -133,7 +133,7 @@ Example: Register "Lucia, listen up" as a custom phrase and the system wakes for
 - Operates on audio stream with overlap-add state per session
 - Isolated per conversation (no cross-session noise bleed)
 - Raw audio preserved separately for speaker verification (to avoid spectral mismatch with enrollment data)
-- Optional—can be disabled for cleaner/minimal-latency pipelines
+- Optional; it can be disabled for cleaner, minimal-latency pipelines
 - Reuses FFT, tensor, cache, and ONNX buffers; v1.3.0 reduced warm 256-sample hop allocations from about 144 KB to 1.4 KB
 
 ## Model Management Lifecycle
@@ -151,7 +151,7 @@ graph LR
 
 **Download:** Background SSE stream with real-time progress bars (download → extract → validate stages)
 
-**Activation:** Hot-reload via `ActiveModelChanged` events—no restart required to switch models
+**Activation:** Hot-reload via `ActiveModelChanged` events; no restart required to switch models
 
 **Per-engine model views:** Dedicated tabs for STT, Offline STT, VAD, Wake Word, Speaker Embedding, and Speech Enhancement models
 
@@ -321,7 +321,7 @@ Each speaker needs separate enrollment and test sessions. Reports include identi
 
 ## Next Steps
 
-- [Voice Platform Dashboard](../dashboard/overview.md) — detailed dashboard features and configuration options
-- [Conversation API](../api/conversation-api.md) — pattern matching and command execution
-- [Deployment Guide](../deployment/overview.md) — voice platform deployment scenarios
+- [Voice Platform Dashboard](../dashboard/overview.md): detailed dashboard features and configuration options
+- [Conversation API](../api/conversation-api.md): pattern matching and command execution
+- [Deployment Guide](../deployment/overview.md): voice platform deployment scenarios
 - Home Assistant Settings → Devices & Services → Add Integration → Wyoming to activate

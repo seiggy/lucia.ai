@@ -75,7 +75,7 @@ The router analyzes the user's message to select the best agent:
 
 ### Step 6: AgentDispatchExecutor
 
-The dispatcher looks up `LightAgent` in the agent registry, determines it is **in-process**, and calls its `ProcessAsync` method directly with the routing context and matched entities.
+The dispatcher looks up `LightAgent` in the agent registry, sees an **in-process** agent, and calls its `ProcessAsync` method directly with the routing context and matched entities.
 
 ### Step 7: LLM Processing and Tool Execution
 
@@ -201,10 +201,10 @@ Text Output → Command Parser or LLM Orchestrator
 ```
 
 **Key Stages:**
-1. **VAD** -- detects speech/silence boundaries with configurable thresholds
-2. **Speech Enhancement** -- GTCRN reduces background noise for cleaner transcription
-3. **STT** -- streams audio through HybridSttEngine for low-latency + high-accuracy transcription
-4. **Speaker Verification** -- cosine-similarity matching against enrolled speaker profiles
-5. **Text Dispatch** -- recognized speaker's text goes to the command parser first; fallback to LLM for complex requests
+1. **VAD**: detects speech/silence boundaries with configurable thresholds
+2. **Speech Enhancement**: GTCRN reduces background noise for cleaner transcription
+3. **STT**: streams audio through HybridSttEngine for low-latency + high-accuracy transcription
+4. **Speaker Verification**: cosine-similarity matching against enrolled speaker profiles
+5. **Text Dispatch**: recognized speaker's text goes to the command parser first; fallback to LLM for complex requests
 
 The Wyoming server advertises via mDNS/Zeroconf for automatic Home Assistant satellite discovery. See [Voice Platform](/docs/architecture/voice-platform) for model management and configuration details.

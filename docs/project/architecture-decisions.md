@@ -47,7 +47,7 @@ Building a multi-agent orchestrator from scratch would require significant inves
 ### Rationale
 
 - The Microsoft Agent Framework offers a production-ready agent runtime with built-in support for tool calling, conversation history, and multi-model backends.
-- The MagenticOne pattern (a central orchestrator that delegates to specialized workers) maps directly to Lucia's architecture -- one orchestrator routing to domain-specific agents.
+- The MagenticOne pattern (a central orchestrator that delegates to specialized workers) maps directly to Lucia's architecture: one orchestrator routing to domain-specific agents.
 - Using a framework maintained by Microsoft aligns with the .NET ecosystem choice and benefits from ongoing investment in AI tooling.
 
 ---
@@ -59,7 +59,7 @@ Building a multi-agent orchestrator from scratch would require significant inves
 
 ### Decision
 
-Use the Agent-to-Agent (A2A) protocol -- JSON-RPC 2.0 over HTTP -- for communication between the orchestrator and satellite agents.
+Use the Agent-to-Agent (A2A) protocol (JSON-RPC 2.0 over HTTP) for communication between the orchestrator and satellite agents.
 
 ### Context
 

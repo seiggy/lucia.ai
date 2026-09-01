@@ -5,7 +5,7 @@ title: Connection Strings
 
 # Connection Strings
 
-Lucia uses standard connection strings for infrastructure services (MongoDB, Redis). LLM provider configuration is managed through the dashboard -- see [Model Providers](./model-providers.md) for details.
+Lucia uses standard connection strings for infrastructure services (MongoDB, Redis). LLM provider configuration is managed through the dashboard; see [Model Providers](./model-providers.md) for details.
 
 ## MongoDB Connection Strings
 

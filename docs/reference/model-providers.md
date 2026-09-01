@@ -5,7 +5,7 @@ title: Model Providers
 
 # Model Providers
 
-Lucia supports multiple LLM providers through a unified interface. You can mix and match providers across agents -- for example, use a fast local model for routing and a cloud model for complex agents. All provider configuration is managed through the **Providers** page in the Lucia dashboard.
+Lucia supports multiple LLM providers through a unified interface. You can mix and match providers across agents. For example, use a fast local model for routing and a cloud model for complex agents. All provider configuration is managed through the **Providers** page in the Lucia dashboard.
 
 ## Supported Providers
 
@@ -25,7 +25,7 @@ Lucia agents depend on function calling (tool use) to interact with Home Assista
 
 ¹ For **Ollama**, use models with tool support such as `llama3.1`, `qwen2.5`, or `mistral`. Check `ollama show <model>` for the `tools` capability.
 
-¹ For **OpenRouter**, select the **OpenRouter** provider type in the dashboard — it pre-filters the model list to only show models that support tool calling. If a model is missing from the list, it likely does not support function calling.
+¹ For **OpenRouter**, select the **OpenRouter** provider type in the dashboard; it pre-filters the model list to only show models that support tool calling. A missing model likely doesn't support function calling.
 :::
 
 ## Managing Providers in the Dashboard
@@ -36,10 +36,10 @@ Navigate to **Providers** in the sidebar to view and manage your configured mode
 
 Each provider card shows its display name, provider type, model, endpoint, authentication method, and status. From here you can:
 
-- **Test** -- send a test prompt to verify the provider is working.
-- **Edit** -- modify the provider's configuration.
-- **Select Model** -- browse and select from available models (supported by Ollama and OpenRouter).
-- **Delete** -- remove a non-default provider.
+- **Test**: send a test prompt to verify the provider is working.
+- **Edit**: modify the provider's configuration.
+- **Select Model**: browse and select from available models (supported by Ollama and OpenRouter).
+- **Delete**: remove a non-default provider.
 
 ## Adding a Provider
 
@@ -54,10 +54,10 @@ Fill in the following fields:
 | **Provider ID** | A unique key to reference this provider (e.g., `gpt4o-prod`, `ollama-local`). |
 | **Display Name** | A human-readable label shown in the dashboard. |
 | **Purpose** | Whether this provider is for **Chat** (LLM text generation) or **Embedding**. |
-| **Provider Type** | The backend service -- select from the dropdown. |
+| **Provider Type** | The backend service; select from the dropdown. |
 | **Endpoint URL** | The API endpoint. Leave blank for providers with well-known defaults (e.g., OpenAI, Anthropic). |
 | **Model / Deployment Name** | The model identifier. You can type it manually or use **Load Models** to discover available models. |
-| **Auth Type** | Authentication method -- typically **API Key** for cloud providers, or **None** for local services like Ollama. |
+| **Auth Type** | Authentication method: typically **API Key** for cloud providers, or **None** for local services like Ollama. |
 | **API Key** | Your API key or access token (if applicable). |
 
 ### Selecting a Provider Type
@@ -78,7 +78,7 @@ All fields except the Provider ID can be changed. Click **Save Changes** to appl
 
 ## Model Discovery
 
-Ollama and OpenRouter support **model discovery** -- the dashboard can query the provider's API to list available models, so you don't need to remember or look up model identifiers manually.
+Ollama and OpenRouter support **model discovery**: the dashboard can query the provider's API to list available models, so you don't need to remember or look up model identifiers manually.
 
 There are two ways to discover models:
 
@@ -94,7 +94,7 @@ When editing a provider, click the **↻ Load models** button to fetch the model
 
 ![OpenRouter Model Discovery](/img/dashboard/model-providers-openrouter-discovery.png)
 
-The dropdown includes a **Type to filter** search box -- useful for OpenRouter, which exposes hundreds of models. The OpenRouter provider pre-filters this list to only include models that support function calling. If a model you expect is missing, it likely does not support tool use.
+The dropdown includes a **Type to filter** search box, useful for OpenRouter, which exposes hundreds of models. The OpenRouter provider pre-filters this list to models that support function calling. A missing model likely doesn't support tool use.
 
 ![OpenRouter Select Model](/img/dashboard/model-providers-openrouter-select.png)
 
@@ -103,14 +103,14 @@ The dropdown includes a **Type to filter** search box -- useful for OpenRouter, 
 ### Ollama
 
 - **Endpoint**: Defaults to `http://localhost:11434`. Change this if Ollama runs on a different host.
-- **Auth**: Set to **None** -- Ollama does not require authentication.
-- **Model Discovery**: Queries your Ollama instance for installed models. Only models with function calling support will work with Lucia agents -- use models such as `llama3.1`, `qwen2.5`, or `mistral`.
+- **Auth**: Set to **None**. Ollama doesn't require authentication.
+- **Model Discovery**: Queries your Ollama instance for installed models. Only models with function calling support work with Lucia agents; use models such as `llama3.1`, `qwen2.5`, or `mistral`.
 
 ### OpenRouter
 
 - **Endpoint**: Set to `https://openrouter.ai/api/v1/`.
 - **Auth**: Requires an OpenRouter API key.
-- **Model Discovery**: The model list is pre-filtered to only show models that support function calling. If a model you expect is missing from the list, it likely does not support tool use.
+- **Model Discovery**: The list only shows models that support function calling. A missing model likely doesn't support tool use.
 
 ### Azure OpenAI
 

@@ -5,7 +5,7 @@ title: Plugins
 
 # Plugins
 
-The Plugins page lets you extend Lucia's functionality through a plugin ecosystem. It is organized into three tabs.
+The Plugins page lets you extend Lucia's functionality through a plugin ecosystem. It's organized into three tabs.
 
 ![Plugins](/img/dashboard/plugins.png)
 
@@ -13,8 +13,8 @@ The Plugins page lets you extend Lucia's functionality through a plugin ecosyste
 
 The **Installed** tab lists all plugins currently installed on your Lucia instance. For each plugin you can:
 
-- **Enable or disable** -- toggle a plugin on or off without uninstalling it.
-- **Uninstall** -- remove the plugin and its data entirely.
+- **Enable or disable**: toggle a plugin on or off without uninstalling it.
+- **Uninstall**: remove the plugin and its data entirely.
 
 Plugin version and description are shown alongside each entry.
 

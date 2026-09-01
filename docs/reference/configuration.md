@@ -5,7 +5,7 @@ title: Configuration Reference
 
 # Configuration Reference
 
-Lucia uses a schema-driven configuration system stored by the selected SQLite, PostgreSQL, or MongoDB provider. Configuration can be modified through the Dashboard UI or REST API. Most settings are hot-reloadable -- changes take effect without restarting the AgentHost.
+Lucia uses a schema-driven configuration system stored by the selected SQLite, PostgreSQL, or MongoDB provider. Configuration can be modified through the Dashboard UI or REST API. Most settings are hot-reloadable, so changes take effect without restarting the AgentHost.
 
 ## Configuration Sections
 
@@ -138,10 +138,10 @@ Configures optional response personality rewriting (available since v1.2.0). Whe
 ```
 
 **Behavior:**
-- **Hot-reloadable** — Changes take effect on the next request without restart
-- **Zero-cost opt-in** — When `instructions` is empty or not set, the pipeline is unchanged (no LLM call)
-- **Graceful fallback** — If the personality model is misconfigured, a warning is logged and the raw aggregated response is returned for that request
-- **Model flexibility** — Optionally route personality rewriting to a different (faster/cheaper) model than your main orchestrator
+- **Hot-reloadable**: Changes take effect on the next request without restart
+- **Zero-cost opt-in**: When `instructions` is empty or not set, the pipeline is unchanged (no LLM call)
+- **Graceful fallback**: If the personality model is misconfigured, a warning is logged and the raw aggregated response is returned for that request
+- **Model flexibility**: Optionally route personality rewriting to a different (faster/cheaper) model than your main orchestrator
 
 :::tip
 Use a smaller model like `gpt-4o-mini` or `claude-3-haiku` for personality rewriting to reduce costs without sacrificing quality.
@@ -325,7 +325,7 @@ Defines the set of registered agents and their configuration.
 
 ## ModelProviders
 
-Maps each agent to its assigned LLM model and provider. This allows you to run different agents on different models -- for example, a fast model for routing and a more capable model for complex agents.
+Maps each agent to its assigned LLM model and provider. This lets you run different agents on different models; for example, a fast model can handle routing while a more capable model handles complex agents.
 
 | Key | Type | Description |
 |---|---|---|

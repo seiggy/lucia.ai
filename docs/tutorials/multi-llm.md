@@ -5,7 +5,7 @@ title: Multi-LLM Setup
 
 # Multi-LLM Setup
 
-Lucia supports multiple LLM providers simultaneously. You can assign different models to different agents -- for example, a fast local model for simple tasks and a cloud model for complex reasoning. This tutorial shows you how to configure providers and assign them to agents.
+Lucia supports multiple LLM providers simultaneously. You can assign different models to different agents. For example, use a fast local model for simple tasks and a cloud model for complex reasoning. This tutorial shows you how to configure providers and assign them to agents.
 
 ## Personality Prompt Use Case (v1.2.0+)
 
@@ -14,7 +14,7 @@ One practical multi-LLM scenario is using a **cheaper/faster model for personali
 1. **Orchestrator Model** (smart routing): Azure OpenAI (GPT-4o)
 2. **Personality Model** (rewriting output): Ollama (llama3.1 locally) or Anthropic (Claude 3.5 Haiku)
 
-Configure this in the **Personality Prompt** section of the dashboard. When a personality prompt is active, Lucia rewrites the multi-agent response through the designated personality model, giving your assistant a customizable tone — formal, casual, pirate speak, butler, etc.
+Configure this in the **Personality Prompt** section of the dashboard. When a personality prompt is active, Lucia rewrites the multi-agent response through the designated personality model, giving your assistant a customizable tone: formal, casual, pirate speak, butler, etc.
 
 :::info
 The `ModelConnectionName` field in PersonalityPrompt config lets you select a different model for rewriting. When not configured, it uses the default orchestrator model.
@@ -22,11 +22,11 @@ The `ModelConnectionName` field in PersonalityPrompt config lets you select a di
 
 See [Personality Prompt Configuration](../dashboard/personality-prompt.md) for full setup details.
 
-## Step 1 -- Navigate to Model Providers
+## Step 1: Navigate to Model Providers
 
 Open the Lucia dashboard and click **Model Providers** in the sidebar. This page lists all configured LLM connections.
 
-## Step 2 -- Add a Provider
+## Step 2: Add a Provider
 
 Click **Add Provider** and fill in the connection details. Each provider uses a connection string with the following format:
 
@@ -71,7 +71,7 @@ Endpoint=http://ollama:11434;AccessKey=not-required;Model=llama3.1;Provider=Olla
 | Field | Value |
 |---|---|
 | Endpoint | Ollama server URL (default `http://ollama:11434`) |
-| AccessKey | Not required for Ollama -- use any placeholder value |
+| AccessKey | Not required for Ollama: use any placeholder value |
 | Model | Model name as shown by `ollama list` (e.g. `llama3.1`, `qwen2.5`) |
 | Provider | `Ollama` |
 
@@ -105,11 +105,11 @@ Endpoint=https://generativelanguage.googleapis.com;AccessKey=your-google-key;Mod
 | Model | Model name (e.g. `gemini-2.0-flash`, `gemini-2.5-pro`) |
 | Provider | `Gemini` |
 
-## Step 3 -- Set a Default Provider
+## Step 3: Set a Default Provider
 
-One provider must be marked as the **default**. This is the model used by agents that do not have a specific model override. Click the star icon next to a provider to make it the default.
+One provider must be marked as the **default**. Agents without a specific model override use it. Click the star icon next to a provider to make it the default.
 
-## Step 4 -- Assign Models to Agents
+## Step 4: Assign Models to Agents
 
 Navigate to **Agent Definitions** in the sidebar. Select an agent and set the **Model Connection** field to the name of the provider you want that agent to use.
 
@@ -131,13 +131,13 @@ After saving your provider and agent settings:
 
 1. Open the **Conversations** page.
 2. Send a message that targets each agent.
-3. Expand the conversation trace -- the **Model** field shows which provider handled the request.
+3. Expand the conversation trace: the **Model** field shows which provider handled the request.
 
 :::tip
-If an agent's assigned provider is unreachable, Lucia will log an error and the request will fail. It does not automatically fall back to another provider.
+If an agent's assigned provider is unreachable, Lucia logs an error and the request fails. It doesn't automatically fall back to another provider.
 :::
 
 ## What's Next?
 
-- [Build a Custom Agent](./custom-agent.md) -- create agents with specific model assignments.
-- [Export Training Data](./training-export.md) -- export conversations for fine-tuning.
+- [Build a Custom Agent](./custom-agent.md): create agents with specific model assignments.
+- [Export Training Data](./training-export.md): export conversations for fine-tuning.

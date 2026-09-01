@@ -13,9 +13,9 @@ The Dataset Exports page lets you export labeled conversation traces as structur
 
 Before exporting, narrow the dataset using filters:
 
-- **Label** -- select one or more labels to include only matching traces.
-- **Date Range** -- restrict to traces within a specific time window.
-- **Agent** -- include only traces handled by a particular agent.
+- **Label**: select one or more labels to include only matching traces.
+- **Date Range**: restrict to traces within a specific time window.
+- **Agent**: include only traces handled by a particular agent.
 
 ## Export Formats
 

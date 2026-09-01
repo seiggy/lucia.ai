@@ -13,8 +13,8 @@ The MCP Servers page lets you register and manage Model Context Protocol tool se
 
 Lucia supports two MCP transport modes:
 
-- **stdio** -- for locally running tool servers. Lucia spawns the process and communicates over standard input/output.
-- **HTTP/SSE** -- for remote tool servers. Lucia connects to the server's HTTP endpoint and receives tool updates via Server-Sent Events.
+- **stdio**: for locally running tool servers. Lucia spawns the process and communicates over standard input/output.
+- **HTTP/SSE**: for remote tool servers. Lucia connects to the server's HTTP endpoint and receives tool updates via Server-Sent Events.
 
 ## Registering a Server
 

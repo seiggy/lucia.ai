@@ -39,14 +39,14 @@ A detailed comparison of all supported deployment methods to help you choose the
 ## Decision Tree
 
 1. **Do you have a Kubernetes cluster?**
-   - Yes -- Consider [Kubernetes](./kubernetes.md) or [Helm](./helm.md)
-   - No -- Continue
+   - Yes: Consider [Kubernetes](./kubernetes.md) or [Helm](./helm.md)
+   - No: Continue
 2. **Are you comfortable with Docker?**
-   - Yes -- **[Docker Compose](./docker-compose.md)** (recommended)
-   - No -- **[systemd](./systemd.md)**
+   - Yes: **[Docker Compose](./docker-compose.md)** (recommended)
+   - No: **[systemd](./systemd.md)**
 3. **Do you need high availability?**
-   - Yes -- **[Kubernetes](./kubernetes.md)**
-   - No -- **[Docker Compose](./docker-compose.md)**
+   - Yes: **[Kubernetes](./kubernetes.md)**
+   - No: **[Docker Compose](./docker-compose.md)**
 
 ## Migration Paths
 

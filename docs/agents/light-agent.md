@@ -25,9 +25,9 @@ The Light Agent relies on two key services to resolve user intent into Home Assi
 
 The `HybridEntityMatcher` combines multiple matching strategies to find the right entity even when the user's phrasing is imprecise:
 
-1. **Exact match** -- direct entity ID or friendly name lookup.
-2. **Fuzzy match** -- Levenshtein-distance scoring against friendly names and aliases.
-3. **Semantic match** -- embedding-based similarity search for natural-language references.
+1. **Exact match**: direct entity ID or friendly name lookup.
+2. **Fuzzy match**: Levenshtein-distance scoring against friendly names and aliases.
+3. **Semantic match**: embedding-based similarity search for natural-language references.
 
 ```
 User: "Turn on the reading light"
@@ -50,9 +50,9 @@ You can test entity matching interactively from the [Matcher Debug](/docs/dashbo
 
 The `EntityLocationService` maps floor, area, and entity relationships so the agent can resolve spatial references:
 
-- **Floor-level** -- "Turn off all the lights upstairs"
-- **Area-level** -- "Dim the kitchen lights"
-- **Entity-level** -- "Turn on the desk lamp"
+- **Floor-level**: "Turn off all the lights upstairs"
+- **Area-level**: "Dim the kitchen lights"
+- **Entity-level**: "Turn on the desk lamp"
 
 The service builds its hierarchy from Home Assistant's floor, area, and device registries and keeps it in sync via the integration.
 

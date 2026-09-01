@@ -63,7 +63,7 @@ DELETE /api/plugins/installed/{pluginId}
 Removes the plugin folder from disk. Requires a restart to take effect.
 
 :::warning
-Uninstalling a plugin permanently deletes its folder and all files within it. This action cannot be undone.
+Uninstalling a plugin permanently deletes its folder and all files within it. You can't undo this action.
 :::
 
 ## Plugin Store
@@ -167,7 +167,7 @@ Updates the configuration for an existing repository.
 DELETE /api/plugins/repositories/{repositoryId}
 ```
 
-Removes a repository from the configuration. Does not uninstall any plugins that were installed from it.
+Removes a repository from the configuration. It doesn't uninstall plugins that came from it.
 
 ### Sync a Repository
 

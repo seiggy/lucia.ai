@@ -87,7 +87,7 @@ Your directory structure should look like this:
 2. Click **Restart** and wait for Home Assistant to come back online.
 
 :::warning
-When updating manually, always replace the entire `lucia` directory rather than overwriting individual files. This ensures removed or renamed files do not cause conflicts.
+When updating manually, replace the entire `lucia` directory rather than overwriting individual files. This keeps removed or renamed files from causing conflicts.
 :::
 
 ## Verifying the Installation
@@ -96,9 +96,9 @@ After restarting, verify the component is loaded:
 
 1. Go to **Settings** > **Devices & Services**.
 2. Click **Add Integration**.
-3. Search for **Lucia** -- it should appear in the list.
+3. Search for **Lucia**; it should appear in the list.
 
-If Lucia does not appear, check the Home Assistant logs at **Settings** > **System** > **Logs** for any errors related to the `lucia` component.
+If Lucia doesn't appear, check the Home Assistant logs at **Settings** > **System** > **Logs** for errors related to the `lucia` component.
 
 ## What's Next?
 

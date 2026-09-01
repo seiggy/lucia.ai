@@ -5,7 +5,7 @@ title: Timer Agent
 
 ## When the Timer Agent Is Invoked
 
-In v1.2.1, the **Timer Agent receives priority routing** for any request containing time-based language via **Rule 0 — Time-Delayed Action Priority**. This happens before the general domain router evaluates the request.
+In v1.2.1, the **Timer Agent receives priority routing** for any request containing time-based language via **Rule 0: Time-Delayed Action Priority**. This happens before the general domain router evaluates the request.
 
 ### Time-Based Request Syntax
 
@@ -45,7 +45,7 @@ This ensures time-sensitive requests don't get lost in multi-domain classificati
 
 **ListTimers vs ScheduleAction**: The `ListTimers` endpoint returns active countdown timers only. Scheduled actions created via `ScheduleAction` are stored separately in the task persistence layer and don't appear in the timer list. Use the Tasks dashboard page to view scheduled actions.
 
-For full context on how Timer Agent fits into the routing pipeline, see [Orchestrator Agent — Routing Improvements in v1.2.1](/docs/agents/orchestrator-agent#routing-improvements-in-v121).
+For full context on how Timer Agent fits into the routing pipeline, see [Orchestrator Agent: Routing Improvements in v1.2.1](/docs/agents/orchestrator-agent#routing-improvements-in-v121).
 
 ## Capabilities
 
@@ -130,9 +130,9 @@ The ramp profile is configurable from the [Alarms](/docs/dashboard/alarms) page 
 
 Active alarms listen for voice commands on the target satellite:
 
-- **"Stop"** or **"Dismiss"** -- immediately silences the alarm.
-- **"Snooze"** -- silences the alarm and reschedules it for 9 minutes later (configurable).
-- **"Snooze for 15 minutes"** -- silences and reschedules for the specified duration.
+- **"Stop"** or **"Dismiss"**: immediately silences the alarm.
+- **"Snooze"**: silences the alarm and reschedules it for 9 minutes later (configurable).
+- **"Snooze for 15 minutes"**: silences and reschedules for the specified duration.
 
 ## Tool Functions
 

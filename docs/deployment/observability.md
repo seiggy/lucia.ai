@@ -5,7 +5,7 @@ title: Observability
 
 # Observability
 
-Lucia v1.3.0 includes an optional remote observability stack built from OpenTelemetry Collector, Grafana, Tempo, Prometheus, Loki, and Caddy. Telemetry export is fail-open: an unavailable collector does not stop AgentHost request processing.
+Lucia v1.3.0 includes an optional remote observability stack built from OpenTelemetry Collector, Grafana, Tempo, Prometheus, Loki, and Caddy. Telemetry export is fail-open: an unavailable collector doesn't stop AgentHost request processing.
 
 ## Telemetry Modes
 
@@ -24,7 +24,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://telemetry.example.internal:4317
 OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic%20BASE64_CREDENTIALS
 ```
 
-The legacy `Observability__Enabled=true|false` setting maps to `Trace|Off`. Do not configure it together with `Observability__Mode`.
+The legacy `Observability__Enabled=true|false` setting maps to `Trace|Off`. Don't configure it together with `Observability__Mode`.
 
 Exports use bounded queues and short timeouts. If the collector is slow or unavailable, Lucia drops excess telemetry instead of blocking application work.
 
@@ -46,11 +46,11 @@ The default retention is 30 days for metrics, 14 days for traces, and 7 days for
 
 Five dashboards are provisioned in the **Lucia** folder:
 
-- **Service health** -- CPU, memory, allocations, garbage collection, exceptions, HTTP, and dependencies
-- **Speech pipeline** -- queue wait, STT, enhancement, retranscription, diarization, and transcript-write latency
-- **Jetson host** -- CPU, memory, disk, load, networking, and process pressure
-- **PostgreSQL** -- availability, connections, transactions, cache, locks, and database size
-- **Redis** -- availability, memory, clients, commands, keyspace, and network activity
+- **Service health**: CPU, memory, allocations, garbage collection, exceptions, HTTP, and dependencies
+- **Speech pipeline**: queue wait, STT, enhancement, retranscription, diarization, and transcript-write latency
+- **Jetson host**: CPU, memory, disk, load, networking, and process pressure
+- **PostgreSQL**: availability, connections, transactions, cache, locks, and database size
+- **Redis**: availability, memory, clients, commands, keyspace, and network activity
 
 Speech metrics appear after a completed utterance and the next 30-second metrics export.
 

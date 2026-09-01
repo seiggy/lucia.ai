@@ -5,16 +5,16 @@ title: Command Pattern Reference
 
 # Command Pattern Reference
 
-Command patterns are template-based rules that enable the **fast-path command parser** to match voice commands to specific skill actions and execute them directly against Home Assistant—with zero LLM involvement. This results in sub-50ms response times for recognized commands like "turn on the kitchen lights" or "set the thermostat to 72 degrees."
+Command patterns are template-based rules that enable the **fast-path command parser** to match voice commands to specific skill actions and execute them directly against Home Assistant, with zero LLM involvement. This results in sub-50ms response times for recognized commands like "turn on the kitchen lights" or "set the thermostat to 72 degrees."
 
 ## What Are Command Patterns?
 
 A command pattern is a template that:
 
-1. **Defines a sentence structure** — placeholders and optional segments
+1. **Defines a sentence structure**: placeholders and optional segments
 2. **Captures entity/parameter values** from the user's voice input
-3. **Maps to a skill and action** — e.g., LightControlSkill + toggle
-4. **Executes directly** — bypasses the orchestrator's LLM routing and agent dispatch
+3. **Maps to a skill and action**: e.g., LightControlSkill + toggle
+4. **Executes directly**: bypasses the orchestrator's LLM routing and agent dispatch
 
 **Example pattern:**
 ```
@@ -27,8 +27,8 @@ Matches:
 - "turn on the lights in the living room"
 
 Does not match:
-- "turn the lights purple" (unsupported action—falls back to LLM)
-- "turn on my speakers" (non-light device—bails to LLM)
+- "turn the lights purple" (unsupported action, falls back to LLM)
+- "turn on my speakers" (non-light device, bails to LLM)
 
 ## Pattern Syntax
 
@@ -92,9 +92,9 @@ Does not match:
 
 When multiple patterns could match the same input, the parser scores each candidate:
 
-1. **Exact word matches** — patterns that match the most constrained options score higher
-2. **Captured text quality** — more specific captures (fewer words) score higher
-3. **Priority-based tiebreaking** — skill priority (lights > scenes > climate) breaks ties
+1. **Exact word matches**: patterns that match the most constrained options score higher
+2. **Captured text quality**: more specific captures (fewer words) score higher
+3. **Priority-based tiebreaking**: skill priority (lights > scenes > climate) breaks ties
 
 Example: For input "turn on the lights", patterns with constrained placeholders (`{state:on|off}`) score higher than patterns with open placeholders (`{action}`).
 
@@ -160,12 +160,12 @@ This distinction prevents false positives where spatial descriptions ("in the ki
 
 When a pattern matches and validation passes, the `DirectSkillExecutor` dispatches the matched route to the appropriate skill method:
 
-1. **Resolve entities** — captured text is matched against Home Assistant entity registry using semantic similarity
-2. **Build parameters** — captured values are assembled into the skill method parameters
-3. **Call skill** — direct call to `LightControlSkill.SetLightBrightness()`, `ClimateControlSkill.SetTemperature()`, etc.
-4. **Return result** — skill method executes against Home Assistant and returns success/error
+1. **Resolve entities**: captured text is matched against Home Assistant entity registry using semantic similarity
+2. **Build parameters**: captured values are assembled into the skill method parameters
+3. **Call skill**: direct call to `LightControlSkill.SetLightBrightness()`, `ClimateControlSkill.SetTemperature()`, etc.
+4. **Return result**: skill method executes against Home Assistant and returns success/error
 
-The skill execution is synchronous and fast—typical round-trip < 50ms.
+The skill execution is synchronous and fast, with a typical round-trip under 50ms.
 
 ## Response Templates
 
@@ -220,12 +220,12 @@ This endpoint is used by the dashboard's Response Templates page to populate ski
 
 ## Full API Reference
 
-For comprehensive REST API documentation including request/response examples, see [`docs/api/conversation-api.md`](/docs/api/conversation-api).
+For full REST API documentation including request/response examples, see [`docs/api/conversation-api.md`](/docs/api/conversation-api).
 
 Key endpoints:
 
-- **`POST /api/conversation`** — Parse and execute a command (with LLM fallback)
-- **`GET /api/conversation/patterns`** — Inspect registered patterns (this document)
+- **`POST /api/conversation`**: Parse and execute a command (with LLM fallback)
+- **`GET /api/conversation/patterns`**: Inspect registered patterns (this document)
 
 ## Performance Characteristics
 
@@ -243,12 +243,12 @@ Compare to LLM-based orchestration: typically 1-3 seconds.
 
 The parser falls back to the LLM orchestrator if:
 
-1. **No pattern matches** — no template fits the input structure
-2. **Pattern matches but confidence is low** — user phrasing is ambiguous
-3. **Non-light device detected** — bail signal triggered
-4. **Temporal preposition detected** — user is referring to timing, not immediate action
-5. **Skill execution fails** — Home Assistant returns an error
-6. **Unrecognized entity** — captured text doesn't resolve to a real Home Assistant entity
+1. **No pattern matches**: no template fits the input structure
+2. **Pattern matches but confidence is low**: user phrasing is ambiguous
+3. **Non-light device detected**: bail signal triggered
+4. **Temporal preposition detected**: user is referring to timing, not immediate action
+5. **Skill execution fails**: Home Assistant returns an error
+6. **Unrecognized entity**: captured text doesn't resolve to a real Home Assistant entity
 
 Fallback is transparent to the user. The parser returns an SSE stream and the LLM handles the request from scratch.
 
@@ -264,6 +264,6 @@ See [lucia-dotnet/RELEASE_NOTES.md](https://github.com/seiggy/lucia-dotnet/blob/
 
 ## See Also
 
-- **Conversation API** — [`docs/api/conversation-api.md`](/docs/api/conversation-api)
-- **Response Templates** — [`docs/dashboard/response-templates.md`](/docs/dashboard/response-templates)
-- **Fast-Path Overview** — [Conversation Command Parser](/docs/api/conversation-api#overview)
+- **Conversation API**: [`docs/api/conversation-api.md`](/docs/api/conversation-api)
+- **Response Templates**: [`docs/dashboard/response-templates.md`](/docs/dashboard/response-templates)
+- **Fast-Path Overview**: [Conversation Command Parser](/docs/api/conversation-api#overview)

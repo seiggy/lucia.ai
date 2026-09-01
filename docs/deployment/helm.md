@@ -192,5 +192,5 @@ See the chart's `values.yaml` for all configurable parameters.
 
 ## Next Steps
 
-- [Kubernetes](./kubernetes.md) -- Manual manifest deployment
-- [Deployment Comparison](./comparison.md) -- Compare all deployment methods
+- [Kubernetes](./kubernetes.md): Manual manifest deployment
+- [Deployment Comparison](./comparison.md): Compare all deployment methods

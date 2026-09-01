@@ -13,9 +13,9 @@ The Entity Location page lets you manage the hierarchical organization of Home A
 
 Entities are organized into a three-level hierarchy:
 
-- **Floors** -- top-level grouping (e.g., Ground Floor, First Floor).
-- **Areas** -- rooms or zones within a floor (e.g., Kitchen, Living Room).
-- **Entities** -- individual devices and sensors within an area.
+- **Floors**: top-level grouping (e.g., Ground Floor, First Floor).
+- **Areas**: rooms or zones within a floor (e.g., Kitchen, Living Room).
+- **Entities**: individual devices and sensors within an area.
 
 You can drag and drop entities between areas and reorder floors to match your home layout.
 

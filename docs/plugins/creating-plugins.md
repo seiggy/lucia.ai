@@ -79,7 +79,7 @@ The final expression (`new MyFirstPlugin()`) is required. Without it the script 
 
 ## Auto-Imported Namespaces
 
-The script host automatically imports the following namespaces, so you do not need explicit `using` statements for them:
+The script host automatically imports the following namespaces, so you don't need explicit `using` statements for them:
 
 | Namespace | Purpose |
 |---|---|
@@ -102,10 +102,10 @@ You can add additional `using` statements at the top of your script if you need 
 
 The following assemblies are loaded into the script context automatically and are available for use in your plugins:
 
-- `System.Text.Json` -- JSON serialization and deserialization
-- `System.ComponentModel.Primitives` -- Component model attributes
-- `System.Diagnostics.DiagnosticSource` -- Diagnostic events and tracing
-- `Microsoft.AspNetCore` -- ASP.NET Core types (endpoint routing, results, etc.)
+- `System.Text.Json`: JSON serialization and deserialization
+- `System.ComponentModel.Primitives`: Component model attributes
+- `System.Diagnostics.DiagnosticSource`: Diagnostic events and tracing
+- `Microsoft.AspNetCore`: ASP.NET Core types (endpoint routing, results, etc.)
 
 ## Minimal Example
 
@@ -139,5 +139,5 @@ During development, use a [local plugin repository](./repositories.md) to iterat
 
 ## What's Next?
 
-- [Plugin Lifecycle](./lifecycle.md) -- understand when each hook is called.
-- [Plugin API](./api.md) -- manage plugins through the REST API.
+- [Plugin Lifecycle](./lifecycle.md): understand when each hook is called.
+- [Plugin API](./api.md): manage plugins through the REST API.

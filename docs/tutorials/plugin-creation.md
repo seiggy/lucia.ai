@@ -7,7 +7,7 @@ title: Create a Plugin
 
 This tutorial walks you through building a Lucia plugin from scratch. Plugins let you extend Lucia with custom services, HTTP endpoints, and startup logic using C# scripts.
 
-## Step 1 -- Create the Plugin Folder
+## Step 1: Create the Plugin Folder
 
 Create a new directory under `plugins/`. The folder name becomes the plugin identifier.
 
@@ -17,7 +17,7 @@ plugins/
     plugin.cs
 ```
 
-## Step 2 -- Implement ILuciaPlugin
+## Step 2: Implement ILuciaPlugin
 
 Open `plugins/my-plugin/plugin.cs` and define a class that implements `ILuciaPlugin`. The interface exposes four lifecycle hooks that Lucia calls at different stages of startup.
 
@@ -100,7 +100,7 @@ new MyPlugin()
 ```
 
 :::warning
-The final expression (`new MyPlugin()`) is required. Without it the script runtime cannot obtain your plugin instance and the plugin will fail to load.
+The final expression (`new MyPlugin()`) is required. Without it the script runtime can't obtain your plugin instance and the plugin will fail to load.
 :::
 
 ## Lifecycle Hook Summary
@@ -114,7 +114,7 @@ The final expression (`new MyPlugin()`) is required. Without it the script runti
 
 ## Auto-Imported Namespaces
 
-The plugin script host automatically imports common namespaces, so you do not need explicit `using` statements for them:
+The plugin script host automatically imports common namespaces, so you don't need explicit `using` statements for them:
 
 | Namespace | Purpose |
 |---|---|
@@ -133,7 +133,7 @@ The plugin script host automatically imports common namespaces, so you do not ne
 
 Add additional `using` statements at the top of your script if you need types outside this list.
 
-## Step 3 -- Restart Lucia
+## Step 3: Restart Lucia
 
 Plugins are loaded at startup. To activate your new plugin, restart the Lucia process:
 
@@ -149,5 +149,5 @@ info: MyPlugin[0] System ready -- MyPlugin fully started.
 
 ## What's Next?
 
-- [Plugin Overview](/docs/plugins/overview) -- understand the plugin architecture.
-- [Working with MCP Tools](./mcp-tools.md) -- expose your plugin's capabilities as MCP tools.
+- [Plugin Overview](/docs/plugins/overview): understand the plugin architecture.
+- [Working with MCP Tools](./mcp-tools.md): expose your plugin's capabilities as MCP tools.

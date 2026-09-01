@@ -19,10 +19,10 @@ The Matcher Debug page provides an interactive testing interface for Lucia's **H
 
 Each matched entity is shown with its overall confidence score and a breakdown of the individual signals that contributed to the match:
 
-- **Name similarity** -- how closely the query matches the entity's friendly name.
-- **Area match** -- whether the query references the entity's assigned area.
-- **Domain match** -- whether the query implies a specific entity domain (light, climate, etc.).
-- **Alias match** -- matches against configured entity aliases.
+- **Name similarity**: how closely the query matches the entity's friendly name.
+- **Area match**: whether the query references the entity's assigned area.
+- **Domain match**: whether the query implies a specific entity domain (light, climate, etc.).
+- **Alias match**: matches against configured entity aliases.
 
 ## Pattern Matcher Improvements (v1.2.2)
 

@@ -5,7 +5,7 @@ title: Custom Agents
 
 # Custom Agents
 
-Lucia allows you to create new agents at runtime through the dashboard -- no code changes, no redeployment, no container rebuilds. Custom agents are immediately available to the orchestrator's router.
+Lucia lets you create new agents at runtime through the dashboard, without touching code or rebuilding containers. Custom agents become available to the orchestrator's router immediately.
 
 ## How It Works
 
@@ -43,7 +43,7 @@ The MCP server runs as a standalone HTTP service. Lucia connects to its Server-S
 ```
 
 :::tip
-HTTP/SSE servers can run anywhere -- in a sidecar container, on a remote machine, or as a cloud service. This is the recommended transport for production deployments.
+HTTP/SSE servers can run anywhere: in a sidecar container, on a remote machine, or as a cloud service. This is the recommended transport for production deployments.
 :::
 
 ## Step 2: Define the Agent
@@ -71,7 +71,7 @@ If the user doesn't specify a location, use their home location.
 
 ### Model Connection Override
 
-By default, custom agents use the same LLM provider configured for the system. You can override this per-agent -- for example, using a smaller local model for simple lookup agents or a more capable model for complex reasoning.
+By default, custom agents use the same LLM provider configured for the system, but you can override this per agent. For example, use a smaller local model for simple lookup agents or a more capable model for complex reasoning.
 
 ## Step 3: Agent Is Available
 
@@ -91,7 +91,7 @@ Orchestrator:
 
 ## Extending the Container for npx-based MCP Tools
 
-The default Lucia container runs on a .NET base image that does not include Node.js. If your MCP tool servers use `npx` (common for community MCP packages), you need to extend the container image.
+The default Lucia container runs on a .NET base image that doesn't include Node.js. If your MCP tool servers use `npx` (common for community MCP packages), you need to extend the container image.
 
 ### Dockerfile
 
@@ -169,6 +169,6 @@ GitHubAgent:
 
 ## Limitations
 
-- Custom agents cannot currently define their own entity matchers -- they rely on the MCP tools for domain logic.
+- Custom agents can't currently define their own entity matchers; they rely on the MCP tools for domain logic.
 - stdio-based MCP servers run as child processes of the agent host. If the agent host restarts, the MCP server process restarts as well.
 - Custom agents are stored in the Lucia configuration database and persist across restarts.

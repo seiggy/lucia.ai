@@ -12,7 +12,7 @@ Docker Compose is the recommended deployment method for most users. The full sta
 - [Docker](https://www.docker.com/) v20.10 or later and Docker Compose v2.0 or later
 - A supported LLM provider API key (or a local Ollama instance)
 
-## Quick Start — Full Stack (Recommended)
+## Quick Start: Full Stack (Recommended)
 
 The standard configuration with Redis and MongoDB provides the best experience for production deployments.
 
@@ -115,9 +115,9 @@ Check the AgentHost health:
 curl http://localhost:7233/health
 ```
 
-## Minimal Deployment — InMemory + SQLite
+## Minimal Deployment: InMemory + SQLite
 
-For development, testing, or Home Assistant add-ons with constrained resources, you can deploy with in-memory caching and embedded SQLite storage — **no Redis or MongoDB required**.
+For development, testing, or Home Assistant add-ons with constrained resources, you can deploy with in-memory caching and embedded SQLite storage. **No Redis or MongoDB required.**
 
 ```yaml title="docker-compose.minimal.yml"
 services:
@@ -227,7 +227,7 @@ The repo's `docker-compose.yml` builds the image from the local Dockerfile.
 
 ## Adding Satellite Agents
 
-To run TimerAgent alongside the AgentHost, add it to your `docker-compose.yml`. Note that MusicAgent runs in-process inside the AgentHost and does not require a separate container.
+To run TimerAgent alongside the AgentHost, add it to your `docker-compose.yml`. MusicAgent runs in-process inside the AgentHost and doesn't require a separate container.
 
 You must also set the AgentHost to **mesh mode** by adding the `Deployment__Mode` environment variable to the `lucia` service:
 
@@ -317,6 +317,6 @@ services:
 
 ## Next Steps
 
-- [Environment Variables](../reference/environment-variables.md) -- Full list of configuration options
-- [Configuration Reference](../reference/configuration.md) -- Schema-driven configuration
-- [Deployment Comparison](./comparison.md) -- Compare with other deployment methods
+- [Environment Variables](../reference/environment-variables.md): Full list of configuration options
+- [Configuration Reference](../reference/configuration.md): Schema-driven configuration
+- [Deployment Comparison](./comparison.md): Compare with other deployment methods

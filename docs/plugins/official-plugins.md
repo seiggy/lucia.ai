@@ -68,7 +68,7 @@ new MetaMcpBridgePlugin()
 
 ## Brave Search
 
-Provides LLM-optimized web search capabilities to Lucia agents through the [Brave LLM Context API](https://api-dashboard.search.brave.com/documentation/services/llm-context). An alternative to SearXNG that requires no self-hosted infrastructure — just an API key.
+Provides LLM-optimized web search capabilities to Lucia agents through the [Brave LLM Context API](https://api-dashboard.search.brave.com/documentation/services/llm-context). An alternative to SearXNG that requires no self-hosted infrastructure, just an API key.
 
 | Field | Value |
 |---|---|
@@ -79,15 +79,15 @@ Provides LLM-optimized web search capabilities to Lucia agents through the [Brav
 
 ### What It Does
 
-Unlike traditional search APIs that return links and snippets, the Brave LLM Context API delivers **pre-extracted web content** — text chunks, tables, code blocks, and structured data — optimized for grounding LLM responses. This means Lucia's agents can reason over actual page content directly, without needing to scrape or fetch individual URLs.
+Unlike traditional search APIs that return links and snippets, the Brave LLM Context API delivers **pre-extracted web content** (text chunks, tables, code blocks, and structured data) optimized for grounding LLM responses. This means Lucia's agents can reason over actual page content directly, without needing to scrape or fetch individual URLs.
 
 Key capabilities:
 
-- **Pre-extracted content** — Get actual page content ready for LLM consumption in a single API call.
-- **Token budget control** — Configure `maximum_number_of_tokens` (1024–32768) and URL limits to control context size.
-- **Relevance filtering** — Adjustable `context_threshold_mode` (`strict`, `balanced`, `lenient`, `disabled`) ensures only relevant content reaches the agent.
-- **Goggles support** — Use Brave's [Goggles](https://api-dashboard.search.brave.com/documentation/resources/goggles) to control which sources ground your LLM responses.
-- **Location-aware queries** — Provide location headers for local/POI results.
+- **Pre-extracted content**: Get actual page content ready for LLM consumption in a single API call.
+- **Token budget control**: Configure `maximum_number_of_tokens` (1024–32768) and URL limits to control context size.
+- **Relevance filtering**: Adjustable `context_threshold_mode` (`strict`, `balanced`, `lenient`, `disabled`) ensures only relevant content reaches the agent.
+- **Goggles support**: Use Brave's [Goggles](https://api-dashboard.search.brave.com/documentation/resources/goggles) to control which sources ground your LLM responses.
+- **Location-aware queries**: Provide location headers for local/POI results.
 
 ### Configuration
 

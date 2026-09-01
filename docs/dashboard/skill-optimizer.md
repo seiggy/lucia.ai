@@ -13,9 +13,9 @@ The Skill Optimizer page helps you refine and test the skills assigned to your a
 
 Select an agent to view its current skill definitions. Each skill includes a name, description, and example phrases. The optimizer analyzes your trace history to suggest improvements:
 
-- **Description refinements** -- clearer wording that reduces routing ambiguity.
-- **Missing skills** -- patterns found in traces that no current skill covers.
-- **Overlapping skills** -- skills across agents that compete for the same queries.
+- **Description refinements**: clearer wording that reduces routing ambiguity.
+- **Missing skills**: patterns found in traces that no current skill covers.
+- **Overlapping skills**: skills across agents that compete for the same queries.
 
 Apply suggested changes individually or in bulk.
 

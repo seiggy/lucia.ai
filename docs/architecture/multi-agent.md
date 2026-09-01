@@ -11,9 +11,9 @@ Lucia delegates work to a set of **specialized agents**, each responsible for a 
 
 Every agent has three defining characteristics:
 
-1. **Domain scope** -- a narrow set of intents it can handle (e.g., lights, climate, music).
-2. **Tools** -- domain-specific functions the agent can invoke (e.g., `turn_on_light`, `set_thermostat`).
-3. **LLM prompt** -- a system prompt tailored to the domain, including entity context, constraints, and output format instructions.
+1. **Domain scope**: a narrow set of intents it can handle (e.g., lights, climate, music).
+2. **Tools**: domain-specific functions the agent can invoke (e.g., `turn_on_light`, `set_thermostat`).
+3. **LLM prompt**: a system prompt tailored to the domain, including entity context, constraints, and output format instructions.
 
 When a request arrives, the orchestrator's router determines which agent is the best match and dispatches the request to that agent. The agent then uses its tools and LLM prompt to process the request and return a result.
 
@@ -29,7 +29,7 @@ These agents run inside the AgentHost process. They are the default and require 
 | **ClimateAgent** | HVAC / Climate | Set thermostat target temperature, change HVAC mode, read current temperature and humidity. |
 | **SceneAgent** | Scenes & Automations | Activate Home Assistant scenes, trigger automations, manage scene presets. |
 | **ListsAgent** | Lists & Notes | Create and manage shopping lists, to-do lists, and freeform notes. Persisted to MongoDB. |
-| **GeneralAgent** | Fallback / Conversation | Handles general knowledge questions, casual conversation, and any request that does not match a specialized agent. |
+| **GeneralAgent** | Fallback / Conversation | Handles general knowledge questions, casual conversation, and requests that don't match a specialized agent. |
 | **MusicAgent** | Media Playback | Play, pause, skip, and queue music on media players. Supports search by artist, album, track, or playlist. |
 
 ### A2A Agents (Satellite)

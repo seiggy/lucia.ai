@@ -9,7 +9,7 @@ The Personality Prompt feature lets you give Lucia a customizable voice and tone
 
 ## How It Works
 
-After the orchestrator composes a response from multiple agents, the `ResultAggregatorExecutor` passes the composed message through a personality rewriting LLM. The personality system prompt defines the desired tone, style, or persona—and the LLM transforms the technical response into something that matches your preferences.
+After the orchestrator composes a response from multiple agents, the `ResultAggregatorExecutor` passes the composed message through a personality rewriting LLM. The personality system prompt defines the desired tone, style, or persona, and the LLM transforms the technical response into something that matches your preferences.
 
 ### Zero-Cost Opt-In
 
@@ -55,14 +55,14 @@ If you have configured model providers, the **ModelConnectionName** field render
 
 ## Hot Reload
 
-Changes to the Personality Prompt take effect immediately via `IOptionsMonitor`. No restart required—save your configuration and the next request will use the updated personality.
+Changes to the Personality Prompt take effect immediately via `IOptionsMonitor`. No restart is required; save your configuration and the next request uses the updated personality.
 
 ## API Integration
 
 The personality rewriting is handled internally by the orchestration pipeline. If you're calling the REST API directly:
 
-- **Personality rewrite is transparent** — the aggregated response you receive from the API is already personality-rewritten if configured
-- **No separate API call needed** — the rewriting happens inside the orchestrator's result aggregation step
+- **Personality rewrite is transparent**: the aggregated response you receive from the API is already personality-rewritten if configured
+- **No separate API call needed**: the rewriting happens inside the orchestrator's result aggregation step
 
 ## Performance Implications
 
@@ -103,7 +103,7 @@ When multiple agents contribute (e.g., light control + climate adjustment), the 
 
 ### Slow Responses
 
-- **Personality is an extra LLM call** — if you notice latency, consider using a faster model for the `ModelConnectionName`
+- **Personality is an extra LLM call**: if you notice latency, consider using a faster model for the `ModelConnectionName`
 - **Check prompt cache:** Orchestrator routing cache still works independently; personality adds time only for the rewrite call
 
 ### Inconsistent Results

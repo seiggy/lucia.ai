@@ -12,7 +12,7 @@ This tutorial walks you through creating a custom agent entirely from the Lucia 
 - Lucia running with the dashboard accessible.
 - At least one MCP tool server registered (see [Working with MCP Tools](./mcp-tools.md) if you need to add one).
 
-## Step 1 -- Register MCP Tool Servers
+## Step 1: Register MCP Tool Servers
 
 Before you can assign tools to an agent, the tool servers must be registered in Lucia.
 
@@ -37,7 +37,7 @@ Fill in the form fields:
 
 After creating the server, click **Connect** and then **Discover Tools** to pull the tool manifest.
 
-## Step 2 -- Create the Agent Definition
+## Step 2: Create the Agent Definition
 
 Navigate to **Definitions** in the dashboard sidebar. You'll see the list of existing agents.
 
@@ -61,13 +61,13 @@ Fill in the following fields:
 
 ### Example: A Completed Agent
 
-Here's what a configured custom agent looks like -- in this case a "Dad Joke Agent" with a detailed system prompt and a specific model override:
+Here's what a configured custom agent looks like, in this case a "Dad Joke Agent" with a detailed system prompt and a specific model override:
 
 ![Edit Agent Example](/img/tutorials/agent-edit-example.png)
 
-## Step 3 -- Save and Verify
+## Step 3: Save and Verify
 
-Click **Create Agent**. The agent is immediately registered with the orchestrator and available for routing -- no restart required.
+Click **Create Agent**. The agent is immediately registered with the orchestrator and available for routing, with no restart required.
 
 To verify, open the **Traces** page and send a message through Home Assistant that matches your agent's domain. The conversation trace will show which agent handled the request.
 
@@ -105,6 +105,6 @@ When using Docker Compose, replace the `image` field in your `docker-compose.yml
 
 ## What's Next?
 
-- [Working with MCP Tools](./mcp-tools.md) -- learn more about registering and managing tool servers.
-- [Multi-LLM Setup](./multi-llm.md) -- assign a specific model provider to your custom agent.
-- [Agents Overview](/docs/agents/overview) -- understand how the orchestrator routes requests to agents.
+- [Working with MCP Tools](./mcp-tools.md): learn more about registering and managing tool servers.
+- [Multi-LLM Setup](./multi-llm.md): assign a specific model provider to your custom agent.
+- [Agents Overview](/docs/agents/overview): understand how the orchestrator routes requests to agents.

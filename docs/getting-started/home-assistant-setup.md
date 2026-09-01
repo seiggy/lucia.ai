@@ -74,7 +74,7 @@ To make Lucia handle all voice and text commands through Home Assistant Assist:
 3. Under **Conversation agent**, select **Lucia**.
 4. Click **Save**.
 
-From this point on, any command sent through Assist -- whether typed in the UI, spoken through a voice satellite, or triggered by an automation -- will be processed by Lucia.
+From this point on, Lucia processes any command sent through Assist, whether typed in the UI, spoken through a voice satellite, or triggered by an automation.
 
 ## Verify the Connection
 

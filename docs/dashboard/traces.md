@@ -13,9 +13,9 @@ The Traces page lets you monitor and inspect individual conversations processed 
 
 Use the filter bar to narrow results by:
 
-- **Label** -- filter by user-applied or auto-applied labels.
-- **Agent** -- show only traces handled by a specific agent.
-- **Date** -- restrict to a date range.
+- **Label**: filter by user-applied or auto-applied labels.
+- **Agent**: show only traces handled by a specific agent.
+- **Date**: restrict to a date range.
 
 ## Trace List
 

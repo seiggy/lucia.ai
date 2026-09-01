@@ -197,5 +197,5 @@ systemd has the lowest overhead of all deployment methods:
 
 ## Next Steps
 
-- [Environment Variables](../reference/environment-variables.md) -- Full configuration reference
-- [Deployment Comparison](./comparison.md) -- Compare with other deployment methods
+- [Environment Variables](../reference/environment-variables.md): Full configuration reference
+- [Deployment Comparison](./comparison.md): Compare with other deployment methods

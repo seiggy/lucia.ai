@@ -5,7 +5,7 @@ title: Scene Agent
 
 # Scene Agent
 
-The Scene Agent activates and manages Home Assistant scenes. Scenes are pre-configured snapshots of entity states -- a single scene can set lights, thermostats, media players, and any other entity to specific values in one action.
+The Scene Agent activates and manages Home Assistant scenes. Scenes are pre-configured snapshots of entity states; a single scene can set lights, thermostats, media players, and any other entity to specific values in one action.
 
 ## Capabilities
 

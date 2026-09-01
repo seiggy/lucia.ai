@@ -168,7 +168,7 @@ new MinimalPlugin()
 
 ## Error Handling
 
-If a plugin throws an exception during any lifecycle hook, Lucia logs the error and continues loading other plugins. A failing plugin does not prevent the rest of the system from starting.
+If a plugin throws an exception during any lifecycle hook, Lucia logs the error and continues loading other plugins. A failing plugin doesn't prevent the rest of the system from starting.
 
 :::warning
 Exceptions in `ConfigureServices` are the most impactful because they can prevent services from being registered. If other plugins or agents depend on those services, they will fail to resolve at runtime.

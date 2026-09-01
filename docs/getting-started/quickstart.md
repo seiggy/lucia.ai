@@ -16,7 +16,7 @@ Before you begin, make sure you have:
 - An **API key** from at least one supported LLM provider (OpenAI, Azure OpenAI, Anthropic, Ollama, etc.)
 
 :::info
-If you plan to use Ollama for fully local inference, you do not need an external API key -- just a running Ollama instance with a chat model and embedding model pulled.
+If you plan to use Ollama for fully local inference, you don't need an external API key. A running Ollama instance with a chat model and embedding model pulled is enough.
 :::
 
 ## Docker Compose Setup

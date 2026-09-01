@@ -5,7 +5,7 @@ title: General Agent
 
 # General Agent
 
-The General Agent is the fallback for requests that do not match any specialized agent. It handles open-ended questions, general knowledge, conversational responses, and -- when the SearXNG plugin is enabled -- web searches.
+The General Agent is the fallback for requests that don't match any specialized agent. It handles open-ended questions, general knowledge, and conversational responses, plus web searches when the SearXNG plugin is enabled.
 
 ## When Is It Used?
 
@@ -32,7 +32,7 @@ The General Agent accepts an optional `IWebSearchSkill` dependency. When the [Se
 
 ### Without SearXNG
 
-The agent relies solely on the LLM's training data for answers. It will indicate when it does not have up-to-date information.
+The agent relies solely on the LLM's training data for answers. It will say when it doesn't have up-to-date information.
 
 ### With SearXNG
 

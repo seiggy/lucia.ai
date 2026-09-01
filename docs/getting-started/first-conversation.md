@@ -5,7 +5,7 @@ title: First Conversation
 
 # First Conversation
 
-Now that Lucia is running and the setup wizard is complete, it is time to send your first message.
+Once Lucia is running and the setup wizard is complete, send your first message.
 
 ## Using the Dashboard
 
@@ -19,7 +19,7 @@ Now that Lucia is running and the setup wizard is complete, it is time to send y
 5. Lucia will process your request through the agent pipeline and respond with a confirmation.
 
 :::tip
-Try natural language -- you do not need rigid commands. Phrases like "make it warmer in the bedroom", "what's the garage temperature?", or "start movie time" all work if the relevant entities and automations exist in Home Assistant.
+Try natural language; you don't need rigid commands. Phrases like "make it warmer in the bedroom", "what's the garage temperature?", or "start movie time" all work if the relevant entities and automations exist in Home Assistant.
 :::
 
 ## Using the A2A API
@@ -75,12 +75,12 @@ Home Assistant --> Conversation API
                   Response --> Home Assistant --> User
 ```
 
-1. **User Input** -- You send a message through the dashboard, voice, or the HA Conversation API.
-2. **Home Assistant** -- If the request originates from HA (e.g., a voice assistant), it hits the Lucia custom integration which forwards it to the Conversation API.
-3. **Orchestrator** -- The central orchestrator analyzes the intent and routes the request to the appropriate specialized agent.
-4. **Agent** -- The selected agent (lighting, climate, media, etc.) constructs a prompt with relevant HA entity context and sends it to the LLM.
-5. **LLM** -- The language model processes the prompt, determines the appropriate HA service calls, and generates a natural-language response.
-6. **Response** -- The result flows back through the chain to the user, and any service calls are executed against Home Assistant.
+1. **User Input**: You send a message through the dashboard, voice, or the HA Conversation API.
+2. **Home Assistant**: If the request originates from HA (e.g., a voice assistant), it hits the Lucia custom integration which forwards it to the Conversation API.
+3. **Orchestrator**: The central orchestrator analyzes the intent and routes the request to the appropriate specialized agent.
+4. **Agent**: The selected agent (lighting, climate, media, etc.) constructs a prompt with relevant HA entity context and sends it to the LLM.
+5. **LLM**: The language model processes the prompt, determines the appropriate HA service calls, and generates a natural-language response.
+6. **Response**: The result flows back through the chain to the user, and any service calls are executed against Home Assistant.
 
 ## Next Steps
 

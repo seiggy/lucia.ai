@@ -5,7 +5,7 @@ title: Conversation Command Parser API
 
 # Conversation Command Parser API
 
-The Conversation Command Parser API implements a **fast-path LLM bypass** for pattern-matched smart home commands. Common voice queries like "turn on the kitchen lights" or "set the temperature to 72" are matched against registered command templates, then executed directly against Home Assistant—delivering sub-50ms response times without LLM involvement. For unrecognized requests, the system seamlessly falls back to LLM-based orchestration.
+The Conversation Command Parser API implements a **fast-path LLM bypass** for pattern-matched smart home commands. Common voice queries like "turn on the kitchen lights" or "set the temperature to 72" are matched against registered command templates, then executed directly against Home Assistant, delivering sub-50ms response times without LLM involvement. Unrecognized requests fall back to LLM-based orchestration.
 
 ## Overview
 
@@ -20,10 +20,10 @@ SSE stream to LLM orchestrator ↩️ ~2–5s (normal flow)
 ```
 
 The API is consumed by:
-- **Wyoming Voice Platform** — transcribes user speech and sends text to this endpoint
-- **Home Assistant conversation integration** — forwards user messages for command execution
-- **Dashboard Conversation Test page** — interactive testing interface
-- **Custom home automation clients** — any application that needs fast smart home command execution
+- **Wyoming Voice Platform**: transcribes user speech and sends text to this endpoint
+- **Home Assistant conversation integration**: forwards user messages for command execution
+- **Dashboard Conversation Test page**: interactive testing interface
+- **Custom home automation clients**: any application that needs fast smart home command execution
 
 ## POST /api/conversation
 
@@ -88,13 +88,13 @@ The API is consumed by:
 | Field | Description |
 |-------|-------------|
 | `conversationId` | Session ID for multi-turn continuity |
-| `matched` | `true` — command was pattern-matched |
+| `matched` | `true` when the command was pattern-matched |
 | `command.skill` | Executed skill (LightControlSkill, ClimateControlSkill, SceneControlSkill) |
 | `command.action` | Action name (e.g., "toggle", "set_temperature", "activate") |
 | `command.entities` | Resolved Home Assistant entity IDs |
 | `command.parameters` | Extracted command parameters (brightness, temperature, etc.) |
 | `response` | Human-readable response text (from response templates) |
-| `responseMetadata.source` | "pattern_match" — command was parsed locally |
+| `responseMetadata.source` | `"pattern_match"` when the command was parsed locally |
 | `responseMetadata.executionTimeMs` | Actual execution latency |
 | `responseMetadata.templateUsed` | Response template that generated the response |
 
@@ -240,7 +240,7 @@ Each pattern has an associated confidence score (0.0–1.0). When multiple patte
 1. **Exact phrase matches** score highest
 2. **Partial token matches** score lower
 3. **Low-confidence matches** are rejected if they fall below `MinConfidenceThreshold`
-4. **Priority tiebreaker** — when scores are equal, the **most recently registered** pattern wins
+4. **Priority tiebreaker**: when scores are equal, the **most recently registered** pattern wins
 
 **Tiebreaker example:** If both "turn on the lights" and "activate the lights" have 0.92 confidence, whichever was registered/edited last takes precedence.
 
@@ -290,7 +290,7 @@ Commands referencing **non-light devices** automatically defer to the LLM:
 Devices triggering bail: fan, ac, tv, lock, door, speaker, vacuum, etc.
 ```
 
-**Example:** "turn on the office fan" does NOT match `LightControlSkill` and routes to the LLM orchestrator instead.
+**Example:** "turn on the office fan" doesn't match `LightControlSkill`; it routes to the LLM orchestrator instead.
 
 **Temporal preposition bail:** Time-related prepositions ("in 5 minutes", "at 3pm") also trigger LLM routing, as they likely belong to the Timer Agent.
 
@@ -368,9 +368,9 @@ Meter.CreateCounter<long>("conversation.command_parsed.errors")
 ```
 
 **Activity Dashboard:**
-- Command Parsed counter — total locally-executed commands
-- LLM Fallback counter — total LLM-routed requests
-- Parser Rate % — ratio of command_parsed / (command_parsed + llm_fallback)
+- Command Parsed counter: total locally-executed commands
+- LLM Fallback counter: total LLM-routed requests
+- Parser Rate %: ratio of command_parsed / (command_parsed + llm_fallback)
 
 ## Multi-Turn Conversations
 
@@ -444,6 +444,6 @@ See [Wyoming Voice Platform](../architecture/voice-platform.md) for the full voi
 
 ## Next Steps
 
-- [Response Templates Dashboard](../dashboard/overview.md) — manage templates from the UI
-- [Wyoming Voice Platform](../architecture/voice-platform.md) — voice transcription to command parsing
-- [REST API Reference](./rest-api.md) — full API documentation
+- [Response Templates Dashboard](../dashboard/overview.md): manage templates from the UI
+- [Wyoming Voice Platform](../architecture/voice-platform.md): voice transcription to command parsing
+- [REST API Reference](./rest-api.md): full API documentation

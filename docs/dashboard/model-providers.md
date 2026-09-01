@@ -13,9 +13,9 @@ The Model Providers page lets you manage connections to LLM provider backends.
 
 Lucia supports multiple LLM providers out of the box:
 
-- **Azure AI Foundry** -- connect with your Azure deployment endpoint and API key.
-- **OpenAI** -- use the OpenAI API directly.
-- **Ollama** -- connect to a local Ollama instance for self-hosted models.
+- **Azure AI Foundry**: connect with your Azure deployment endpoint and API key.
+- **OpenAI**: use the OpenAI API directly.
+- **Ollama**: connect to a local Ollama instance for self-hosted models.
 - Additional providers can be added through the plugin system.
 
 ## Adding a Provider

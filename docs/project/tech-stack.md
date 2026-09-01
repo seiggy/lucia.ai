@@ -34,7 +34,7 @@ This page documents the technologies and frameworks used across the Lucia projec
 | OpenAI | GPT-4o, GPT-4o-mini | Cloud inference |
 | Google Gemini | Gemini 2.0 Flash, Gemini 2.5 Pro | Cloud inference |
 | Anthropic | Claude Sonnet, Claude Haiku | Cloud inference |
-| Ollama | Llama 3.1, Qwen 2.5, and others | Local inference -- privacy first |
+| Ollama | Llama 3.1, Qwen 2.5, and others | Local inference: privacy first |
 | Azure AI Foundry | Azure-hosted OpenAI deployments | Enterprise cloud inference |
 
 ## Frontend

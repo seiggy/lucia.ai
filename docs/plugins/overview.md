@@ -5,7 +5,7 @@ title: Plugin System
 
 # Plugin System
 
-Lucia's plugin system lets you extend the agent host with custom functionality -- new services, HTTP endpoints, tools, and integrations -- without recompiling the core application. Plugins are plain C# script files powered by [Roslyn CSharpScript](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples). There are no project files, no DLLs, and no build steps.
+Lucia's plugin system lets you extend the agent host with custom functionality (new services, HTTP endpoints, tools, and integrations) without recompiling the core application. Plugins are plain C# script files powered by [Roslyn CSharpScript](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples). There are no project files, no DLLs, and no build steps.
 
 ## How It Works
 
@@ -51,7 +51,7 @@ See the [Plugin API](./api.md) reference for full endpoint documentation.
 
 ## What's Next?
 
-- [Creating Plugins](./creating-plugins.md) -- write your first plugin from scratch.
-- [Plugin Lifecycle](./lifecycle.md) -- understand the four lifecycle hooks in detail.
-- [Plugin Repositories](./repositories.md) -- publish and share plugins.
-- [Official Plugins](./official-plugins.md) -- browse the plugins maintained by the Lucia team.
+- [Creating Plugins](./creating-plugins.md): write your first plugin from scratch.
+- [Plugin Lifecycle](./lifecycle.md): understand the four lifecycle hooks in detail.
+- [Plugin Repositories](./repositories.md): publish and share plugins.
+- [Official Plugins](./official-plugins.md): browse the plugins maintained by the Lucia team.

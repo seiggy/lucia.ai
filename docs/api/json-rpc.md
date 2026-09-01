@@ -5,7 +5,7 @@ title: JSON-RPC
 
 # JSON-RPC
 
-:::warning Deprecated — Use REST API Instead
+:::warning Deprecated: Use REST API Instead
 As of v1.2.0, the Home Assistant integration uses the new **REST API** (`POST /api/conversation`) instead of JSON-RPC. The REST endpoint provides instant JSON responses for pattern-matched commands and SSE streaming for LLM fallback, resulting in `<50ms` latency for recognized commands.
 
 See [Conversation API](./conversation-api.md) for the recommended integration path.

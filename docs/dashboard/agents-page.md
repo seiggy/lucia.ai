@@ -14,9 +14,9 @@ The Agent Registry page displays all agents currently registered with Lucia, inc
 Each agent is shown as a card listing its:
 
 - **Name** and description.
-- **Capabilities** -- the set of actions the agent can perform.
-- **Skills** -- specific skills the agent advertises.
-- **Status** -- whether the agent is online, offline, or degraded.
+- **Capabilities**: the set of actions the agent can perform.
+- **Skills**: specific skills the agent advertises.
+- **Status**: whether the agent is online, offline, or degraded.
 
 ## Registering an Agent
 

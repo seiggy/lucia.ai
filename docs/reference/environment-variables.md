@@ -35,7 +35,7 @@ export Observability__Mode=Metrics
 | `OTEL_EXPORTER_OTLP_HEADERS` | Exporter headers, such as an encoded Authorization value |
 | `OTEL_RESOURCE_ATTRIBUTES` | Comma-separated resource attributes such as device and environment |
 
-The legacy `Observability__Enabled=true|false` setting maps to `Trace|Off`. Do not set both old and new options. See [Observability](../deployment/observability.md).
+The legacy `Observability__Enabled=true|false` setting maps to `Trace|Off`. Don't set both old and new options. See [Observability](../deployment/observability.md).
 
 ## Home Assistant
 

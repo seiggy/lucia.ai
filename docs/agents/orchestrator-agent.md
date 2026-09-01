@@ -11,16 +11,16 @@ The Orchestrator Agent is the central routing layer that receives every user req
 
 When a message arrives, the orchestrator:
 
-1. **Applies domain-specific routing rules** — v1.2.1 introduces specialized rules that handle common cases before the general router LLM:
-   - **Rule 0 — Time-Delayed Action Priority**: Requests containing time expressions like "in X minutes" or "at X PM" are routed to the Timer Agent before domain matching, enabling fast-path execution.
-   - **Rule 8 — Domain Inference Hints**: Implicit language mapping helps the router understand intent when no explicit domain is mentioned (e.g., "warmer" → climate, "brighter" → lights, "play" → music, "bedtime" → scene).
-   - **Rule 9 — Multi-Domain Detection**: Requests spanning multiple independent domains (e.g., "turn on the lights and play music") are explicitly split and routed to multiple agents rather than collapsed into GeneralAgent.
+1. **Applies domain-specific routing rules**: v1.2.1 introduces specialized rules that handle common cases before the general router LLM:
+   - **Rule 0 (Time-Delayed Action Priority)**: Requests containing time expressions like "in X minutes" or "at X PM" are routed to the Timer Agent before domain matching, enabling fast-path execution.
+   - **Rule 8 (Domain Inference Hints)**: Implicit language mapping helps the router understand intent when no explicit domain is mentioned (e.g., "warmer" → climate, "brighter" → lights, "play" → music, "bedtime" → scene).
+   - **Rule 9 (Multi-Domain Detection)**: Requests spanning multiple independent domains (e.g., "turn on the lights and play music") are explicitly split and routed to multiple agents rather than collapsed into GeneralAgent.
 
-2. **Classifies intent** — a router LLM call analyzes the user's request against the agent catalog, including per-agent example prompts for better pattern matching.
+2. **Classifies intent**: a router LLM call analyzes the user's request against the agent catalog, including per-agent example prompts for better pattern matching.
 
-3. **Selects agents** — picks a primary agent and optionally additional agents for parallel execution.
+3. **Selects agents**: picks a primary agent and optionally additional agents for parallel execution.
 
-4. **Generates sub-prompts** — creates focused, standalone instructions for each selected agent containing only the relevant part of the user's request.
+4. **Generates sub-prompts**: creates focused, standalone instructions for each selected agent containing only the relevant part of the user's request.
 
 ```
 User: "Dim the living room lights and play some jazz"
@@ -104,8 +104,8 @@ The router assigns a confidence score to each routing decision:
 |---|---|
 | 0.90–1.00 | Clear, single-domain request with strong match |
 | 0.70–0.89 | Clear domain but minor uncertainty (e.g., missing location) |
-| 0.40–0.69 | Ambiguous target — may ask a clarifying question |
-| 0.10–0.39 | Very unclear intent — picks most plausible agent and asks for clarification |
+| 0.40–0.69 | Ambiguous target: may ask a clarifying question |
+| 0.10–0.39 | Very unclear intent: picks most plausible agent and asks for clarification |
 
 When confidence is low, the orchestrator generates a natural clarifying question without exposing internal agent names or routing details.
 

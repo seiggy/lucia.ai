@@ -29,15 +29,15 @@ Entity exposure is a Home Assistant feature, not a Lucia-specific setting. The s
 
 The Lucia dashboard provides a read-only view of the entities that Home Assistant has exposed:
 
-- **Entity list** -- view all entities currently visible to agents, grouped by domain (lights, switches, climate, etc.).
-- **Status indicators** -- see whether each entity is available and responsive.
-- **Area assignments** -- view the area and floor each entity belongs to.
+- **Entity list**: view all entities currently visible to agents, grouped by domain (lights, switches, climate, etc.).
+- **Status indicators**: see whether each entity is available and responsive.
+- **Area assignments**: view the area and floor each entity belongs to.
 
-Entity exposure changes must be made in Home Assistant. The Lucia dashboard reflects the current state but does not modify it.
+Make entity exposure changes in Home Assistant. The Lucia dashboard reflects the current state but doesn't modify it.
 
 ## WebSocket Entity Synchronization
 
-The Lucia custom component uses Home Assistant's **WebSocket API** to maintain a live list of exposed entities. When you add or remove an entity from the exposure list, the change is pushed to the Lucia agent host in real time -- no restart required.
+The Lucia custom component uses Home Assistant's **WebSocket API** to maintain a live list of exposed entities. When you add or remove an entity from the exposure list, the change is pushed to the Lucia agent host in real time, with no restart required.
 
 The sync process works as follows:
 
@@ -76,9 +76,9 @@ This location awareness allows natural, context-rich commands without specifying
 
 Floors and areas are configured in Home Assistant:
 
-1. **Floors** -- Navigate to **Settings** > **Areas & Zones** > **Floors**. Create floors like "First Floor," "Second Floor," or "Basement."
-2. **Areas** -- Navigate to **Settings** > **Areas & Zones**. Assign each area to a floor.
-3. **Entities** -- Assign entities to areas through their device or entity settings.
+1. **Floors**: Navigate to **Settings** > **Areas & Zones** > **Floors**. Create floors like "First Floor," "Second Floor," or "Basement."
+2. **Areas**: Navigate to **Settings** > **Areas & Zones**. Assign each area to a floor.
+3. **Entities**: Assign entities to areas through their device or entity settings.
 
 :::tip
 Well-organized floors and areas significantly improve Lucia's ability to understand location-based commands. Take the time to assign every exposed entity to the correct area and floor.
@@ -88,5 +88,5 @@ Well-organized floors and areas significantly improve Lucia's ability to underst
 
 - **Expose only what you need.** Start with the entities you actively want to control via voice and expand from there.
 - **Use descriptive area names.** "Living Room" is much better than "Room 1" for natural language understanding.
-- **Assign all exposed entities to areas.** Entities without area assignments cannot be targeted by location-based commands.
+- **Assign all exposed entities to areas.** Location-based commands can't target entities without area assignments.
 - **Review the exposure list periodically.** As you add new devices, make sure to expose them if you want Lucia to control them.

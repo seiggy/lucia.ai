@@ -149,7 +149,7 @@ volumes:
 ## Single-Instance Constraint
 
 :::danger Important
-The **AgentHost must run as a single replica**. Do not scale it horizontally behind a load balancer.
+The **AgentHost must run as a single replica**. Don't scale it horizontally behind a load balancer.
 :::
 
 This constraint exists because two internal stores are held in memory:

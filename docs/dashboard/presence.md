@@ -13,15 +13,15 @@ The Presence Detection page shows real-time occupancy information for rooms in y
 
 Lucia automatically discovers compatible sensors from your Home Assistant instance, including:
 
-- **Motion sensors** -- PIR-based motion detectors.
-- **Occupancy sensors** -- binary occupancy indicators.
-- **mmWave sensors** -- millimeter-wave presence detectors that can sense stationary occupants.
+- **Motion sensors**: PIR-based motion detectors.
+- **Occupancy sensors**: binary occupancy indicators.
+- **mmWave sensors**: millimeter-wave presence detectors that can sense stationary occupants.
 
 No manual configuration is required. Sensors are mapped to rooms based on their Home Assistant area assignments.
 
 ## Room-Level Confidence
 
-Each room displays a confidence score representing how likely it is that someone is present. The score is calculated by combining signals from all sensors assigned to that room. Rooms with multiple sensor types produce higher-confidence readings.
+Each room displays a confidence score for someone's presence. Lucia calculates it from every sensor assigned to that room; rooms with multiple sensor types produce higher-confidence readings.
 
 ## Dashboard View
 

@@ -89,6 +89,6 @@ graph TB
 ## Design Principles
 
 - **Privacy-first.** All processing happens locally by default. No data leaves the network unless the user explicitly configures a cloud LLM provider.
-- **Agent isolation.** Each agent owns a single domain. Agents do not share state or call each other directly; all coordination flows through the orchestrator.
+- **Agent isolation.** Each agent owns a single domain. Agents don't share state or call each other directly; all coordination flows through the orchestrator.
 - **Transport transparency.** Agents are unaware of whether they run in-process or over the network. The A2A protocol abstracts the transport layer.
 - **Graceful degradation.** If a satellite A2AHost is unreachable, the orchestrator falls back to the GeneralAgent rather than failing the request.

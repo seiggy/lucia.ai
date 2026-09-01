@@ -168,7 +168,7 @@ Kubernetes deployments use mesh mode (`Deployment__Mode=mesh`) by default. This 
 - TimerAgent communicates over the A2A protocol via Kubernetes service DNS
 
 :::warning Single-Instance Constraint
-The AgentHost must run as a **single replica**. The in-memory `ScheduledTaskStore` and `ActiveTimerStore` cannot be shared across instances.
+The AgentHost must run as a **single replica**. Instances can't share the in-memory `ScheduledTaskStore` and `ActiveTimerStore`.
 :::
 
 ## Exposing the AgentHost
@@ -267,5 +267,5 @@ Ensure the Home Assistant URL is reachable from within the cluster. If HA is run
 
 ## Next Steps
 
-- [Helm Chart](./helm.md) -- Deploy with Helm for templated configuration
-- [Deployment Comparison](./comparison.md) -- Compare with other methods
+- [Helm Chart](./helm.md): Deploy with Helm for templated configuration
+- [Deployment Comparison](./comparison.md): Compare with other methods
