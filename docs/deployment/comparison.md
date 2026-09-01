@@ -9,15 +9,15 @@ A detailed comparison of all supported deployment methods to help you choose the
 
 ## Quick Reference
 
-| | Docker Compose | Kubernetes | systemd |
-|---|---|---|---|
-| **Best For** | Home servers, fast setup | HA, scalability, production | Traditional Linux, bare metal |
-| **Difficulty** | Low | High | Medium |
-| **Setup Time** | < 2 minutes | 5-10 minutes | 5-15 minutes |
-| **High Availability** | No | Yes | No |
-| **Auto-Scaling** | No | Yes (HPA) | No |
-| **Rolling Updates** | No | Yes | No |
-| **Resource Overhead** | Low | Medium | Lowest |
+| | Docker Compose | Kubernetes | systemd | Jetson ARM64 |
+|---|---|---|---|---|
+| **Best For** | Home servers, fast setup | HA, scalability, production | Traditional Linux, bare metal | Local CUDA voice |
+| **Difficulty** | Low | High | Medium | Medium |
+| **Setup Time** | < 2 minutes | 5-10 minutes | 5-15 minutes | 10-20 minutes |
+| **High Availability** | No | Yes | No | No |
+| **Auto-Scaling** | No | Yes (HPA) | No | No |
+| **Rolling Updates** | No | Yes | No | Immutable image + rollback |
+| **Resource Overhead** | Low | Medium | Lowest | GPU optimized |
 
 ## Feature Comparison
 
@@ -75,16 +75,46 @@ A detailed comparison of all supported deployment methods to help you choose the
 
 All methods use the same configuration format, making migration straightforward.
 
+## Data Provider Comparison
+
+As of v1.2.0, Lucia supports **pluggable data providers**, eliminating the need for mandatory Redis and MongoDB in many deployments. Choose the combination that fits your infrastructure:
+
+| Provider Combo | Dependencies | Best For | Trade-offs |
+|---|---|---|---|
+| InMemory + SQLite | None | HA add-on, dev, Raspberry Pi | No clustering, single-instance only |
+| Redis + MongoDB | Redis, MongoDB | Production, multi-instance, HA | More infrastructure, better performance at scale |
+| Redis + PostgreSQL | Redis, PostgreSQL | Production, Jetson, relational operations | More infrastructure, strong concurrency and search |
+| InMemory + MongoDB | MongoDB only | Medium deployments | Persistent store, lightweight cache layer |
+
+See [Data Providers](./data-providers.md) for full configuration details.
+
+## Deployment Size Comparison
+
+| Deployment Type | Size | Best For |
+|---|---|---|
+| **Mono-container (HA add-on)** | ~150MB container | Home Assistant add-on, zero dependencies, CPU-only |
+| **Docker Compose (minimal)** | Redis (5MB) + SQLite (variable) | Home labs, constrained devices |
+| **Docker Compose (full stack)** | Redis (5MB) + MongoDB (1GB+) | Production, advanced features |
+| **Kubernetes** | Multi-pod cluster | Enterprise, multi-zone HA |
+
+:::info
+The mono-container HA deployment uses `InMemory` cache + `SQLite` store, requiring no external services. Build with `/p:CpuOnly=true` to exclude GPU libraries.
+:::
+
 ## Recommendation
 
 :::tip
 **Start with Docker Compose.** It provides the best balance of simplicity, reliability, and performance for most home automation setups. You can always migrate to Kubernetes later if your needs grow.
+
+For resource-constrained environments (Raspberry Pi, HA add-ons), use the **InMemory + SQLite** data provider configuration.
 :::
 
 | Scenario | Recommendation |
 |---|---|
 | Home lab / single host | Docker Compose |
+| Home Assistant add-on / Raspberry Pi | Docker Compose + InMemory + SQLite |
 | Existing K8s cluster | Helm Chart |
+| Jetson Orin Nano voice host | Jetson ARM64 CUDA Compose stack |
 | Dedicated server, no Docker | systemd |
 | Production with SLA requirements | Kubernetes |
 | Development / testing | Docker Compose |

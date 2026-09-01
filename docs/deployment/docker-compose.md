@@ -5,14 +5,18 @@ title: Docker Compose
 
 # Docker Compose
 
-Docker Compose is the recommended deployment method for most users. It bundles the AgentHost, MongoDB, and Redis into a single stack that can be started with one command.
+Docker Compose is the recommended deployment method for most users. The full stack bundles the AgentHost, MongoDB, and Redis into a single deployment, but you can also use lighter configurations with embedded SQLite storage.
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) v20.10 or later and Docker Compose v2.0 or later
 - A supported LLM provider API key (or a local Ollama instance)
 
-## Using the Pre-Built Image
+## Quick Start — Full Stack (Recommended)
+
+The standard configuration with Redis and MongoDB provides the best experience for production deployments.
+
+### Using the Pre-Built Image
 
 Create a `docker-compose.yml`:
 
@@ -35,11 +39,13 @@ services:
     restart: unless-stopped
 
   lucia-mongo:
-    image: mongo:8.0
+    image: mongo:8.0.5
     container_name: lucia-mongo
     networks: [lucia-network]
     ports: ["127.0.0.1:27017:27017"]
     volumes: [lucia-mongo-data:/data/db]
+    environment:
+      - GLIBC_TUNABLES=glibc.pthread.rseq=1
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
       interval: 30s
@@ -64,8 +70,10 @@ services:
       - ConnectionStrings__redis=lucia-redis:6379
       - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
       - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - lucia-models:/app/models
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -82,6 +90,8 @@ volumes:
   
   # MongoDB persistent data
   lucia-mongo-data:
+    driver: local
+  lucia-models:
     driver: local
 ```
 
@@ -104,6 +114,106 @@ Check the AgentHost health:
 ```bash
 curl http://localhost:7233/health
 ```
+
+## Minimal Deployment — InMemory + SQLite
+
+For development, testing, or Home Assistant add-ons with constrained resources, you can deploy with in-memory caching and embedded SQLite storage — **no Redis or MongoDB required**.
+
+```yaml title="docker-compose.minimal.yml"
+services:
+  lucia:
+    image: seiggy/lucia-agenthost:latest
+    container_name: lucia
+    networks: [lucia-network]
+    ports: ["7233:8080"]
+    volumes:
+      - lucia-data:/data
+      - lucia-models:/app/models
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - DataProvider__Cache=InMemory
+      - DataProvider__Store=SQLite
+      - DataProvider__SqlitePath=/data/lucia.db
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  lucia-network:
+    driver: bridge
+
+volumes:
+  lucia-data:
+    driver: local
+  lucia-models:
+    driver: local
+```
+
+**When to use this configuration:**
+- Development and testing
+- Home Assistant add-ons (resource-constrained)
+- Single-instance deployments
+- Temporary or ephemeral environments
+
+:::caution
+The in-memory cache is not shared across container restarts. Configuration and traces are persisted to SQLite, but in-flight session data will be lost on restart.
+:::
+
+## CPU-Only Deployment
+
+For voice-heavy setups or systems without GPU acceleration, use the `CpuOnly` build flag to exclude GPU-accelerated ONNX packages:
+
+```bash
+docker build -f Dockerfile --build-arg CpuOnly=true -t lucia-agenthost:cpu-only .
+```
+
+Or in docker-compose:
+
+```yaml
+services:
+  lucia:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - CpuOnly=true
+```
+
+## Home Assistant Mono-Container (Add-on)
+
+Lucia can be deployed as a Home Assistant add-on using `Dockerfile.ha` for a single-container setup with embedded storage:
+
+```bash
+docker build -f Dockerfile.ha -t lucia-ha:latest .
+docker run -d \
+  --name lucia-ha \
+  -p 5000:8080 \
+  -v lucia-ha-data:/data \
+  -e DataProvider__Cache=InMemory \
+  -e DataProvider__Store=SQLite \
+  lucia-ha:latest
+```
+
+This image comes pre-configured for Home Assistant integration without external dependencies.
+
+## Jetson ARM64 CUDA Voice Deployment
+
+Version 1.3.0 adds a reproducible deployment for Jetson Orin Nano hardware. The stack combines the CUDA-enabled AgentHost image, PostgreSQL, Redis, private database exporters, and an OpenTelemetry Collector.
+
+```bash
+cd infra/docker
+./deploy-jetson.sh --image seiggy/lucia-agenthost:jetson
+```
+
+The deployment script validates required secrets, deploys an immutable image, verifies the CUDA execution provider, and supports rollback. `DASHBOARD_API_KEY` resets the active dashboard key when a lost key must be replaced.
+
+See [`docker-compose.jetson-voice.yml`](https://github.com/seiggy/lucia-dotnet/blob/master/infra/docker/docker-compose.jetson-voice.yml) for required variables and [Observability](./observability.md) for remote telemetry.
 
 ## Building from Source
 

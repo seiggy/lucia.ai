@@ -95,6 +95,36 @@ helm install lucia infra/kubernetes/helm/lucia-helm \
 
 ## Chart Values Reference
 
+## Chart Values Reference
+
+### Data Provider Configuration (v1.2.0+)
+
+Add data provider settings to your `values.yaml` to use lightweight providers instead of Redis/MongoDB:
+
+```yaml title="values.yaml"
+# For InMemory cache + SQLite store (minimal footprint)
+agentHost:
+  environment:
+    DataProvider__Cache: InMemory
+    DataProvider__Store: SQLite
+    DataProvider__SqliteDbPath: /app/lucia/lucia.db
+
+# Disable Redis and MongoDB when using embedded providers
+redis:
+  enabled: false
+
+mongodb:
+  enabled: false
+
+# SQLite storage via PVC
+persistence:
+  enabled: true
+  size: 5Gi
+  mountPath: /app/lucia
+```
+
+See [Data Providers](../deployment/data-providers.md) for full configuration reference.
+
 | Key | Default | Description |
 |---|---|---|
 | `agentHost.replicaCount` | `1` | Number of AgentHost replicas |

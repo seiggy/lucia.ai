@@ -3,9 +3,2753 @@ sidebar_position: 5
 title: Changelog
 ---
 
+# [v1.3.1](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.3.1)
+
+**Published:** 2026-08-29
+
+## What's Changed
+* perf(wyoming): disable unused audio pipelines by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/254
+* feat(voice): add speaker benchmarks and fix cancellation spin by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/255
+
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/v1.3.0...v1.3.1
+
+---
+
+# [v1.3.0](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.3.0)
+
+**Published:** 2026-08-21
+
+# Release notes - 1.3.0
+
+**Release date:** August 21, 2026
+
+---
+
+## Overview
+
+Version 1.3.0 adds an end-to-end observability stack, Jetson infrastructure telemetry, speech pipeline metrics, and dashboard light mode. It also tightens voice concurrency and shutdown behavior, makes evaluations reproducible, and fixes timestamp, HTTP client, agent reload, and release automation bugs.
+
+## Features
+
+- **Dashboard light mode** adds System, Light, and Dark preferences, persistent theme selection, pre-paint theme resolution, semantic color tokens, accessible contrast, and Playwright coverage. ([#253](https://github.com/seiggy/lucia-dotnet/pull/253))
+- **Remote observability stack** deploys pinned OpenTelemetry Collector, Grafana, Tempo, Prometheus, Loki, and Caddy services with bounded queues, retention, health checks, backups, and smoke tests. (`37dde58`)
+- **Fail-open telemetry modes** add Off, Metrics, Trace, and Profile modes, bounded OTLP export, legacy configuration support, Kubernetes settings, and unavailable-collector coverage. (`1029131`)
+- **Speech pipeline metrics** record queue wait, transcription, enhancement, retranscription, diarization, and transcript-write durations. (`129ad9c`)
+- **Jetson infrastructure telemetry** adds private PostgreSQL and Redis exporters, host metrics, authenticated OTLP forwarding, API-key reset support, phased health checks, and ARM64 validation. (`b1a46a9`)
+- **Grafana dashboards** cover service health, speech processing, Jetson hosts, PostgreSQL, and Redis with shared filters and navigation. (`6980668`)
+- **Jetson ARM64 CUDA voice deployment** adds a reproducible off-device build and deployment stack for AgentHost, Redis, and PostgreSQL on Jetson Orin Nano hardware. ([#243](https://github.com/seiggy/lucia-dotnet/pull/243))
+
+## Reliability and performance
+
+- Clear pending Activity Stream reconnect timers before reconnecting and when the dashboard hook unmounts. ([#219](https://github.com/seiggy/lucia-dotnet/pull/219))
+- Pin the voice image to CUDA 12.8.1 for supported Blackwell `sm_120` deployment. ([#222](https://github.com/seiggy/lucia-dotnet/pull/222))
+- Normalize persisted agent, trace, scheduled-task, and configuration timestamps to UTC, including bounded migrations for existing SQLite rows. ([#221](https://github.com/seiggy/lucia-dotnet/pull/221))
+- Apply Home Assistant authorization per request, support token rotation and retries, and dispose EvalHarness chat clients without leaking sockets. ([#224](https://github.com/seiggy/lucia-dotnet/pull/224))
+- Limit Wyoming STT concurrency around inference instead of whole connections, and close disposal races that could release permits while inference was still running. ([#220](https://github.com/seiggy/lucia-dotnet/pull/220))
+- Dispose orchestration activities on every exit path so traces receive stop events and final durations. ([#228](https://github.com/seiggy/lucia-dotnet/pull/228))
+- Align `ActivitySource` names with the lowercase ServiceDefaults registrations. ([#232](https://github.com/seiggy/lucia-dotnet/pull/232))
+- Enforce distinct async deadlines for timer persistence, Home Assistant WebSockets, and EvalHarness LLM calls while preserving caller cancellation. ([#235](https://github.com/seiggy/lucia-dotnet/pull/235))
+- Stop writing usage timestamps during API-key validation. ([#236](https://github.com/seiggy/lucia-dotnet/pull/236))
+- Add crash-safe PostgreSQL trigram indexes and test interrupted migrations against production query shapes. ([#237](https://github.com/seiggy/lucia-dotnet/pull/237))
+- Serialize agent definition reloads and use monotonic database checkpoints to prevent concurrent refreshes from rebuilding agents or saving stale state. ([#239](https://github.com/seiggy/lucia-dotnet/pull/239))
+- Reuse GTCRN FFT, tensor, cache, and ONNX buffers, cutting warm 256-sample hop allocations from 143,736 bytes to 1,400 bytes while making reload and disposal safe. ([#242](https://github.com/seiggy/lucia-dotnet/pull/242))
+- Drain Wyoming sessions during shutdown with bounded concurrency and safe ownership transfer for sessions that exceed the deadline. ([#240](https://github.com/seiggy/lucia-dotnet/pull/240))
+- Use Aspire session lifetime for Redis so its proxied connection string and health check initialize correctly while the named volume keeps data. (`f44c91f`)
+- Correct the Docker Hub image name used by the Jetson Compose deployment. ([#247](https://github.com/seiggy/lucia-dotnet/pull/247))
+
+## Evaluation
+
+- Run each parameter-sweep combination multiple times, select winners by mean score and variance, and compare them with a multi-run baseline. ([#223](https://github.com/seiggy/lucia-dotnet/pull/223))
+- Default evaluation seeds to `42` for reproducible baseline and target runs, with an explicit `null` opt-out. ([#231](https://github.com/seiggy/lucia-dotnet/pull/231))
+- Send seed and token-limit settings through typed `ChatOptions` so Ollama and OpenAI adapters receive the requested deterministic parameters. ([#233](https://github.com/seiggy/lucia-dotnet/pull/233))
+- Exclude unavailable judge results from scores, latency, pass rates, comparisons, optimization, sweeps, and exports. Reports now distinguish unavailable, partial, and complete runs. ([#238](https://github.com/seiggy/lucia-dotnet/pull/238))
+
+## Delivery, dependencies, and project tooling
+
+- Replace placeholder Squad workflows with updated CI, documentation, promotion, preview, insider, and stable-release behavior. (`a738e07`)
+- Add a Vasquez pre-push review gate to Squad governance. ([#226](https://github.com/seiggy/lucia-dotnet/pull/226))
+- Make live Home Assistant tests explicitly opt-in, add provider-free routing and aggregation coverage, and run CI for the `master` branch. ([#229](https://github.com/seiggy/lucia-dotnet/pull/229))
+- Add real restore, build, test, and GitHub release jobs with strict stable and insider tag routing, idempotent release creation, and pinned checkout actions. ([#230](https://github.com/seiggy/lucia-dotnet/pull/230))
+- Upgrade Vite to 8.1.4, `@tailwindcss/vite` to 4.3.2, and `@vitejs/plugin-react` to 5.2.0. ([#227](https://github.com/seiggy/lucia-dotnet/pull/227))
+- Add the Impeccable UI workflow and reduce health-check polling overhead. (`2772fdd`)
+- Update coding-agent defaults, require Impeccable for UI work, and make documentation coverage part of pre-push review. ([#252](https://github.com/seiggy/lucia-dotnet/pull/252))
+- Isolate telemetry listeners in tests so parallel activities cannot overwrite captured results. ([#252](https://github.com/seiggy/lucia-dotnet/pull/252))
+- Sync shared agent skills and repository guidance, including TypeScript, issue-tracking, and domain documentation. (`edb422c`)
+- Add the speech pipeline optimization backlog for telemetry, profiling, transcripts, speaker verification, capacity, routing, and sustained-load work. (`2f2ba5a`)
+- Pin the transitive SSH.NET package to 2026.0.0 to resolve `GHSA-q939-rpr3-3284`. ([#238](https://github.com/seiggy/lucia-dotnet/pull/238))
+- Run provider-free tests under invariant globalization before push, and reject dirty, non-HEAD, or uninspectable worktrees. ([#238](https://github.com/seiggy/lucia-dotnet/pull/238))
+
+## Breaking changes
+
+None.
+
+## Full changelog
+
+[v1.2.3...v1.3.0](https://github.com/seiggy/lucia-dotnet/compare/v1.2.3...v1.3.0)
+
+
+---
+
+# [v1.2.3](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.3)
+
+**Published:** 2026-07-04
+
+## What's Changed
+* Fix docker build voice by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/118
+* fix(docker): harden stack — /app/models perms, healthcheck, MongoDB kernel 6.19+ workaround by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/123
+* Squad/116 sensor agent cleanup by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/124
+* feat: next release sprint - 7 issues (#78, #77, #3, #28, #84, #104, #45) by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/125
+* fix: resolve bugs #42, #79, #106 with regression tests by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/127
+* feat(dashboard): global React error boundary by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/184
+* ci: pin GitHub Actions to full-length commit SHAs by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/186
+* chore(deps): bump postcss from 8.5.6 to 8.5.15 in /lucia-dashboard by @dependabot[bot] in https://github.com/seiggy/lucia-dotnet/pull/126
+* fix(api): validate agentId Uri returns 400 by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/191
+* fix(security): constant-time internal service token comparison by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/185
+* fix(voice): snapshot pipeline-stage timings before background save by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/187
+* fix(ha): validate HA access token before opening WebSocket by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/188
+* feat(ha): services.yaml for lucia.send_message by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/189
+* feat(dashboard): error UI for template & optimizer fetches by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/190
+* ci(docker): pin base images by digest by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/193
+* chore(ha): move dev scripts out of shippable component root by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/194
+* fix(voice): align mDNS instance name with Wyoming InfoEvent by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/192
+* refactor(dashboard): type API responses, remove unsafe as/any casts by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/196
+* fix(voice): cap cumulative utterance audio buffers to prevent memory DoS by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/197
+* ci: repoint squad workflows to master branch by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/195
+* fix(auth): persist HMAC session signing key to durable config store by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/198
+* fix(deps): bump vite to 7.3.2+ to resolve 3 Dependabot CVEs by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/200
+* chore(deps): bump react-router and react-router-dom in /lucia-dashboard by @dependabot[bot] in https://github.com/seiggy/lucia-dotnet/pull/201
+* feat: input-required task timeout, dashboard key override/.env wiring, Jetson deploy fixes by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/202
+* fix(deps): align package versions with Aspire 13.4.2 transitives by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/203
+* Fix/package updates build by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/210
+
+## New Contributors
+* @dependabot[bot] made their first contribution in https://github.com/seiggy/lucia-dotnet/pull/126
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/v1.2.2...v1.2.3
+
+---
+
+# [v1.2.2 - Guardrail](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.2)
+
+**Published:** 2026-04-10
+
+# Release Notes - 1.2.2
+
+**Release Date:** April 2026
+**Code Name:** "Guardrail"
+
+---
+
+## 🛡️ Overview
+
+"Guardrail" is a targeted bugfix release addressing three user-reported issues: dashboard navigation, UI scroll jitter, and the fast-path pattern matcher incorrectly claiming non-light device commands. The pattern matcher now correctly bails to the LLM for fans, ACs, TVs, locks, and other non-light devices, and the temporal bail-signal logic was refined to stop false-positiving on spatial prepositions like "in the kitchen."
+
+## 🐛 Bug Fixes
+
+### Dashboard Navigation (#113)
+- **"Back to Traces" link** now navigates to `/traces` instead of `/` (which is the Activity page). Reported by @paulglavin.
+
+### Entity Checkbox Scroll (#113)
+- **BulkActionBar layout shift** — clicking entity checkboxes no longer causes the page to scroll. The bulk action bar now collapses via CSS (`h-0 invisible overflow-hidden`) instead of unmounting from the DOM, eliminating the layout shift that occurred when transitioning between 0 and 1+ selected items.
+
+### Fast-Path Pattern Matcher — Non-Light Device Bail
+- Commands like "turn office fan on", "turn off the AC", "turn on the TV" no longer match `LightControlSkill`. A new **non-light device token set** (fan, ac, tv, lock, door, speaker, vacuum, etc.) causes the pattern matcher to reject the match and defer to the LLM orchestrator.
+- **Temporal preposition fix** — "in" and "at" no longer unconditionally trigger bail signals. They now only bail when followed by a number, duration word, or digit-prefixed time token (e.g., "7pm", "10am", "30min"), not when used as spatial prepositions ("lights on in the kitchen"). This fixes a pre-existing false positive in area-based light commands.
+
+## 🧪 Tests
+
+- 20 new `CommandPatternMatcherTests`: temporal bail (4), spatial pass-through (2), fan bail (4), other non-light devices (6), light-word exception regressions (4)
+- All 35 pattern matcher tests passing
+- 278/279 Wyoming test suite passing (1 pre-existing DI registration test unrelated to this release)
+
+## 📁 Files Changed
+
+| File | Change |
+|------|--------|
+| `lucia-dashboard/src/pages/TraceDetailPage.tsx` | Fix `navigate('/')` → `navigate('/traces')` |
+| `lucia-dashboard/src/pages/EntityLocationPage.tsx` | BulkActionBar CSS collapse instead of unmount |
+| `lucia.Wyoming/CommandRouting/CommandPatternMatcher.cs` | Non-light device bail + temporal preposition bigram check |
+| `lucia.Tests/Wyoming/CommandPatternMatcherTests.cs` | 10 new test cases |
+
+
+---
+
+# [v1.2.1 - Searchlight](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.1)
+
+**Published:** 2026-04-10
+
+# Release Notes - 1.2.1
+
+**Release Date:** April 2026
+**Code Name:** "Searchlight"
+
+---
+
+## 🔦 Overview
+
+"Searchlight" is a quality-focused release that dramatically improves the orchestrator's intent routing accuracy — particularly for smaller local models like Gemma 4. Starting from a Gemma 4 routing trace where "turn off the lights in Zack's Office" was confidently misrouted to the climate agent, this release introduces a comprehensive evaluation suite, systematic prompt engineering for small-model compatibility, and timer-agent routing support. Orchestrator eval coverage went from 7 scenarios to 56, and Gemma 4 routing accuracy went from ~0% (infrastructure crashes) to 100% on the final test run.
+
+## 🚀 Highlights
+
+- **Comprehensive Orchestrator Eval Suite** — 56 YAML scenarios and 24 xUnit tests covering all 7 agent types (light, climate, scene, lists, music, general, timer) with cross-domain confusion tests, multi-agent splitting, ambiguous requests, STT variants, and entity ID patterns.
+- **Router Prompt Engineering for Small Models** — Rule 0 "Time-Delayed Action Priority," domain inference hints, multi-domain detection rules, and skill example injection that enable even 9B parameter models to correctly route compound requests.
+- **Timer Agent Routing** — Full timer/scheduler/alarm routing support with cross-domain guards ensuring "turn off the AC in 5 minutes" goes to timer-agent, not climate-agent.
+- **EvalTestFixture Overhaul** — All 7 agent cards now registered in the mock registry (was only 3), plus AgentSessionStore cast fix that was crashing all pipeline tests.
+- **Multi-Backend Eval Comparison** — New benchmark tooling for comparing routing accuracy across different Ollama models.
+- **Climate Agent Gemma 4 Compatibility** — Direct-action rules and two-step Find→Set tool pattern expectations for smaller models.
+
+## ✨ Features
+
+### Orchestrator Evaluation Suite
+- 56 YAML eval scenarios in `orchestrator.yaml` (up from 7)
+- 24 xUnit tests in `OrchestratorEvalTests.cs` (up from 7)
+- Categories: basic routing, room-specific, cross-domain confusion, multi-agent, ambiguous, STT variants, timer/scheduler, entity IDs
+- Negative assertions: light requests assert NOT climate, timer requests assert NOT device agents
+- Timer-agent card registered in `EvalTestFixture` with full dependency wiring
+
+### Router Prompt Improvements
+- **Rule 0 — Time-Delayed Action Priority**: Checked BEFORE agent domain matching; "in X minutes" / "at X PM" → timer-agent regardless of device mentioned
+- **Rule 8 — Domain Inference Hints**: Implicit language mapping (warmer→climate, bright→light, play→music, bedtime→scene, timer→timer-agent)
+- **Rule 9 — Multi-Domain Detection**: Explicit split rules with examples; prohibits collapsing multi-intent requests into general-assistant
+- **IncludeSkillExamples enabled**: Agent catalog now includes per-agent example prompts for pattern matching
+
+### Multi-Backend Benchmark Comparison
+- Side-by-side eval runs across different Ollama models
+- Backend selector UI with Spectre.Console rendering
+- Auto-tracing for scenario evaluation
+
+## 🐛 Bug Fixes
+
+- **EvalTestFixture only registered 3 of 7 agent cards** — Climate, lists, scene, and timer cards were extracted but never passed to mock registry, making it impossible to catch cross-domain routing bugs
+- **AgentSessionStore cast error** — FakeItEasy's `IServiceProvider` returned a Castle proxy that couldn't be cast to concrete `AgentSessionStore`; configured to return null so `NoopAgentSessionStore` fallback kicks in
+- **A2AToolCallEvaluator crash on ambiguous tests** — Removed evaluator from tests that intentionally have no expected agent IDs
+- **Spectre markup escape in backend selector** — Brackets in display strings caused rendering errors
+- **Climate agent two-step tool pattern** — Updated eval scenarios to expect Find→Set pattern for Gemma 4
+
+## 📊 Test Results
+
+### Gemma 4 (kavai/Gemma4-GPT5:e2b) Orchestrator Routing
+| Metric | Before | After |
+|--------|--------|-------|
+| Test infrastructure | ❌ All crashed | ✅ All pass |
+| Routing accuracy | 0/20 (0%) | 24/24 (100%) |
+| Agent coverage | 3 of 7 agents testable | 7 of 7 agents testable |
+| YAML scenarios | 7 | 56 |
+| xUnit test methods | 7 | 24 |
+
+## 📋 Breaking Changes
+
+None. All changes are additive — new tests, expanded YAML scenarios, and prompt improvements that are backward-compatible with existing agent configurations.
+
+## 🔮 Known Issues
+
+- **Timer skill cross-visibility**: `ListTimers` doesn't show scheduled actions created via `ScheduleAction` — they're in separate stores. Ask "any scheduled tasks?" instead of "any timers?" as a workaround.
+- **Dashboard Tasks page**: Shows A2A platform tasks (agent execution traces) instead of user-created scheduled tasks from `ScheduledTaskStore`.
+
+
+---
+
+# [v1.2.0 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0)
+
+**Published:** 2026-04-05
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery, and introduces **Pluggable Data Providers** — an agnostic persistence layer that enables mono-container deployment as a Home Assistant add-on with InMemory caching and SQLite storage, eliminating the need for Redis and MongoDB on resource-constrained devices.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+- **Pluggable Data Providers** — Agnostic persistence layer with InMemory (replaces Redis) and SQLite (replaces MongoDB) alternatives, configurable via `DataProvider:Cache` and `DataProvider:Store`.
+- **Home Assistant Mono-Container** — New `Dockerfile.ha` for single-container deployment with zero external dependencies, CPU-only ONNX, and embedded dashboard.
+- **CpuOnly Build Flag** — MSBuild property `/p:CpuOnly=true` excludes GPU ONNX packages for clean CPU-only container builds.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+- **Conversation Test Page** — Interactive chat interface at `/conversation` for testing the command parser endpoint directly from the dashboard, with HA context simulation, SSE streaming, and response metadata badges showing whether commands were parsed locally or handled by the LLM.
+- **Response Templates Page** — Full CRUD management of response templates at `/response-templates`, grouped by skill. Features pattern-driven SkillId/Action dropdowns populated from the parser, token insertion buttons for `{entity}`, `{action}`, `{area}` placeholders, and template preview with sample values.
+- **Activity Dashboard Metrics** — Three new summary cards: Command Parsed count, LLM Fallback count, and Parser Rate percentage showing the ratio of commands handled locally vs forwarded to the LLM.
+
+### 💬 Conversation Command Parser
+- **`POST /api/conversation`** — New REST endpoint accepting structured JSON with user text and separated device/session context object. Returns instant JSON for parsed commands or SSE streaming for LLM fallback.
+- **True LLM Bypass** — Pattern-matched commands call skill methods (LightControlSkill, ClimateControlSkill, SceneControlSkill) directly against Home Assistant — zero LLM involvement, sub-50ms execution.
+- **Command Pattern Matching** — Leverages the existing `CommandPatternRouter` with template syntax (`{name}`, `{name:opt1|opt2}`, `[optional]`), confidence scoring, and priority-based tiebreaking.
+- **DirectSkillExecutor** — Dispatches matched routes to concrete skill methods: light toggle/brightness, climate set temperature/adjust, scene activate. Resolves entities via captured text and device area context.
+- **Response Template System** — MongoDB-stored templates with simple `{placeholder}` interpolation, random variant selection for natural variety, and seed defaults for all supported commands. Managed via CRUD API and dashboard.
+- **Context Reconstructor** — Rebuilds system prompt from structured context JSON for LLM fallback, matching the format the orchestrator expects.
+- **Conversation Telemetry** — OpenTelemetry counters (`conversation.command_parsed`, `conversation.llm_fallback`, `conversation.command_parsed.errors`) and duration histograms, plus in-memory stats for the activity dashboard.
+- **Multi-Turn Continuity** — Server generates stable `conversationId` (GUID) when client doesn't provide one, used consistently across command and LLM paths.
+- **`GET /api/conversation/patterns`** — Exposes registered command patterns with their SkillId, Action, placeholder tokens, and example templates for dashboard tooling.
+
+### 🏠 Home Assistant Component (v1.2.0-preview.1)
+- **REST Migration** — Component migrated from A2A JSON-RPC 2.0 to the new `POST /api/conversation` endpoint with structured context objects.
+- **Simplified Setup** — Removed agent catalog fetch and agent selection. Configuration requires only host URL + API key.
+- **SSE Streaming** — Handles both instant JSON (command parsed) and SSE event streams (LLM fallback) from the conversation endpoint.
+- **Structured Context** — Device ID, area, type, user ID, timestamp, and location sent as typed JSON fields instead of embedded in prompt text.
+- **Auto-Generated Conversation IDs** — Generates UUID for first-turn conversations, maintaining multi-turn continuity via the tracker.
+- **Optional Prompt Override** — Configurable prompt template override in the HA options flow.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+### 🔌 Pluggable Data Providers
+
+The new `lucia.Data` project introduces provider-agnostic persistence, enabling Lucia to run without Redis or MongoDB:
+
+**Cache Providers (replacing Redis):**
+- `InMemorySessionCacheService` — Multi-turn conversation state with sliding expiration
+- `InMemoryDeviceCacheService` — Home Assistant entity caching with TTL support
+- `InMemoryPromptCacheService` — Routing and response caching with SHA256 + semantic similarity matching
+- `InMemoryTaskStore` — A2A task persistence with configurable TTL and periodic cleanup
+- `InMemoryEntityLocationService` — Floor/area/entity graph with hybrid entity matching
+
+**Store Providers (replacing MongoDB):**
+- 17 SQLite repository implementations covering all 4 MongoDB databases (luciaconfig, luciatraces, luciatasks, luciawyoming)
+- Hybrid schema: indexed columns for query performance + JSON blob for full document storage
+- Code-first migrations with `SqliteMigrationRunner` and versioned schema tracking
+- `SqliteConfigurationProvider` with polling-based hot-reload matching the MongoDB provider pattern
+
+**Configuration:**
+```json
+{
+  "DataProvider": {
+    "Cache": "InMemory",
+    "Store": "SQLite",
+    "SqlitePath": "./data/lucia.db"
+  }
+}
+```
+
+**Interface Abstractions:**
+- `IConfigStoreWriter` — New interface for configuration CRUD (extracted from `ConfigStoreWriter`)
+- `ITaskIdIndex` — New interface for task ID enumeration (extracted from Redis-specific key scanning)
+- `ConfigSeeder` refactored to use `IConfigStoreWriter` instead of `IMongoClient`
+- `TaskArchivalService` refactored to use `ITaskIdIndex` instead of `IConnectionMultiplexer`
+- All API endpoints updated to use abstractions (no direct `IMongoClient` or `IConnectionMultiplexer` injection)
+
+### 📦 Home Assistant Mono-Container
+
+New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
+
+- **Zero Dependencies** — No Redis, MongoDB, or GPU drivers required
+- **CPU-Only ONNX** — `CpuOnly=true` MSBuild flag excludes `Microsoft.ML.OnnxRuntime.Gpu.Linux`, verified ONNX provider detection with graceful CPU fallback
+- **Embedded Dashboard** — React SPA built and bundled into `wwwroot/` in a multi-stage Docker build
+- **SQLite Persistence** — Single `/data/lucia.db` file for all configuration, traces, tasks, and voice data
+- **Volume Mounts** — `/data` (SQLite DB), `/app/models` (Wyoming voice models), `/app/plugins` (script plugins)
+- **HA Add-on Support** — `ha-addon/config.yaml` with ingress, port mapping, and options schema
+
+### 🔍 ONNX Provider Verification
+
+`OnnxProviderDetector` now verifies each accelerated provider by attempting `SessionOptions.AppendExecutionProvider_*()` before selecting it. This prevents sherpa-onnx native crashes when CUDA shared libraries are absent — the detector gracefully falls back to `CPUExecutionProvider`.
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| Conversation command processor | 5 |
+| Direct skill executor | 4 |
+| Response template renderer | 4 |
+| Context reconstructor | 4 |
+| **Total Wyoming Tests** | **230** |
+| **Total Conversation Tests** | **17** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles, voice config persistence, and response templates. Redis is optional but recommended for profile caching.
+- **Home Assistant component upgrade** — The HA custom component has been migrated to v1.2.0-preview.1. **Breaking change:** remove and re-add the Lucia integration in Home Assistant. The new setup flow only requires the host URL and API key — agent selection is no longer needed.
+- **Response templates** — Default templates are seeded automatically on first launch. Customize them via the Response Templates page in the dashboard or `POST /api/response-templates`.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
+
+
+---
+
+# [v1.2.0-preview.14 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.14)
+
+**Published:** 2026-03-28
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery, and introduces **Pluggable Data Providers** — an agnostic persistence layer that enables mono-container deployment as a Home Assistant add-on with InMemory caching and SQLite storage, eliminating the need for Redis and MongoDB on resource-constrained devices.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+- **Pluggable Data Providers** — Agnostic persistence layer with InMemory (replaces Redis) and SQLite (replaces MongoDB) alternatives, configurable via `DataProvider:Cache` and `DataProvider:Store`.
+- **Home Assistant Mono-Container** — New `Dockerfile.ha` for single-container deployment with zero external dependencies, CPU-only ONNX, and embedded dashboard.
+- **CpuOnly Build Flag** — MSBuild property `/p:CpuOnly=true` excludes GPU ONNX packages for clean CPU-only container builds.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+- **Conversation Test Page** — Interactive chat interface at `/conversation` for testing the command parser endpoint directly from the dashboard, with HA context simulation, SSE streaming, and response metadata badges showing whether commands were parsed locally or handled by the LLM.
+- **Response Templates Page** — Full CRUD management of response templates at `/response-templates`, grouped by skill. Features pattern-driven SkillId/Action dropdowns populated from the parser, token insertion buttons for `{entity}`, `{action}`, `{area}` placeholders, and template preview with sample values.
+- **Activity Dashboard Metrics** — Three new summary cards: Command Parsed count, LLM Fallback count, and Parser Rate percentage showing the ratio of commands handled locally vs forwarded to the LLM.
+
+### 💬 Conversation Command Parser
+- **`POST /api/conversation`** — New REST endpoint accepting structured JSON with user text and separated device/session context object. Returns instant JSON for parsed commands or SSE streaming for LLM fallback.
+- **True LLM Bypass** — Pattern-matched commands call skill methods (LightControlSkill, ClimateControlSkill, SceneControlSkill) directly against Home Assistant — zero LLM involvement, sub-50ms execution.
+- **Command Pattern Matching** — Leverages the existing `CommandPatternRouter` with template syntax (`{name}`, `{name:opt1|opt2}`, `[optional]`), confidence scoring, and priority-based tiebreaking.
+- **DirectSkillExecutor** — Dispatches matched routes to concrete skill methods: light toggle/brightness, climate set temperature/adjust, scene activate. Resolves entities via captured text and device area context.
+- **Response Template System** — MongoDB-stored templates with simple `{placeholder}` interpolation, random variant selection for natural variety, and seed defaults for all supported commands. Managed via CRUD API and dashboard.
+- **Context Reconstructor** — Rebuilds system prompt from structured context JSON for LLM fallback, matching the format the orchestrator expects.
+- **Conversation Telemetry** — OpenTelemetry counters (`conversation.command_parsed`, `conversation.llm_fallback`, `conversation.command_parsed.errors`) and duration histograms, plus in-memory stats for the activity dashboard.
+- **Multi-Turn Continuity** — Server generates stable `conversationId` (GUID) when client doesn't provide one, used consistently across command and LLM paths.
+- **`GET /api/conversation/patterns`** — Exposes registered command patterns with their SkillId, Action, placeholder tokens, and example templates for dashboard tooling.
+
+### 🏠 Home Assistant Component (v1.2.0-preview.1)
+- **REST Migration** — Component migrated from A2A JSON-RPC 2.0 to the new `POST /api/conversation` endpoint with structured context objects.
+- **Simplified Setup** — Removed agent catalog fetch and agent selection. Configuration requires only host URL + API key.
+- **SSE Streaming** — Handles both instant JSON (command parsed) and SSE event streams (LLM fallback) from the conversation endpoint.
+- **Structured Context** — Device ID, area, type, user ID, timestamp, and location sent as typed JSON fields instead of embedded in prompt text.
+- **Auto-Generated Conversation IDs** — Generates UUID for first-turn conversations, maintaining multi-turn continuity via the tracker.
+- **Optional Prompt Override** — Configurable prompt template override in the HA options flow.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+### 🔌 Pluggable Data Providers
+
+The new `lucia.Data` project introduces provider-agnostic persistence, enabling Lucia to run without Redis or MongoDB:
+
+**Cache Providers (replacing Redis):**
+- `InMemorySessionCacheService` — Multi-turn conversation state with sliding expiration
+- `InMemoryDeviceCacheService` — Home Assistant entity caching with TTL support
+- `InMemoryPromptCacheService` — Routing and response caching with SHA256 + semantic similarity matching
+- `InMemoryTaskStore` — A2A task persistence with configurable TTL and periodic cleanup
+- `InMemoryEntityLocationService` — Floor/area/entity graph with hybrid entity matching
+
+**Store Providers (replacing MongoDB):**
+- 17 SQLite repository implementations covering all 4 MongoDB databases (luciaconfig, luciatraces, luciatasks, luciawyoming)
+- Hybrid schema: indexed columns for query performance + JSON blob for full document storage
+- Code-first migrations with `SqliteMigrationRunner` and versioned schema tracking
+- `SqliteConfigurationProvider` with polling-based hot-reload matching the MongoDB provider pattern
+
+**Configuration:**
+```json
+{
+  "DataProvider": {
+    "Cache": "InMemory",
+    "Store": "SQLite",
+    "SqlitePath": "./data/lucia.db"
+  }
+}
+```
+
+**Interface Abstractions:**
+- `IConfigStoreWriter` — New interface for configuration CRUD (extracted from `ConfigStoreWriter`)
+- `ITaskIdIndex` — New interface for task ID enumeration (extracted from Redis-specific key scanning)
+- `ConfigSeeder` refactored to use `IConfigStoreWriter` instead of `IMongoClient`
+- `TaskArchivalService` refactored to use `ITaskIdIndex` instead of `IConnectionMultiplexer`
+- All API endpoints updated to use abstractions (no direct `IMongoClient` or `IConnectionMultiplexer` injection)
+
+### 📦 Home Assistant Mono-Container
+
+New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
+
+- **Zero Dependencies** — No Redis, MongoDB, or GPU drivers required
+- **CPU-Only ONNX** — `CpuOnly=true` MSBuild flag excludes `Microsoft.ML.OnnxRuntime.Gpu.Linux`, verified ONNX provider detection with graceful CPU fallback
+- **Embedded Dashboard** — React SPA built and bundled into `wwwroot/` in a multi-stage Docker build
+- **SQLite Persistence** — Single `/data/lucia.db` file for all configuration, traces, tasks, and voice data
+- **Volume Mounts** — `/data` (SQLite DB), `/app/models` (Wyoming voice models), `/app/plugins` (script plugins)
+- **HA Add-on Support** — `ha-addon/config.yaml` with ingress, port mapping, and options schema
+
+### 🔍 ONNX Provider Verification
+
+`OnnxProviderDetector` now verifies each accelerated provider by attempting `SessionOptions.AppendExecutionProvider_*()` before selecting it. This prevents sherpa-onnx native crashes when CUDA shared libraries are absent — the detector gracefully falls back to `CPUExecutionProvider`.
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| Conversation command processor | 5 |
+| Direct skill executor | 4 |
+| Response template renderer | 4 |
+| Context reconstructor | 4 |
+| **Total Wyoming Tests** | **230** |
+| **Total Conversation Tests** | **17** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles, voice config persistence, and response templates. Redis is optional but recommended for profile caching.
+- **Home Assistant component upgrade** — The HA custom component has been migrated to v1.2.0-preview.1. **Breaking change:** remove and re-add the Lucia integration in Home Assistant. The new setup flow only requires the host URL and API key — agent selection is no longer needed.
+- **Response templates** — Default templates are seeded automatically on first launch. Customize them via the Response Templates page in the dashboard or `POST /api/response-templates`.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
+
+
+---
+
+# [v1.2.0-preview.13 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.13)
+
+**Published:** 2026-03-21
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery, and introduces **Pluggable Data Providers** — an agnostic persistence layer that enables mono-container deployment as a Home Assistant add-on with InMemory caching and SQLite storage, eliminating the need for Redis and MongoDB on resource-constrained devices.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+- **Pluggable Data Providers** — Agnostic persistence layer with InMemory (replaces Redis) and SQLite (replaces MongoDB) alternatives, configurable via `DataProvider:Cache` and `DataProvider:Store`.
+- **Home Assistant Mono-Container** — New `Dockerfile.ha` for single-container deployment with zero external dependencies, CPU-only ONNX, and embedded dashboard.
+- **CpuOnly Build Flag** — MSBuild property `/p:CpuOnly=true` excludes GPU ONNX packages for clean CPU-only container builds.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+- **Conversation Test Page** — Interactive chat interface at `/conversation` for testing the command parser endpoint directly from the dashboard, with HA context simulation, SSE streaming, and response metadata badges showing whether commands were parsed locally or handled by the LLM.
+- **Response Templates Page** — Full CRUD management of response templates at `/response-templates`, grouped by skill. Features pattern-driven SkillId/Action dropdowns populated from the parser, token insertion buttons for `{entity}`, `{action}`, `{area}` placeholders, and template preview with sample values.
+- **Activity Dashboard Metrics** — Three new summary cards: Command Parsed count, LLM Fallback count, and Parser Rate percentage showing the ratio of commands handled locally vs forwarded to the LLM.
+
+### 💬 Conversation Command Parser
+- **`POST /api/conversation`** — New REST endpoint accepting structured JSON with user text and separated device/session context object. Returns instant JSON for parsed commands or SSE streaming for LLM fallback.
+- **True LLM Bypass** — Pattern-matched commands call skill methods (LightControlSkill, ClimateControlSkill, SceneControlSkill) directly against Home Assistant — zero LLM involvement, sub-50ms execution.
+- **Command Pattern Matching** — Leverages the existing `CommandPatternRouter` with template syntax (`{name}`, `{name:opt1|opt2}`, `[optional]`), confidence scoring, and priority-based tiebreaking.
+- **DirectSkillExecutor** — Dispatches matched routes to concrete skill methods: light toggle/brightness, climate set temperature/adjust, scene activate. Resolves entities via captured text and device area context.
+- **Response Template System** — MongoDB-stored templates with simple `{placeholder}` interpolation, random variant selection for natural variety, and seed defaults for all supported commands. Managed via CRUD API and dashboard.
+- **Context Reconstructor** — Rebuilds system prompt from structured context JSON for LLM fallback, matching the format the orchestrator expects.
+- **Conversation Telemetry** — OpenTelemetry counters (`conversation.command_parsed`, `conversation.llm_fallback`, `conversation.command_parsed.errors`) and duration histograms, plus in-memory stats for the activity dashboard.
+- **Multi-Turn Continuity** — Server generates stable `conversationId` (GUID) when client doesn't provide one, used consistently across command and LLM paths.
+- **`GET /api/conversation/patterns`** — Exposes registered command patterns with their SkillId, Action, placeholder tokens, and example templates for dashboard tooling.
+
+### 🏠 Home Assistant Component (v1.2.0-preview.1)
+- **REST Migration** — Component migrated from A2A JSON-RPC 2.0 to the new `POST /api/conversation` endpoint with structured context objects.
+- **Simplified Setup** — Removed agent catalog fetch and agent selection. Configuration requires only host URL + API key.
+- **SSE Streaming** — Handles both instant JSON (command parsed) and SSE event streams (LLM fallback) from the conversation endpoint.
+- **Structured Context** — Device ID, area, type, user ID, timestamp, and location sent as typed JSON fields instead of embedded in prompt text.
+- **Auto-Generated Conversation IDs** — Generates UUID for first-turn conversations, maintaining multi-turn continuity via the tracker.
+- **Optional Prompt Override** — Configurable prompt template override in the HA options flow.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+### 🔌 Pluggable Data Providers
+
+The new `lucia.Data` project introduces provider-agnostic persistence, enabling Lucia to run without Redis or MongoDB:
+
+**Cache Providers (replacing Redis):**
+- `InMemorySessionCacheService` — Multi-turn conversation state with sliding expiration
+- `InMemoryDeviceCacheService` — Home Assistant entity caching with TTL support
+- `InMemoryPromptCacheService` — Routing and response caching with SHA256 + semantic similarity matching
+- `InMemoryTaskStore` — A2A task persistence with configurable TTL and periodic cleanup
+- `InMemoryEntityLocationService` — Floor/area/entity graph with hybrid entity matching
+
+**Store Providers (replacing MongoDB):**
+- 17 SQLite repository implementations covering all 4 MongoDB databases (luciaconfig, luciatraces, luciatasks, luciawyoming)
+- Hybrid schema: indexed columns for query performance + JSON blob for full document storage
+- Code-first migrations with `SqliteMigrationRunner` and versioned schema tracking
+- `SqliteConfigurationProvider` with polling-based hot-reload matching the MongoDB provider pattern
+
+**Configuration:**
+```json
+{
+  "DataProvider": {
+    "Cache": "InMemory",
+    "Store": "SQLite",
+    "SqlitePath": "./data/lucia.db"
+  }
+}
+```
+
+**Interface Abstractions:**
+- `IConfigStoreWriter` — New interface for configuration CRUD (extracted from `ConfigStoreWriter`)
+- `ITaskIdIndex` — New interface for task ID enumeration (extracted from Redis-specific key scanning)
+- `ConfigSeeder` refactored to use `IConfigStoreWriter` instead of `IMongoClient`
+- `TaskArchivalService` refactored to use `ITaskIdIndex` instead of `IConnectionMultiplexer`
+- All API endpoints updated to use abstractions (no direct `IMongoClient` or `IConnectionMultiplexer` injection)
+
+### 📦 Home Assistant Mono-Container
+
+New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
+
+- **Zero Dependencies** — No Redis, MongoDB, or GPU drivers required
+- **CPU-Only ONNX** — `CpuOnly=true` MSBuild flag excludes `Microsoft.ML.OnnxRuntime.Gpu.Linux`, verified ONNX provider detection with graceful CPU fallback
+- **Embedded Dashboard** — React SPA built and bundled into `wwwroot/` in a multi-stage Docker build
+- **SQLite Persistence** — Single `/data/lucia.db` file for all configuration, traces, tasks, and voice data
+- **Volume Mounts** — `/data` (SQLite DB), `/app/models` (Wyoming voice models), `/app/plugins` (script plugins)
+- **HA Add-on Support** — `ha-addon/config.yaml` with ingress, port mapping, and options schema
+
+### 🔍 ONNX Provider Verification
+
+`OnnxProviderDetector` now verifies each accelerated provider by attempting `SessionOptions.AppendExecutionProvider_*()` before selecting it. This prevents sherpa-onnx native crashes when CUDA shared libraries are absent — the detector gracefully falls back to `CPUExecutionProvider`.
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| Conversation command processor | 5 |
+| Direct skill executor | 4 |
+| Response template renderer | 4 |
+| Context reconstructor | 4 |
+| **Total Wyoming Tests** | **230** |
+| **Total Conversation Tests** | **17** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles, voice config persistence, and response templates. Redis is optional but recommended for profile caching.
+- **Home Assistant component upgrade** — The HA custom component has been migrated to v1.2.0-preview.1. **Breaking change:** remove and re-add the Lucia integration in Home Assistant. The new setup flow only requires the host URL and API key — agent selection is no longer needed.
+- **Response templates** — Default templates are seeded automatically on first launch. Customize them via the Response Templates page in the dashboard or `POST /api/response-templates`.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
+
+
+---
+
+# [v1.2.0-preview.12 Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.12)
+
+**Published:** 2026-03-20
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery, and introduces **Pluggable Data Providers** — an agnostic persistence layer that enables mono-container deployment as a Home Assistant add-on with InMemory caching and SQLite storage, eliminating the need for Redis and MongoDB on resource-constrained devices.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+- **Pluggable Data Providers** — Agnostic persistence layer with InMemory (replaces Redis) and SQLite (replaces MongoDB) alternatives, configurable via `DataProvider:Cache` and `DataProvider:Store`.
+- **Home Assistant Mono-Container** — New `Dockerfile.ha` for single-container deployment with zero external dependencies, CPU-only ONNX, and embedded dashboard.
+- **CpuOnly Build Flag** — MSBuild property `/p:CpuOnly=true` excludes GPU ONNX packages for clean CPU-only container builds.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+- **Conversation Test Page** — Interactive chat interface at `/conversation` for testing the command parser endpoint directly from the dashboard, with HA context simulation, SSE streaming, and response metadata badges showing whether commands were parsed locally or handled by the LLM.
+- **Response Templates Page** — Full CRUD management of response templates at `/response-templates`, grouped by skill. Features pattern-driven SkillId/Action dropdowns populated from the parser, token insertion buttons for `{entity}`, `{action}`, `{area}` placeholders, and template preview with sample values.
+- **Activity Dashboard Metrics** — Three new summary cards: Command Parsed count, LLM Fallback count, and Parser Rate percentage showing the ratio of commands handled locally vs forwarded to the LLM.
+
+### 💬 Conversation Command Parser
+- **`POST /api/conversation`** — New REST endpoint accepting structured JSON with user text and separated device/session context object. Returns instant JSON for parsed commands or SSE streaming for LLM fallback.
+- **True LLM Bypass** — Pattern-matched commands call skill methods (LightControlSkill, ClimateControlSkill, SceneControlSkill) directly against Home Assistant — zero LLM involvement, sub-50ms execution.
+- **Command Pattern Matching** — Leverages the existing `CommandPatternRouter` with template syntax (`{name}`, `{name:opt1|opt2}`, `[optional]`), confidence scoring, and priority-based tiebreaking.
+- **DirectSkillExecutor** — Dispatches matched routes to concrete skill methods: light toggle/brightness, climate set temperature/adjust, scene activate. Resolves entities via captured text and device area context.
+- **Response Template System** — MongoDB-stored templates with simple `{placeholder}` interpolation, random variant selection for natural variety, and seed defaults for all supported commands. Managed via CRUD API and dashboard.
+- **Context Reconstructor** — Rebuilds system prompt from structured context JSON for LLM fallback, matching the format the orchestrator expects.
+- **Conversation Telemetry** — OpenTelemetry counters (`conversation.command_parsed`, `conversation.llm_fallback`, `conversation.command_parsed.errors`) and duration histograms, plus in-memory stats for the activity dashboard.
+- **Multi-Turn Continuity** — Server generates stable `conversationId` (GUID) when client doesn't provide one, used consistently across command and LLM paths.
+- **`GET /api/conversation/patterns`** — Exposes registered command patterns with their SkillId, Action, placeholder tokens, and example templates for dashboard tooling.
+
+### 🏠 Home Assistant Component (v1.2.0-preview.1)
+- **REST Migration** — Component migrated from A2A JSON-RPC 2.0 to the new `POST /api/conversation` endpoint with structured context objects.
+- **Simplified Setup** — Removed agent catalog fetch and agent selection. Configuration requires only host URL + API key.
+- **SSE Streaming** — Handles both instant JSON (command parsed) and SSE event streams (LLM fallback) from the conversation endpoint.
+- **Structured Context** — Device ID, area, type, user ID, timestamp, and location sent as typed JSON fields instead of embedded in prompt text.
+- **Auto-Generated Conversation IDs** — Generates UUID for first-turn conversations, maintaining multi-turn continuity via the tracker.
+- **Optional Prompt Override** — Configurable prompt template override in the HA options flow.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+### 🔌 Pluggable Data Providers
+
+The new `lucia.Data` project introduces provider-agnostic persistence, enabling Lucia to run without Redis or MongoDB:
+
+**Cache Providers (replacing Redis):**
+- `InMemorySessionCacheService` — Multi-turn conversation state with sliding expiration
+- `InMemoryDeviceCacheService` — Home Assistant entity caching with TTL support
+- `InMemoryPromptCacheService` — Routing and response caching with SHA256 + semantic similarity matching
+- `InMemoryTaskStore` — A2A task persistence with configurable TTL and periodic cleanup
+- `InMemoryEntityLocationService` — Floor/area/entity graph with hybrid entity matching
+
+**Store Providers (replacing MongoDB):**
+- 17 SQLite repository implementations covering all 4 MongoDB databases (luciaconfig, luciatraces, luciatasks, luciawyoming)
+- Hybrid schema: indexed columns for query performance + JSON blob for full document storage
+- Code-first migrations with `SqliteMigrationRunner` and versioned schema tracking
+- `SqliteConfigurationProvider` with polling-based hot-reload matching the MongoDB provider pattern
+
+**Configuration:**
+```json
+{
+  "DataProvider": {
+    "Cache": "InMemory",
+    "Store": "SQLite",
+    "SqlitePath": "./data/lucia.db"
+  }
+}
+```
+
+**Interface Abstractions:**
+- `IConfigStoreWriter` — New interface for configuration CRUD (extracted from `ConfigStoreWriter`)
+- `ITaskIdIndex` — New interface for task ID enumeration (extracted from Redis-specific key scanning)
+- `ConfigSeeder` refactored to use `IConfigStoreWriter` instead of `IMongoClient`
+- `TaskArchivalService` refactored to use `ITaskIdIndex` instead of `IConnectionMultiplexer`
+- All API endpoints updated to use abstractions (no direct `IMongoClient` or `IConnectionMultiplexer` injection)
+
+### 📦 Home Assistant Mono-Container
+
+New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
+
+- **Zero Dependencies** — No Redis, MongoDB, or GPU drivers required
+- **CPU-Only ONNX** — `CpuOnly=true` MSBuild flag excludes `Microsoft.ML.OnnxRuntime.Gpu.Linux`, verified ONNX provider detection with graceful CPU fallback
+- **Embedded Dashboard** — React SPA built and bundled into `wwwroot/` in a multi-stage Docker build
+- **SQLite Persistence** — Single `/data/lucia.db` file for all configuration, traces, tasks, and voice data
+- **Volume Mounts** — `/data` (SQLite DB), `/app/models` (Wyoming voice models), `/app/plugins` (script plugins)
+- **HA Add-on Support** — `ha-addon/config.yaml` with ingress, port mapping, and options schema
+
+### 🔍 ONNX Provider Verification
+
+`OnnxProviderDetector` now verifies each accelerated provider by attempting `SessionOptions.AppendExecutionProvider_*()` before selecting it. This prevents sherpa-onnx native crashes when CUDA shared libraries are absent — the detector gracefully falls back to `CPUExecutionProvider`.
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| Conversation command processor | 5 |
+| Direct skill executor | 4 |
+| Response template renderer | 4 |
+| Context reconstructor | 4 |
+| **Total Wyoming Tests** | **230** |
+| **Total Conversation Tests** | **17** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles, voice config persistence, and response templates. Redis is optional but recommended for profile caching.
+- **Home Assistant component upgrade** — The HA custom component has been migrated to v1.2.0-preview.1. **Breaking change:** remove and re-add the Lucia integration in Home Assistant. The new setup flow only requires the host URL and API key — agent selection is no longer needed.
+- **Response templates** — Default templates are seeded automatically on first launch. Customize them via the Response Templates page in the dashboard or `POST /api/response-templates`.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
+
+
+---
+
+# [v1.2.0-preview.9 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.9)
+
+**Published:** 2026-03-19
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.11 Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.11)
+
+**Published:** 2026-03-19
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+- **Conversation Test Page** — Interactive chat interface at `/conversation` for testing the command parser endpoint directly from the dashboard, with HA context simulation, SSE streaming, and response metadata badges showing whether commands were parsed locally or handled by the LLM.
+- **Response Templates Page** — Full CRUD management of response templates at `/response-templates`, grouped by skill. Features pattern-driven SkillId/Action dropdowns populated from the parser, token insertion buttons for `{entity}`, `{action}`, `{area}` placeholders, and template preview with sample values.
+- **Activity Dashboard Metrics** — Three new summary cards: Command Parsed count, LLM Fallback count, and Parser Rate percentage showing the ratio of commands handled locally vs forwarded to the LLM.
+
+### 💬 Conversation Command Parser
+- **`POST /api/conversation`** — New REST endpoint accepting structured JSON with user text and separated device/session context object. Returns instant JSON for parsed commands or SSE streaming for LLM fallback.
+- **True LLM Bypass** — Pattern-matched commands call skill methods (LightControlSkill, ClimateControlSkill, SceneControlSkill) directly against Home Assistant — zero LLM involvement, sub-50ms execution.
+- **Command Pattern Matching** — Leverages the existing `CommandPatternRouter` with template syntax (`{name}`, `{name:opt1|opt2}`, `[optional]`), confidence scoring, and priority-based tiebreaking.
+- **DirectSkillExecutor** — Dispatches matched routes to concrete skill methods: light toggle/brightness, climate set temperature/adjust, scene activate. Resolves entities via captured text and device area context.
+- **Response Template System** — MongoDB-stored templates with simple `{placeholder}` interpolation, random variant selection for natural variety, and seed defaults for all supported commands. Managed via CRUD API and dashboard.
+- **Context Reconstructor** — Rebuilds system prompt from structured context JSON for LLM fallback, matching the format the orchestrator expects.
+- **Conversation Telemetry** — OpenTelemetry counters (`conversation.command_parsed`, `conversation.llm_fallback`, `conversation.command_parsed.errors`) and duration histograms, plus in-memory stats for the activity dashboard.
+- **Multi-Turn Continuity** — Server generates stable `conversationId` (GUID) when client doesn't provide one, used consistently across command and LLM paths.
+- **`GET /api/conversation/patterns`** — Exposes registered command patterns with their SkillId, Action, placeholder tokens, and example templates for dashboard tooling.
+
+### 🏠 Home Assistant Component (v1.2.0-preview.1)
+- **REST Migration** — Component migrated from A2A JSON-RPC 2.0 to the new `POST /api/conversation` endpoint with structured context objects.
+- **Simplified Setup** — Removed agent catalog fetch and agent selection. Configuration requires only host URL + API key.
+- **SSE Streaming** — Handles both instant JSON (command parsed) and SSE event streams (LLM fallback) from the conversation endpoint.
+- **Structured Context** — Device ID, area, type, user ID, timestamp, and location sent as typed JSON fields instead of embedded in prompt text.
+- **Auto-Generated Conversation IDs** — Generates UUID for first-turn conversations, maintaining multi-turn continuity via the tracker.
+- **Optional Prompt Override** — Configurable prompt template override in the HA options flow.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| Conversation command processor | 5 |
+| Direct skill executor | 4 |
+| Response template renderer | 4 |
+| Context reconstructor | 4 |
+| **Total Wyoming Tests** | **230** |
+| **Total Conversation Tests** | **17** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles, voice config persistence, and response templates. Redis is optional but recommended for profile caching.
+- **Home Assistant component upgrade** — The HA custom component has been migrated to v1.2.0-preview.1. **Breaking change:** remove and re-add the Lucia integration in Home Assistant. The new setup flow only requires the host URL and API key — agent selection is no longer needed.
+- **Response templates** — Default templates are seeded automatically on first launch. Customize them via the Response Templates page in the dashboard or `POST /api/response-templates`.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.10 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.10)
+
+**Published:** 2026-03-19
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.8 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.8)
+
+**Published:** 2026-03-18
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.7 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.7)
+
+**Published:** 2026-03-18
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.6 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.6)
+
+**Published:** 2026-03-18
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce the **Conversation Command Parser** — a fast-path processing pipeline that pattern-matches common voice commands (lights, climate, scenes) and executes them directly against Home Assistant, bypassing the LLM entirely for sub-50ms response times. We also introduce user-facing personalization to Lucia's orchestration layer, letting users define a personality prompt that rewrites all agent responses through an LLM before delivery.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
+- **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.5 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.5)
+
+**Published:** 2026-03-18
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce user-facing personalization to Lucia's orchestration layer. The headline feature lets users define a personality prompt that rewrites all agent responses through an LLM before delivery — giving Lucia a configurable voice, tone, and communication style without modifying the agents themselves.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.4 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.4)
+
+**Published:** 2026-03-17
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🎙️ Overview
+
+"Pulsar" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface. In addition, we introduce user-facing personalization to Lucia's orchestration layer. The headline feature lets users define a personality prompt that rewrites all agent responses through an LLM before delivery — giving Lucia a configurable voice, tone, and communication style without modifying the agents themselves.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+### 🎭 Personality Prompt (PR #80)
+Users can now define a personality prompt on the `/configuration` page under the new Personality Prompt section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- `PersonalityPromptOptions` — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- `WorkflowFactory` — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- `ResultAggregatorExecutor` — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+
+## 🐛 Bug Fixes
+
+- **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
+- **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
+- **Parakeet model download "not found"** — `ModelCatalogService.GetModelById(string)` only searched `EngineType.Stt`, but Parakeet TDT is registered as `EngineType.OfflineStt`. Now searches all engine types. Also fixed the download endpoint to resolve the model base path per engine type instead of hardcoding the STT path.
+- **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
+- **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
+- **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.3 Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.3)
+
+**Published:** 2026-03-17
+
+# Release Notes - 1.2.0
+
+**Release Date:** March 2026
+**Code Name:** "Spectra"
+
+---
+
+## 🎙️ Overview
+
+"Spectra" introduces the **Wyoming Voice Platform** — a full local speech pipeline that turns Lucia into a Wyoming protocol-compatible voice satellite for Home Assistant. This release delivers streaming speech-to-text, speaker verification, wake word detection, speech enhancement, a multi-engine model management system, and a new dashboard Voice Platform page for configuring everything from one surface.
+
+## 🚀 Highlights
+
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
+- **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
+- **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
+- **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
+- **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
+
+## ✨ Features
+
+### Wyoming Protocol Server
+- Full Wyoming satellite protocol implementation (audio-start, audio-chunk, audio-stop, transcribe, transcript, detect, not-detected)
+- Persistent TCP connections with per-session state management
+- Zeroconf/mDNS service advertisement for automatic Home Assistant discovery
+- VAD-driven voice activity detection with configurable speech/silence thresholds
+- Wake word detection with custom phrase support and per-speaker calibration
+
+### Multi-Engine Speech-to-Text
+- **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
+- **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
+- Progressive re-transcription with burst detection and stability-based early stopping
+- Per-engine model catalog with download, install, activate, and delete lifecycle
+
+### Speaker Verification & Voice Profiles
+- Sherpa-onnx speaker embedding extraction with cosine similarity matching
+- Enrolled speaker profiles with configurable verification threshold
+- Provisional auto-discovery profiles for unknown speakers with interaction tracking
+- Adaptive profile updates (exponential moving average) for high-confidence matches
+- Guided onboarding flow with audio quality validation (SNR, duration checks)
+- Profile merge, rename, and provisional-to-enrolled promotion via API and dashboard
+- Audio clip capture, playback, reassignment, and per-profile management
+- Redis-cached enrolled profiles for sub-millisecond lookup latency
+- MongoDB-backed persistent storage with in-memory fallback
+
+### ONNX Provider Auto-Detection
+- `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
+- Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
+- Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
+
+### Speech Enhancement
+- GTCRN (Gated Temporal Convolutional Recurrent Network) streaming noise reduction
+- Per-session enhancement with isolated overlap-add state
+- Raw audio preserved separately for speaker verification to avoid spectral mismatch with enrollment data
+
+### Model Management System
+- Centralized model catalog with architecture-aware compatibility filtering
+- Background download with real-time progress tracking via SSE
+- Multi-stage progress bars (download → extract → validate)
+- Hot-reload model activation via `ActiveModelChanged` events — no restart required
+- Per-engine model views (STT, VAD, Wake Word, Speaker Embedding, Speech Enhancement)
+- Startup model validation with dummy inference warmup
+
+### Voice Platform Dashboard
+- **Status tab** — Engine readiness tiles, active model indicators, ONNX provider detection display, and guided next-steps checklist
+- **Models tab** — Browse, download, activate, and delete models per engine type with real-time download progress
+- **Profiles tab** — View enrolled and provisional speaker profiles, inline rename, promote to enrolled, merge profiles, manage audio clips with playback
+- **Wake Words tab** — Register custom wake phrases with optional speaker enrollment, manage and delete entries
+- **Monitor tab** — Real-time session monitoring via SSE with audio level meters, transcript log, and connection status
+- **Config panel** — Voice verification threshold, provisional profile settings, adaptive profiles, and retention controls — persisted to MongoDB via ConfigStoreWriter
+
+## 🐛 Bug Fixes
+
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
+- **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
+- **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
+- **Thread pool deadlock in STT finalization** — `GetFinalResult` blocked the thread pool. Converted to async with proper continuation.
+- **Aspire resilience timeout killing model downloads** — 3-minute default timeout was insufficient for large model downloads. Bypassed Aspire service discovery for external URLs.
+- **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
+- **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
+
+## ⚡ Performance
+
+- Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
+- Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
+- Short command fast-path skips progressive re-transcription overhead
+- ONNX model warmup on startup eliminates cold-start inference latency
+- CUDA 12.8 + cuDNN 9 GPU Dockerfile for accelerated voice inference
+- Workstation GC mode and thread pool tuning for development responsiveness
+- OTEL export frequency reduced from 1s to 5s to lower telemetry overhead
+
+## 📊 Test Coverage
+
+| Area | Tests |
+|------|-------|
+| Wyoming session integration | 50+ |
+| Speaker verification components | 17 |
+| Speech enhancement validation | 20+ |
+| Engine hot-reload | 10+ |
+| Engine readiness | 10+ |
+| Wyoming status API | 2 |
+| Command pattern matching | 30+ |
+| Profile store (InMemory) | 10+ |
+| **Total Wyoming Tests** | **230** |
+
+## 🔄 Upgrade Notes
+
+- **New infrastructure dependencies** — MongoDB (`luciaconfig` database) is used for speaker profiles and voice config persistence. Redis is optional but recommended for profile caching.
+- **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
+- **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
+- **GPU acceleration** — Install the appropriate ONNX Runtime GPU package (`Microsoft.ML.OnnxRuntime.Gpu` for CUDA, etc.) to enable auto-detected GPU acceleration. No configuration changes needed — the detector will find and use it automatically.
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+
+
+---
+
+# [v1.2.0-preview.2 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.2)
+
+**Published:** 2026-03-11
+
+# Release Notes - 1.2.0-preview.2
+
+**Release Date:** March 11, 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🔮 Overview
+
+"Pulsar" introduces user-facing personalization to Lucia's orchestration layer. The headline feature lets users define a personality prompt that rewrites all agent responses through an LLM before delivery — giving Lucia a configurable voice, tone, and communication style without modifying the agents themselves.
+
+## 🚀 Highlights
+
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ What's New
+
+### 🎭 Personality Prompt ([PR #80](https://github.com/seiggy/lucia-dotnet/pull/80))
+
+Users can now define a personality prompt on the `/configuration` page under the new **Personality Prompt** section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- **`PersonalityPromptOptions`** — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- **`WorkflowFactory`** — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- **`ResultAggregatorExecutor`** — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+### 🧺 Project Laundry
+
+- **SDK Pinned** — Pinned .NET 10 to the latest appropriate minimal SDK
+- **Removed outdated docs** — Removed a lot of outdated docs and old AI assistance templates and prompts.
+- **Package Updates** — Updated all central projects to the latest versions from .NET 10.0.4 security patch
+
+## 📊 Test Coverage
+
+| Area | Unit Tests |
+|------|-----------|
+| Personality rewrite (enabled, disabled, fallback, cancellation) | 7 |
+| **Total New Tests** | **7** |
+
+## 🔄 Upgrade Notes
+
+- **No breaking changes** — fully backward-compatible. Existing installations see no behavior change until a personality prompt is configured.
+- **No restart required** — personality prompt changes take effect immediately via `IOptionsMonitor`.
+- **Optional model** — leave `ModelConnectionName` empty to reuse the orchestrator's model, or select a dedicated model for personality rewriting.
+
+
+---
+
+# [v1.2.0-preview.1 - Pulsar](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.2.0-preview.1)
+
+**Published:** 2026-03-11
+
+# Release Notes - 1.2.0-preview.1
+
+**Release Date:** March 11, 2026
+**Code Name:** "Pulsar"
+
+---
+
+## 🔮 Overview
+
+"Pulsar" introduces user-facing personalization to Lucia's orchestration layer. The headline feature lets users define a personality prompt that rewrites all agent responses through an LLM before delivery — giving Lucia a configurable voice, tone, and communication style without modifying the agents themselves.
+
+## 🚀 Highlights
+
+- **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
+- **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
+- **Zero-Cost Opt-In** — When no personality is configured, the pipeline is unchanged — no LLM call, no added latency.
+
+## ✨ What's New
+
+### 🎭 Personality Prompt ([PR #80](https://github.com/seiggy/lucia-dotnet/pull/80))
+
+Users can now define a personality prompt on the `/configuration` page under the new **Personality Prompt** section. When set, the `ResultAggregatorExecutor` passes the composed multi-agent response through an LLM with the personality instructions as the system prompt, rewriting the output to match the desired tone.
+
+- **`PersonalityPromptOptions`** — New config model with `Instructions` (the personality system prompt) and `ModelConnectionName` (optional separate LLM for rewriting)
+- **`WorkflowFactory`** — Accepts `IOptionsMonitor<PersonalityPromptOptions>` for live config reload without restart. Conditionally resolves a separate `IChatClient` when `ModelConnectionName` is set, or falls back to the orchestrator's default model.
+- **`ResultAggregatorExecutor`** — After composing the raw message from agent responses, calls the personality LLM with `system=instructions` + `user=composed message`. Graceful fallback to raw message on LLM failure or empty response.
+- **Resilient resolution** — A misconfigured `ModelConnectionName` logs a warning and disables personality for that request instead of failing the entire orchestration pipeline.
+- **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
+
+### 🖥️ Dashboard
+
+- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
+- **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
+
+## 📊 Test Coverage
+
+| Area | Unit Tests |
+|------|-----------|
+| Personality rewrite (enabled, disabled, fallback, cancellation) | 7 |
+| **Total New Tests** | **7** |
+
+## 🔄 Upgrade Notes
+
+- **No breaking changes** — fully backward-compatible. Existing installations see no behavior change until a personality prompt is configured.
+- **No restart required** — personality prompt changes take effect immediately via `IOptionsMonitor`.
+- **Optional model** — leave `ModelConnectionName` empty to reuse the orchestrator's model, or select a dedicated model for personality rewriting.
+
+
+---
+
+# [v1.1.1 - Spectra Patch 1](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.1.1)
+
+**Published:** 2026-03-07
+
 # Release Notes - 1.1.1
 
-**Release Date:** March 7, 2026  
+**Release Date:** March 7, 2026
 **Code Name:** "Spectra Patch 1"
 
 ---
@@ -62,12 +2806,16 @@ The plugin system stored version information but never compared installed versio
 - **Plugin update UI** — after upgrading, the Plugins page will automatically show update indicators for any outdated plugins
 - **Restart required** — applying a plugin update from the dashboard will prompt for a restart to reload the updated plugin
 
+
 ---
----
+
+# [v1.1.0 - Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.1.0)
+
+**Published:** 2026-03-06
 
 # Release Notes - 1.1.0
 
-**Release Date:** March 6, 2026  
+**Release Date:** March 6, 2026
 **Code Name:** "Spectra"
 
 ---
@@ -314,11 +3062,655 @@ The plugin system stored version information but never compared installed versio
 6. **Skill config auto-seeded** — New skill option sections (`LightControlSkill`, `ClimateControlSkill`, `FanControlSkill`, `SceneControlSkill`, `MusicPlaybackSkill`) are auto-seeded to MongoDB on first startup. Edit via Agent Definitions page, not the raw Configuration page.
 7. **Entity cleanup** — Use the new delete button on Entity Locations to remove stale/duplicate entities that may cause service call failures.
 
+
 ---
+
+# [1.1.0-preview.4 - Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.1.0-preview.4)
+
+**Published:** 2026-03-06
+
+ Release Notes - 1.1.0
+
+**Release Date:** March 6, 2026
+**Code Name:** "Spectra"
+
+---
+
+## 🔮 Overview
+
+"Spectra" delivers Lucia's largest entity-intelligence upgrade to date and folds in post-cut stabilization work across Home Assistant conversation flow, model-provider support, setup/plugins UX, and CI reliability. This release unifies entity modeling, introduces multi-signal matching, fixes semantic prompt-cache persistence and thresholding, and hardens the platform for day-to-day operation.
+
+## 🚀 Highlights
+
+- **Unified Entity Model** — All Home Assistant entity types now share a common `HomeAssistantEntity` base with domain-specific subtypes.
+- **HybridEntityMatcher** — Multi-weighted search combines Levenshtein, Jaro-Winkler, phonetic matching, aliases, and token overlap.
+- **Prompt Cache Overhaul** — Embeddings now persist correctly, routing/chat thresholds are split, and cache settings hot-reload without restart.
+- **Embedding Resiliency + Live Progress** — Entity-location embeddings now generate in throttled background batches, expose SSE progress, and support per-item evict/regenerate controls.
+- **Home Assistant Multi-turn Continuity** — Follow-up conversation flow restored and HA commit validation tightened.
+- **OpenRouter + Discovery** — OpenRouter added as a first-class provider with model discovery support.
+- **Plugin/Setup/Dashboard Stabilization** — Headless setup and HA setup-step UX improvements, plugin installation reliability fixes, and dashboard/tooling cleanup.
+- **Brave Search API Plugin** — New privacy-respecting web search plugin using the Brave Search API, with full plugin config GUI for managing API keys from the dashboard.
+- **CI Hardening** — HACS validation workflow corrected, deployment docs lint cleanup, and release pipeline reliability improvements.
+
+## ✨ What's New
+
+### 🔍 HybridEntityMatcher
+
+- **Multi-signal scoring** — Combines normalized Levenshtein, Jaro-Winkler, token overlap, phonetic matching, and exact/prefix bonuses into a weighted composite score.
+- **Configurable via `HybridMatchOptions`** — Tune weights, minimum thresholds, and phonetic algorithm (Soundex vs Double Metaphone) per search context.
+- **`IMatchableEntity` interface** — Any entity type can participate in hybrid search by implementing this lightweight interface.
+- **`EntityMatchResult`** — Rich result type carrying the matched entity, composite score, individual signal scores, and match metadata.
+
+### 🏠 Unified Entity Architecture
+
+- **`HomeAssistantEntity` base class** — Shared properties (entity ID, friendly name, area, floor, aliases, state, supported features as `SupportedFeatures` bitflag enum) for all HA entity types.
+- **Domain subtypes** — `LightEntity`, `ClimateEntity`, `FanEntity`, `MusicPlayerEntity` extend the base with domain-specific attributes (color modes, HVAC modes, fan speeds, media metadata).
+- **`EntityLocationService` refactor** — Centralized entity resolution service replaces per-skill `FindLightsByAreaAsync`/`FindLightAsync` methods. Skills now delegate entity lookup to the location service.
+- **`AreaInfo` caching** — Areas now pre-build and cache entity collections, floor associations, and phonetic data for fast hierarchical search.
+- **`FloorInfo` model** — First-class floor representation with area containment for multi-level home topologies.
+
+### 👁️ Entity Visibility
+
+- **`EntityVisibilityConfig`** — Per-entity visibility settings stored in MongoDB, letting users hide entities from Lucia without removing them from Home Assistant.
+- **`EntityVisibilityApi`** — REST endpoints for bulk visibility management with area/domain filtering.
+- **HA Exposed Entity List** — Support for pulling the pre-filtered exposed entity list from Home Assistant via WebSocket (`homeassistant/expose_entity/list`).
+
+### 📡 Entity Embedding Resiliency + Live Progress
+
+- **Name fallback for embedding safety** — When an entity/floor/area has no name or alias, matchable names now fall back to IDs (entity IDs strip domain and replace `_` with spaces) to avoid invalid empty embedding inputs.
+- **Non-blocking embedding generation** — `EntityLocationService` now loads/cache location data first, then generates embeddings asynchronously in throttled batches with retry/backoff.
+- **Batch embedding pipeline** — Uses provider batch generation (`GenerateAsync(IEnumerable<string>)`) to reduce request pressure and better handle provider-side limits.
+- **Progress API + SSE stream** — Added `/api/entity-location/embedding-progress` and `/api/entity-location/embedding-progress/live` for real-time generation status.
+- **Per-item cache controls** — Added embedding eviction/regeneration endpoints for floors, areas, and entities.
+- **Dashboard live status** — Entity Location page now shows a live generation progress bar, missing-embedding count, and updates without manual refresh.
+
+### 🧠 Prompt Cache Overhaul
+
+- **Embedding persistence fixed** — Removed `[JsonIgnore]` from `CachedPromptEntry.Embedding` and `CachedChatResponseData.Embedding` that prevented embeddings from ever being serialized to Redis.
+- **Split thresholds** — `SemanticSimilarityThreshold` (routing, default 0.95) and `ChatCacheSemanticThreshold` (chat, default 0.98) are independently configurable.
+- **Hot-reload via `IOptionsMonitor`** — Cache thresholds update within seconds of dashboard config changes, no restart required.
+- **Hit count tracking fix** — Routing cache exact-match hits now correctly persist the incremented `HitCount` back to Redis.
+- **Normalized prompt keys** — `NormalizePrompt` applies `Trim().ToLowerInvariant()` for stable, case-insensitive cache keys.
+- **User-text-only embedding** — Chat cache embeddings are computed from the user's request text only.
+
+### 🏠 Home Assistant Conversation Flow
+
+- Restored multi-turn continuity behavior for follow-up requests.
+- Enforced stricter HA-side commit validation in automation and tool flows.
+- Addressed follow-up review feedback for the multi-turn flow fix set.
+
+### 🤖 Model Providers
+
+- Added OpenRouter as a provider option in model-provider interactions.
+- Expanded model discovery flow and post-review provider hardening.
+
+### 🔌 Setup, Plugins, and Dashboard
+
+- Improved headless setup and Home Assistant setup-step UX.
+- Fixed plugin tooling/integration issues that blocked reliable plugin installation.
+- Resolved setup/plugin/dashboard review and lint issues.
+
+### 🌐 Brave Search API Plugin
+
+- **New web search provider** — `plugins/brave-search/plugin.cs` implements `IWebSearchSkill` using the [Brave Search API](https://brave.com/search/api/) as an alternative to SearXNG.
+- **API key authentication** — Configurable via `BraveSearch:ApiKey`, `BRAVE_SEARCH_API_KEY` env var, or the new plugin config GUI.
+- **Full telemetry** — OpenTelemetry `ActivitySource` and `Meter` instrumentation for request counts, failure counts, and search duration.
+- **Provider-agnostic agent** — General Agent skill description no longer references SearXNG; works with whichever search plugin is active.
+
+### ⚙️ Plugin Configuration GUI
+
+- **Schema-driven config** — Plugins can now declare configurable properties via `ConfigSection`, `ConfigDescription`, and `ConfigProperties` on the `ILuciaPlugin` interface (default interface members — non-breaking).
+- **`PluginConfigProperty` record** — Defines name, type, description, default value, and sensitivity for each config field.
+- **`GET /api/plugins/config/schemas`** — New endpoint aggregates config schemas from all loaded plugins.
+- **Dashboard Configuration tab** — New tab on the Plugins page renders dynamic forms from plugin schemas, with sensitive-field masking, save/discard, and toast notifications.
+- **SearXNG retrofitted** — SearXNG plugin now declares its `BaseUrl` in the config schema so it can also be configured from the UI.
+
+### 🐛 Matcher Debug API
+
+- **`/api/matcher/debug`** — Interactive endpoint for testing `HybridEntityMatcher` queries against live entity data with per-signal score breakdowns.
+- **Dashboard page** — `MatcherDebugPage.tsx` provides a UI for experimenting with matcher queries and score distributions.
+
+### 🔧 Skill Optimizer Migration
+
+- **`GetCachedEntitiesAsync` removed** from `IOptimizableSkill` — Entity resolution now flows through `EntityLocationService`.
+- **Legacy skill methods retired** — `LightControlSkill.FindLightsByAreaAsync`, `FindLightAsync`, `GetLightStateAsync`, and `SetLightStateAsync` now throw `NotSupportedException`.
+- **Device cache dependencies removed** — `LightAgent` no longer depends directly on embedding provider or device cache.
+
+### 🐳 CI/CD and Delivery
+
+- Added support for pre-release Docker tags without moving `latest`.
+- Fixed CI workflow ordering to check out repository contents before HACS validation.
+- Fixed deployment markdownlint issues and removed defunct documentation.
+
+## 🐛 Bug Fixes
+
+- **Prompt cache embeddings never persisted** — Fixed serialization of embedding fields.
+- **Chat cache replayed incorrect actions** — Prevented cross-action semantic collisions by splitting routing/chat thresholds.
+- **Routing cache hit count not persisted** — Exact-hit `HitCount` now writes back to Redis.
+- **Cache config changes required restart** — Migrated to `IOptionsMonitor<T>` for hot-reload.
+- **Embedding provider concurrency issue** — Replaced unsafe dictionary usage with concurrency-safe coordination.
+- **Tracing duration always reported 0ms** — Routing completion timing now measures elapsed request duration correctly.
+- **Unsupported tool-chain config caused provider errors** — Removed invalid configuration path.
+- **Dashboard dependency vulnerabilities** — Patched minimatch (CVE-2026-27903) and rollup (CVE-2026-27606).
+- **Home Assistant follow-up flow regression** — Fixed continuity and follow-up behavior for multi-turn requests.
+- **Plugin install regressions** — Fixed install path/tooling issues affecting plugin usability.
+- **HACS validation workflow failure** — Corrected CI step order to ensure repository content is present.
+- **Startup embedding failures from blank input** — Prevented invalid embedding calls caused by empty match names.
+- **Embedding request bursts during cache reloads** — Moved generation to throttled background batching to reduce provider rate-limit pressure.
+- **Presence sensor refresh duplicate-key crashes** — Fixed MongoDB duplicate key failures on re-scan by deduplicating auto-detected sensor IDs and skipping IDs already reserved by user overrides (issue #41).
+
+## 🧪 Testing
+
+- **Playwright e2e test** — `PromptCacheRoutingTests` validates prompt-cache embedding round-trip and semantic route matching behavior.
+- **Embedding diagnostics** — `EmbeddingMatchingTests` measure similarity behavior across synonym/opposite/cross-domain prompt variants.
+- **Plugin/install regression coverage** — Added and updated tests around plugin installability and related dashboard/setup flows.
+- **Name fallback tests** — `EntityMatchNameFormatterTests` validates alias sanitization and ID-based fallback behavior used by embedding inputs.
+- **Brave Search contract tests** — `BraveSearchWebSearchSkillTests` validates HTTP request format, auth headers, JSON deserialization, empty results, and error handling.
+- **Plugin config schema tests** — `PluginConfigSchemaTests` validates default interface members, schema declaration, property equality, and filtering logic.
+
+## 📋 New Files
+
+| Path | Purpose |
+|------|---------|
+| `lucia.Agents/Abstractions/IEntityLocationService.cs` | Centralized entity resolution interface |
+| `lucia.Agents/Abstractions/IHybridEntityMatcher.cs` | Multi-signal entity search interface |
+| `lucia.Agents/Abstractions/IMatchableEntity.cs` | Entity search participation contract |
+| `lucia.Agents/Models/HomeAssistant/HomeAssistantEntity.cs` | Unified HA entity base class |
+| `lucia.Agents/Models/HomeAssistant/SupportedColorModes.cs` | Light color mode bitflag enum |
+| `lucia.Agents/Models/HomeAssistant/FloorInfo.cs` | Floor model with area containment |
+| `lucia.Agents/Models/HomeAssistant/OccupiedArea.cs` | Area occupancy tracking |
+| `lucia.Agents/Models/HomeAssistant/EntityVisibilityConfig.cs` | Per-entity visibility settings |
+| `lucia.Agents/Models/HybridEntityMatcher.cs` | Multi-weighted entity matching engine |
+| `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
+| `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
+| `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
+| `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
+| `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
+| `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
+| `lucia.HomeAssistant/Models/ExposedEntityListResponse.cs` | HA WebSocket exposed entity response |
+| `lucia.AgentHost/Apis/EntityVisibilityApi.cs` | Entity visibility REST endpoints |
+| `lucia.AgentHost/Apis/MatcherDebugApi.cs` | Matcher debug/testing REST endpoints |
+| `lucia.Agents/Models/HomeAssistant/EntityLocationEmbeddingProgress.cs` | Embedding coverage/progress snapshot model |
+| `lucia.Agents/Services/EntityMatchNameFormatter.cs` | Safe name/alias formatter with ID fallback |
+| `lucia-dashboard/src/pages/MatcherDebugPage.tsx` | Matcher debug dashboard page |
+| `lucia-dashboard/src/pages/EntityLocationPage.tsx` | Live embedding progress UI + embedding actions |
+| `lucia.PlaywrightTests/Agents/PromptCacheRoutingTests.cs` | Cache embedding e2e test |
+| `plugins/brave-search/plugin.cs` | Brave Search API web search plugin |
+| `lucia.Agents/Abstractions/PluginConfigProperty.cs` | Plugin config property record type |
+| `lucia.AgentHost/PluginFramework/Models/PluginConfigSchemaDto.cs` | Plugin config schema API DTO |
+| `lucia.AgentHost/PluginFramework/Models/PluginConfigPropertyDto.cs` | Plugin config property API DTO |
+| `lucia-dashboard/src/components/PluginConfigTab.tsx` | Plugin configuration tab component |
+| `lucia.Tests/BraveSearchWebSearchSkillTests.cs` | Brave Search HTTP contract tests |
+| `lucia.Tests/PluginConfigSchemaTests.cs` | Plugin config schema infrastructure tests |
+
+## 🗑️ Removed / Deprecated
+
+| Path | Reason |
+|------|--------|
+| `lucia.Agents/Services/IEntityLocationService.cs` | Moved to `Abstractions/` namespace |
+| `lucia.Agents/Models/FloorInfo.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Models/OccupiedArea.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Agents/DiagnosticChatClientWrapper.cs` | Replaced by `TracingChatClientFactory` |
+| `lucia.Agents/Configuration/AgentConfiguration.cs` | Replaced by `AgentDefinition` |
+| `LightControlSkill.FindLightsByAreaAsync` | Throws `NotSupportedException` — use entity tools |
+| `LightControlSkill.FindLightAsync` | Throws `NotSupportedException` — use entity tools |
+| `IOptimizableSkill.GetCachedEntitiesAsync` | Removed — optimizer uses location service |
+
+---
+
+## ⬆️ Upgrade Notes
+
+1. **Cache eviction recommended** — Evict routing and chat caches via dashboard (or `DELETE /api/prompt-cache` and `DELETE /api/chat-cache`) to clear stale entries.
+2. **New cache config properties** — `RouterExecutor:SemanticSimilarityThreshold` (0.95) and `RouterExecutor:ChatCacheSemanticThreshold` (0.98) can be tuned in dashboard settings.
+3. **Skill API breaking changes** — Skills calling `FindLightsByAreaAsync`, `FindLightAsync`, or `GetCachedEntitiesAsync` must migrate to unified entity tools via `EntityLocationService`.
+
+---
+
+---
+
+# [v1.1.0-preview.3 - Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.1.0-preview.3)
+
+**Published:** 2026-03-05
+
+# Release Notes - 1.1.0
+
+**Release Date:** March 6, 2026
+**Code Name:** "Spectra"
+
+---
+
+## 🔮 Overview
+
+"Spectra" delivers Lucia's largest entity-intelligence upgrade to date and folds in post-cut stabilization work across Home Assistant conversation flow, model-provider support, setup/plugins UX, and CI reliability. This release unifies entity modeling, introduces multi-signal matching, fixes semantic prompt-cache persistence and thresholding, and hardens the platform for day-to-day operation.
+
+## 🚀 Highlights
+
+- **Unified Entity Model** — All Home Assistant entity types now share a common `HomeAssistantEntity` base with domain-specific subtypes.
+- **HybridEntityMatcher** — Multi-weighted search combines Levenshtein, Jaro-Winkler, phonetic matching, aliases, and token overlap.
+- **Prompt Cache Overhaul** — Embeddings now persist correctly, routing/chat thresholds are split, and cache settings hot-reload without restart.
+- **Home Assistant Multi-turn Continuity** — Follow-up conversation flow restored and HA commit validation tightened.
+- **OpenRouter + Discovery** — OpenRouter added as a first-class provider with model discovery support.
+- **Plugin/Setup/Dashboard Stabilization** — Headless setup and HA setup-step UX improvements, plugin installation reliability fixes, and dashboard/tooling cleanup.
+- **CI Hardening** — HACS validation workflow corrected, deployment docs lint cleanup, and release pipeline reliability improvements.
+
+## ✨ What's New
+
+### 🔍 HybridEntityMatcher
+
+- **Multi-signal scoring** — Combines normalized Levenshtein, Jaro-Winkler, token overlap, phonetic matching, and exact/prefix bonuses into a weighted composite score.
+- **Configurable via `HybridMatchOptions`** — Tune weights, minimum thresholds, and phonetic algorithm (Soundex vs Double Metaphone) per search context.
+- **`IMatchableEntity` interface** — Any entity type can participate in hybrid search by implementing this lightweight interface.
+- **`EntityMatchResult`** — Rich result type carrying the matched entity, composite score, individual signal scores, and match metadata.
+
+### 🏠 Unified Entity Architecture
+
+- **`HomeAssistantEntity` base class** — Shared properties (entity ID, friendly name, area, floor, aliases, state, supported features as `SupportedFeatures` bitflag enum) for all HA entity types.
+- **Domain subtypes** — `LightEntity`, `ClimateEntity`, `FanEntity`, `MusicPlayerEntity` extend the base with domain-specific attributes (color modes, HVAC modes, fan speeds, media metadata).
+- **`EntityLocationService` refactor** — Centralized entity resolution service replaces per-skill `FindLightsByAreaAsync`/`FindLightAsync` methods. Skills now delegate entity lookup to the location service.
+- **`AreaInfo` caching** — Areas now pre-build and cache entity collections, floor associations, and phonetic data for fast hierarchical search.
+- **`FloorInfo` model** — First-class floor representation with area containment for multi-level home topologies.
+
+### 👁️ Entity Visibility
+
+- **`EntityVisibilityConfig`** — Per-entity visibility settings stored in MongoDB, letting users hide entities from Lucia without removing them from Home Assistant.
+- **`EntityVisibilityApi`** — REST endpoints for bulk visibility management with area/domain filtering.
+- **HA Exposed Entity List** — Support for pulling the pre-filtered exposed entity list from Home Assistant via WebSocket (`homeassistant/expose_entity/list`).
+
+### 🧠 Prompt Cache Overhaul
+
+- **Embedding persistence fixed** — Removed `[JsonIgnore]` from `CachedPromptEntry.Embedding` and `CachedChatResponseData.Embedding` that prevented embeddings from ever being serialized to Redis.
+- **Split thresholds** — `SemanticSimilarityThreshold` (routing, default 0.95) and `ChatCacheSemanticThreshold` (chat, default 0.98) are independently configurable.
+- **Hot-reload via `IOptionsMonitor`** — Cache thresholds update within seconds of dashboard config changes, no restart required.
+- **Hit count tracking fix** — Routing cache exact-match hits now correctly persist the incremented `HitCount` back to Redis.
+- **Normalized prompt keys** — `NormalizePrompt` applies `Trim().ToLowerInvariant()` for stable, case-insensitive cache keys.
+- **User-text-only embedding** — Chat cache embeddings are computed from the user's request text only.
+
+### 🏠 Home Assistant Conversation Flow
+
+- Restored multi-turn continuity behavior for follow-up requests.
+- Enforced stricter HA-side commit validation in automation and tool flows.
+- Addressed follow-up review feedback for the multi-turn flow fix set.
+
+### 🤖 Model Providers
+
+- Added OpenRouter as a provider option in model-provider interactions.
+- Expanded model discovery flow and post-review provider hardening.
+
+### 🔌 Setup, Plugins, and Dashboard
+
+- Improved headless setup and Home Assistant setup-step UX.
+- Fixed plugin tooling/integration issues that blocked reliable plugin installation.
+- Resolved setup/plugin/dashboard review and lint issues.
+
+### 🐛 Matcher Debug API
+
+- **`/api/matcher/debug`** — Interactive endpoint for testing `HybridEntityMatcher` queries against live entity data with per-signal score breakdowns.
+- **Dashboard page** — `MatcherDebugPage.tsx` provides a UI for experimenting with matcher queries and score distributions.
+
+### 🔧 Skill Optimizer Migration
+
+- **`GetCachedEntitiesAsync` removed** from `IOptimizableSkill` — Entity resolution now flows through `EntityLocationService`.
+- **Legacy skill methods retired** — `LightControlSkill.FindLightsByAreaAsync`, `FindLightAsync`, `GetLightStateAsync`, and `SetLightStateAsync` now throw `NotSupportedException`.
+- **Device cache dependencies removed** — `LightAgent` no longer depends directly on embedding provider or device cache.
+
+### 🐳 CI/CD and Delivery
+
+- Added support for pre-release Docker tags without moving `latest`.
+- Fixed CI workflow ordering to check out repository contents before HACS validation.
+- Fixed deployment markdownlint issues and removed defunct documentation.
+
+## 🐛 Bug Fixes
+
+- **Prompt cache embeddings never persisted** — Fixed serialization of embedding fields.
+- **Chat cache replayed incorrect actions** — Prevented cross-action semantic collisions by splitting routing/chat thresholds.
+- **Routing cache hit count not persisted** — Exact-hit `HitCount` now writes back to Redis.
+- **Cache config changes required restart** — Migrated to `IOptionsMonitor<T>` for hot-reload.
+- **Embedding provider concurrency issue** — Replaced unsafe dictionary usage with concurrency-safe coordination.
+- **Tracing duration always reported 0ms** — Routing completion timing now measures elapsed request duration correctly.
+- **Unsupported tool-chain config caused provider errors** — Removed invalid configuration path.
+- **Dashboard dependency vulnerabilities** — Patched minimatch (CVE-2026-27903) and rollup (CVE-2026-27606).
+- **Home Assistant follow-up flow regression** — Fixed continuity and follow-up behavior for multi-turn requests.
+- **Plugin install regressions** — Fixed install path/tooling issues affecting plugin usability.
+- **HACS validation workflow failure** — Corrected CI step order to ensure repository content is present.
+
+## 🧪 Testing
+
+- **Playwright e2e test** — `PromptCacheRoutingTests` validates prompt-cache embedding round-trip and semantic route matching behavior.
+- **Embedding diagnostics** — `EmbeddingMatchingTests` measure similarity behavior across synonym/opposite/cross-domain prompt variants.
+- **Plugin/install regression coverage** — Added and updated tests around plugin installability and related dashboard/setup flows.
+
+## 📋 New Files
+
+| Path | Purpose |
+|------|---------|
+| `lucia.Agents/Abstractions/IEntityLocationService.cs` | Centralized entity resolution interface |
+| `lucia.Agents/Abstractions/IHybridEntityMatcher.cs` | Multi-signal entity search interface |
+| `lucia.Agents/Abstractions/IMatchableEntity.cs` | Entity search participation contract |
+| `lucia.Agents/Models/HomeAssistant/HomeAssistantEntity.cs` | Unified HA entity base class |
+| `lucia.Agents/Models/HomeAssistant/SupportedColorModes.cs` | Light color mode bitflag enum |
+| `lucia.Agents/Models/HomeAssistant/FloorInfo.cs` | Floor model with area containment |
+| `lucia.Agents/Models/HomeAssistant/OccupiedArea.cs` | Area occupancy tracking |
+| `lucia.Agents/Models/HomeAssistant/EntityVisibilityConfig.cs` | Per-entity visibility settings |
+| `lucia.Agents/Models/HybridEntityMatcher.cs` | Multi-weighted entity matching engine |
+| `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
+| `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
+| `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
+| `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
+| `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
+| `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
+| `lucia.HomeAssistant/Models/ExposedEntityListResponse.cs` | HA WebSocket exposed entity response |
+| `lucia.AgentHost/Apis/EntityVisibilityApi.cs` | Entity visibility REST endpoints |
+| `lucia.AgentHost/Apis/MatcherDebugApi.cs` | Matcher debug/testing REST endpoints |
+| `lucia-dashboard/src/pages/MatcherDebugPage.tsx` | Matcher debug dashboard page |
+| `lucia.PlaywrightTests/Agents/PromptCacheRoutingTests.cs` | Cache embedding e2e test |
+
+## 🗑️ Removed / Deprecated
+
+| Path | Reason |
+|------|--------|
+| `lucia.Agents/Services/IEntityLocationService.cs` | Moved to `Abstractions/` namespace |
+| `lucia.Agents/Models/FloorInfo.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Models/OccupiedArea.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Agents/DiagnosticChatClientWrapper.cs` | Replaced by `TracingChatClientFactory` |
+| `lucia.Agents/Configuration/AgentConfiguration.cs` | Replaced by `AgentDefinition` |
+| `LightControlSkill.FindLightsByAreaAsync` | Throws `NotSupportedException` — use entity tools |
+| `LightControlSkill.FindLightAsync` | Throws `NotSupportedException` — use entity tools |
+| `IOptimizableSkill.GetCachedEntitiesAsync` | Removed — optimizer uses location service |
+
+---
+
+## ⬆️ Upgrade Notes
+
+1. **Cache eviction recommended** — Evict routing and chat caches via dashboard (or `DELETE /api/prompt-cache` and `DELETE /api/chat-cache`) to clear stale entries.
+2. **New cache config properties** — `RouterExecutor:SemanticSimilarityThreshold` (0.95) and `RouterExecutor:ChatCacheSemanticThreshold` (0.98) can be tuned in dashboard settings.
+3. **Skill API breaking changes** — Skills calling `FindLightsByAreaAsync`, `FindLightAsync`, or `GetCachedEntitiesAsync` must migrate to unified entity tools via `EntityLocationService`.
+
+
+---
+
+# [v1.1.0-preview.2 - Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.1.0-preview.2)
+
+**Published:** 2026-03-04
+
+# Release Notes - 1.1.0
+
+**Release Date:** March 6, 2026
+**Code Name:** "Spectra"
+
+---
+
+## 🔮 Overview
+
+"Spectra" overhauls Lucia's entity matching and prompt caching infrastructure. Just as a spectrum reveals the distinct wavelengths hidden in a beam of light, this release decomposes the monolithic entity lookup into a multi-signal search pipeline — combining fuzzy text matching, phonetic analysis, alias resolution, and embedding similarity into a single `HybridEntityMatcher`. Alongside that, the prompt cache system has been rearchitected to correctly persist embeddings, separate routing and chat cache thresholds, and support hot-reloadable configuration from the dashboard.
+
+## 🚀 Highlights
+
+- **Unified Entity Model** — All Home Assistant entity types (lights, climate, fans, music players) now share a common `HomeAssistantEntity` base with domain-specific subtypes, replacing fragmented per-skill entity caches.
+- **HybridEntityMatcher** — Multi-weighted entity search using Levenshtein distance, Jaro-Winkler similarity, phonetic (Soundex/Metaphone) matching, and alias resolution — all tunable via `HybridMatchOptions`.
+- **Prompt Cache Embedding Fix** — Embeddings are now correctly persisted to Redis (previously silently dropped due to `[JsonIgnore]`), making semantic cache matching fully functional for the first time.
+- **Split Cache Thresholds** — Routing cache (which agent to invoke) and chat cache (tool-call decisions) now have independent similarity thresholds, preventing dangerous cross-action cache hits like "turn off" matching "turn on".
+- **Entity Visibility Filtering** — New API and dashboard controls for filtering entities by HA's exposed entity list, giving users granular control over which devices Lucia can see.
+- **Preview Docker Releases** — CI/CD now supports `-preview.N` suffixed tags for pre-release testing without touching the `latest` tag.
+
+## ✨ What's New
+
+### 🔍 HybridEntityMatcher
+
+- **Multi-signal scoring** — Combines normalized Levenshtein, Jaro-Winkler, token overlap, phonetic matching, and exact/prefix bonuses into a weighted composite score.
+- **Configurable via `HybridMatchOptions`** — Tune weights, minimum thresholds, and phonetic algorithm (Soundex vs Double Metaphone) per search context.
+- **`IMatchableEntity` interface** — Any entity type can participate in hybrid search by implementing this lightweight interface.
+- **`EntityMatchResult`** — Rich result type carrying the matched entity, composite score, individual signal scores, and match metadata.
+
+### 🏠 Unified Entity Architecture
+
+- **`HomeAssistantEntity` base class** — Shared properties (entity ID, friendly name, area, floor, aliases, state, supported features as `SupportedFeatures` bitflag enum) for all HA entity types.
+- **Domain subtypes** — `LightEntity`, `ClimateEntity`, `FanEntity`, `MusicPlayerEntity` extend the base with domain-specific attributes (color modes, HVAC modes, fan speeds, media metadata).
+- **`EntityLocationService` refactor** — Centralized entity resolution service replaces per-skill `FindLightsByAreaAsync`/`FindLightAsync` methods. Skills now delegate entity lookup to the location service.
+- **`AreaInfo` caching** — Areas now pre-build and cache entity collections, floor associations, and phonetic data for fast hierarchical search.
+- **`FloorInfo` model** — First-class floor representation with area containment for multi-level home topologies.
+
+### 👁️ Entity Visibility
+
+- **`EntityVisibilityConfig`** — Per-entity visibility settings stored in MongoDB, letting users hide entities from Lucia without removing them from Home Assistant.
+- **`EntityVisibilityApi`** — REST endpoints for bulk visibility management with area/domain filtering.
+- **HA Exposed Entity List** — Support for pulling the pre-filtered exposed entity list from Home Assistant via WebSocket (`homeassistant/expose_entity/list`).
+
+### 🧠 Prompt Cache Overhaul
+
+- **Embedding persistence fixed** — Removed `[JsonIgnore]` from `CachedPromptEntry.Embedding` and `CachedChatResponseData.Embedding` that prevented embeddings from ever being serialized to Redis.
+- **Split thresholds** — `SemanticSimilarityThreshold` (routing, default 0.95) and `ChatCacheSemanticThreshold` (chat, default 0.98) are independently configurable. Routing can be liberal (synonyms like "lamp" ↔ "light" score ~0.96); chat must be strict to avoid replaying wrong tool calls.
+- **Hot-reload via `IOptionsMonitor`** — Cache thresholds update within 5 seconds of a dashboard config change, no restart required.
+- **Hit count tracking fix** — Routing cache exact-match hits now correctly persist the incremented `HitCount` back to Redis.
+- **Normalized prompt keys** — `NormalizePrompt` applies `Trim().ToLowerInvariant()` for stable, case-insensitive cache keys.
+- **User-text-only embedding** — Chat cache embeddings are computed from the user's request text only, not the full system+user prompt concatenation.
+
+### 🐛 Matcher Debug API
+
+- **`/api/matcher/debug`** — Interactive endpoint for testing `HybridEntityMatcher` queries against live entity data, returning scored results with per-signal breakdowns.
+- **Dashboard page** — `MatcherDebugPage.tsx` provides a UI for experimenting with matcher queries and visualizing score distributions.
+
+### 🔧 Skill Optimizer Migration
+
+- **`GetCachedEntitiesAsync` removed** from `IOptimizableSkill` — All entity resolution now flows through `EntityLocationService` via `BuildEntitiesFromLocationServiceAsync`.
+- **Legacy skill methods gutted** — `LightControlSkill.FindLightsByAreaAsync`, `FindLightAsync`, `GetLightStateAsync`, `SetLightStateAsync` now throw `NotSupportedException`. All callers use the unified entity tools.
+- **Device cache dependencies removed** — `LightAgent` no longer depends on embedding provider or device cache directly.
+
+### 🐳 CI/CD
+
+- **Preview releases** — Push a tag like `v1.1.0-preview.1` to build and push Docker images without updating the `latest` tag. Also available via `workflow_dispatch` with the "preview" checkbox.
+
+## 🐛 Bug Fixes
+
+- **Prompt cache embeddings never persisted** — `[JsonIgnore]` on `Embedding` properties made semantic cache matching permanently non-functional. Fixed by removing the attribute. (b7e9c3d)
+- **Chat cache replaying wrong action** — "turn on lamp" semantically matched "turn off light" (score ~0.96) and replayed the cached `light.turn_off` tool calls. Fixed by splitting routing/chat thresholds. (6a6a375)
+- **Routing cache hit count always 0** — Exact-match path incremented `HitCount` in memory but never wrote back to Redis. (a429ede)
+- **Config changes required restart** — `RedisPromptCacheService` used `IOptions<T>` (singleton, read-once) instead of `IOptionsMonitor<T>` (hot-reload). (6a6a375)
+- **Embedding provider race condition** — `EmbeddingProviderResolver` used `Dictionary` which corrupted under concurrent agent initialization. Replaced with `ConcurrentDictionary` + per-key `SemaphoreSlim`. (0d044bf)
+- **Tracing duration always 0ms** — `TraceCaptureObserver.OnRoutingCompletedAsync` now measures elapsed time from request start. (0d044bf)
+- **Tool chain config removed** — Removed unsupported tool chain configuration flag that caused errors with many model providers. (a28b3ca)
+- **Dashboard dependency vulnerabilities** — Patched minimatch (CVE-2026-27903, ReDoS) and rollup (CVE-2026-27606, path traversal) via npm overrides. (26a4a90)
+
+## 🧪 Testing
+
+- **Playwright e2e test** — `PromptCacheRoutingTests` validates the full cache embedding round-trip: send "turn off dianna's lamp" → verify routing cache entry with embedding → send "turn off dianna's light" → verify semantic match or second entry, both routing to `light-agent`.
+- **Embedding matching diagnostics** — `EmbeddingMatchingTests` with cosine similarity measurements across prompt variants (synonym, opposite action, cross-entity, cross-domain).
+
+## 📋 New Files
+
+| Path | Purpose |
+|------|---------|
+| `lucia.Agents/Abstractions/IEntityLocationService.cs` | Centralized entity resolution interface |
+| `lucia.Agents/Abstractions/IHybridEntityMatcher.cs` | Multi-signal entity search interface |
+| `lucia.Agents/Abstractions/IMatchableEntity.cs` | Entity search participation contract |
+| `lucia.Agents/Models/HomeAssistant/HomeAssistantEntity.cs` | Unified HA entity base class |
+| `lucia.Agents/Models/HomeAssistant/SupportedColorModes.cs` | Light color mode bitflag enum |
+| `lucia.Agents/Models/HomeAssistant/FloorInfo.cs` | Floor model with area containment |
+| `lucia.Agents/Models/HomeAssistant/OccupiedArea.cs` | Area occupancy tracking |
+| `lucia.Agents/Models/HomeAssistant/EntityVisibilityConfig.cs` | Per-entity visibility settings |
+| `lucia.Agents/Models/HybridEntityMatcher.cs` | Multi-weighted entity matching engine |
+| `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
+| `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
+| `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
+| `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
+| `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
+| `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
+| `lucia.HomeAssistant/Models/ExposedEntityListResponse.cs` | HA WebSocket exposed entity response |
+| `lucia.AgentHost/Apis/EntityVisibilityApi.cs` | Entity visibility REST endpoints |
+| `lucia.AgentHost/Apis/MatcherDebugApi.cs` | Matcher debug/testing REST endpoints |
+| `lucia-dashboard/src/pages/MatcherDebugPage.tsx` | Matcher debug dashboard page |
+| `lucia.PlaywrightTests/Agents/PromptCacheRoutingTests.cs` | Cache embedding e2e test |
+
+## 🗑️ Removed / Deprecated
+
+| Path | Reason |
+|------|--------|
+| `lucia.Agents/Services/IEntityLocationService.cs` | Moved to `Abstractions/` namespace |
+| `lucia.Agents/Models/FloorInfo.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Models/OccupiedArea.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Agents/DiagnosticChatClientWrapper.cs` | Replaced by `TracingChatClientFactory` |
+| `lucia.Agents/Configuration/AgentConfiguration.cs` | Replaced by `AgentDefinition` |
+| `LightControlSkill.FindLightsByAreaAsync` | Throws `NotSupportedException` — use entity tools |
+| `LightControlSkill.FindLightAsync` | Throws `NotSupportedException` — use entity tools |
+| `IOptimizableSkill.GetCachedEntitiesAsync` | Removed — optimizer uses location service |
+
+---
+
+## ⬆️ Upgrade Notes
+
+1. **Cache eviction recommended** — After upgrading, evict both routing and chat caches via the dashboard (or `DELETE /api/prompt-cache` and `DELETE /api/chat-cache`) to clear entries that were stored without embeddings.
+2. **New config properties** — `RouterExecutor:SemanticSimilarityThreshold` (0.95) and `RouterExecutor:ChatCacheSemanticThreshold` (0.98) are now available in dashboard settings. Adjust if you see too many or too few cache hits.
+3. **Skill API breaking changes** — Skills that called `FindLightsByAreaAsync`, `FindLightAsync`, or `GetCachedEntitiesAsync` must migrate to the unified entity tools provided by `EntityLocationService`.
+
+
+---
+
+# [1.1.0-preview.1 - Spectra](https://github.com/seiggy/lucia-dotnet/releases/tag/1.1.0-preview.1)
+
+**Published:** 2026-03-04
+
+# Release Notes - 1.1.0-preview.1
+
+**Release Date:** March 6, 2026
+**Code Name:** "Spectra"
+
+---
+
+## 🔮 Overview
+
+"Spectra" overhauls Lucia's entity matching and prompt caching infrastructure. Just as a spectrum reveals the distinct wavelengths hidden in a beam of light, this release decomposes the monolithic entity lookup into a multi-signal search pipeline — combining fuzzy text matching, phonetic analysis, alias resolution, and embedding similarity into a single `HybridEntityMatcher`. Alongside that, the prompt cache system has been rearchitected to correctly persist embeddings, separate routing and chat cache thresholds, and support hot-reloadable configuration from the dashboard.
+
+## 🚀 Highlights
+
+- **Unified Entity Model** — All Home Assistant entity types (lights, climate, fans, music players) now share a common `HomeAssistantEntity` base with domain-specific subtypes, replacing fragmented per-skill entity caches.
+- **HybridEntityMatcher** — Multi-weighted entity search using Levenshtein distance, Jaro-Winkler similarity, phonetic (Soundex/Metaphone) matching, and alias resolution — all tunable via `HybridMatchOptions`.
+- **Prompt Cache Embedding Fix** — Embeddings are now correctly persisted to Redis (previously silently dropped due to `[JsonIgnore]`), making semantic cache matching fully functional for the first time.
+- **Split Cache Thresholds** — Routing cache (which agent to invoke) and chat cache (tool-call decisions) now have independent similarity thresholds, preventing dangerous cross-action cache hits like "turn off" matching "turn on".
+- **Entity Visibility Filtering** — New API and dashboard controls for filtering entities by HA's exposed entity list, giving users granular control over which devices Lucia can see.
+- **Preview Docker Releases** — CI/CD now supports `-preview.N` suffixed tags for pre-release testing without touching the `latest` tag.
+
+## ✨ What's New
+
+### 🔍 HybridEntityMatcher
+
+- **Multi-signal scoring** — Combines normalized Levenshtein, Jaro-Winkler, token overlap, phonetic matching, and exact/prefix bonuses into a weighted composite score.
+- **Configurable via `HybridMatchOptions`** — Tune weights, minimum thresholds, and phonetic algorithm (Soundex vs Double Metaphone) per search context.
+- **`IMatchableEntity` interface** — Any entity type can participate in hybrid search by implementing this lightweight interface.
+- **`EntityMatchResult`** — Rich result type carrying the matched entity, composite score, individual signal scores, and match metadata.
+
+### 🏠 Unified Entity Architecture
+
+- **`HomeAssistantEntity` base class** — Shared properties (entity ID, friendly name, area, floor, aliases, state, supported features as `SupportedFeatures` bitflag enum) for all HA entity types.
+- **Domain subtypes** — `LightEntity`, `ClimateEntity`, `FanEntity`, `MusicPlayerEntity` extend the base with domain-specific attributes (color modes, HVAC modes, fan speeds, media metadata).
+- **`EntityLocationService` refactor** — Centralized entity resolution service replaces per-skill `FindLightsByAreaAsync`/`FindLightAsync` methods. Skills now delegate entity lookup to the location service.
+- **`AreaInfo` caching** — Areas now pre-build and cache entity collections, floor associations, and phonetic data for fast hierarchical search.
+- **`FloorInfo` model** — First-class floor representation with area containment for multi-level home topologies.
+
+### 👁️ Entity Visibility
+
+- **`EntityVisibilityConfig`** — Per-entity visibility settings stored in MongoDB, letting users hide entities from Lucia without removing them from Home Assistant.
+- **`EntityVisibilityApi`** — REST endpoints for bulk visibility management with area/domain filtering.
+- **HA Exposed Entity List** — Support for pulling the pre-filtered exposed entity list from Home Assistant via WebSocket (`homeassistant/expose_entity/list`).
+
+### 🧠 Prompt Cache Overhaul
+
+- **Embedding persistence fixed** — Removed `[JsonIgnore]` from `CachedPromptEntry.Embedding` and `CachedChatResponseData.Embedding` that prevented embeddings from ever being serialized to Redis.
+- **Split thresholds** — `SemanticSimilarityThreshold` (routing, default 0.95) and `ChatCacheSemanticThreshold` (chat, default 0.98) are independently configurable. Routing can be liberal (synonyms like "lamp" ↔ "light" score ~0.96); chat must be strict to avoid replaying wrong tool calls.
+- **Hot-reload via `IOptionsMonitor`** — Cache thresholds update within 5 seconds of a dashboard config change, no restart required.
+- **Hit count tracking fix** — Routing cache exact-match hits now correctly persist the incremented `HitCount` back to Redis.
+- **Normalized prompt keys** — `NormalizePrompt` applies `Trim().ToLowerInvariant()` for stable, case-insensitive cache keys.
+- **User-text-only embedding** — Chat cache embeddings are computed from the user's request text only, not the full system+user prompt concatenation.
+
+### 🐛 Matcher Debug API
+
+- **`/api/matcher/debug`** — Interactive endpoint for testing `HybridEntityMatcher` queries against live entity data, returning scored results with per-signal breakdowns.
+- **Dashboard page** — `MatcherDebugPage.tsx` provides a UI for experimenting with matcher queries and visualizing score distributions.
+
+### 🔧 Skill Optimizer Migration
+
+- **`GetCachedEntitiesAsync` removed** from `IOptimizableSkill` — All entity resolution now flows through `EntityLocationService` via `BuildEntitiesFromLocationServiceAsync`.
+- **Legacy skill methods gutted** — `LightControlSkill.FindLightsByAreaAsync`, `FindLightAsync`, `GetLightStateAsync`, `SetLightStateAsync` now throw `NotSupportedException`. All callers use the unified entity tools.
+- **Device cache dependencies removed** — `LightAgent` no longer depends on embedding provider or device cache directly.
+
+### 🐳 CI/CD
+
+- **Preview releases** �� Push a tag like `v1.1.0-preview.1` to build and push Docker images without updating the `latest` tag. Also available via `workflow_dispatch` with the "preview" checkbox.
+
+## 🐛 Bug Fixes
+
+- **Prompt cache embeddings never persisted** — `[JsonIgnore]` on `Embedding` properties made semantic cache matching permanently non-functional. Fixed by removing the attribute. (b7e9c3d)
+- **Chat cache replaying wrong action** — "turn on lamp" semantically matched "turn off light" (score ~0.96) and replayed the cached `light.turn_off` tool calls. Fixed by splitting routing/chat thresholds. (6a6a375)
+- **Routing cache hit count always 0** — Exact-match path incremented `HitCount` in memory but never wrote back to Redis. (a429ede)
+- **Config changes required restart** — `RedisPromptCacheService` used `IOptions<T>` (singleton, read-once) instead of `IOptionsMonitor<T>` (hot-reload). (6a6a375)
+- **Embedding provider race condition** — `EmbeddingProviderResolver` used `Dictionary` which corrupted under concurrent agent initialization. Replaced with `ConcurrentDictionary` + per-key `SemaphoreSlim`. (0d044bf)
+- **Tracing duration always 0ms** — `TraceCaptureObserver.OnRoutingCompletedAsync` now measures elapsed time from request start. (0d044bf)
+- **Tool chain config removed** — Removed unsupported tool chain configuration flag that caused errors with many model providers. (a28b3ca)
+- **Dashboard dependency vulnerabilities** — Patched minimatch (CVE-2026-27903, ReDoS) and rollup (CVE-2026-27606, path traversal) via npm overrides. (26a4a90)
+
+## 🧪 Testing
+
+- **Playwright e2e test** — `PromptCacheRoutingTests` validates the full cache embedding round-trip: send "turn off dianna's lamp" → verify routing cache entry with embedding → send "turn off dianna's light" → verify semantic match or second entry, both routing to `light-agent`.
+- **Embedding matching diagnostics** — `EmbeddingMatchingTests` with cosine similarity measurements across prompt variants (synonym, opposite action, cross-entity, cross-domain).
+
+## 📋 New Files
+
+| Path | Purpose |
+|------|---------|
+| `lucia.Agents/Abstractions/IEntityLocationService.cs` | Centralized entity resolution interface |
+| `lucia.Agents/Abstractions/IHybridEntityMatcher.cs` | Multi-signal entity search interface |
+| `lucia.Agents/Abstractions/IMatchableEntity.cs` | Entity search participation contract |
+| `lucia.Agents/Models/HomeAssistant/HomeAssistantEntity.cs` | Unified HA entity base class |
+| `lucia.Agents/Models/HomeAssistant/SupportedColorModes.cs` | Light color mode bitflag enum |
+| `lucia.Agents/Models/HomeAssistant/FloorInfo.cs` | Floor model with area containment |
+| `lucia.Agents/Models/HomeAssistant/OccupiedArea.cs` | Area occupancy tracking |
+| `lucia.Agents/Models/HomeAssistant/EntityVisibilityConfig.cs` | Per-entity visibility settings |
+| `lucia.Agents/Models/HybridEntityMatcher.cs` | Multi-weighted entity matching engine |
+| `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
+| `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
+| `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
+| `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
+| `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
+| `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
+| `lucia.HomeAssistant/Models/ExposedEntityListResponse.cs` | HA WebSocket exposed entity response |
+| `lucia.AgentHost/Apis/EntityVisibilityApi.cs` | Entity visibility REST endpoints |
+| `lucia.AgentHost/Apis/MatcherDebugApi.cs` | Matcher debug/testing REST endpoints |
+| `lucia-dashboard/src/pages/MatcherDebugPage.tsx` | Matcher debug dashboard page |
+| `lucia.PlaywrightTests/Agents/PromptCacheRoutingTests.cs` | Cache embedding e2e test |
+
+## 🗑️ Removed / Deprecated
+
+| Path | Reason |
+|------|--------|
+| `lucia.Agents/Services/IEntityLocationService.cs` | Moved to `Abstractions/` namespace |
+| `lucia.Agents/Models/FloorInfo.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Models/OccupiedArea.cs` | Moved to `Models/HomeAssistant/` |
+| `lucia.Agents/Agents/DiagnosticChatClientWrapper.cs` | Replaced by `TracingChatClientFactory` |
+| `lucia.Agents/Configuration/AgentConfiguration.cs` | Replaced by `AgentDefinition` |
+| `LightControlSkill.FindLightsByAreaAsync` | Throws `NotSupportedException` — use entity tools |
+| `LightControlSkill.FindLightAsync` | Throws `NotSupportedException` — use entity tools |
+| `IOptimizableSkill.GetCachedEntitiesAsync` | Removed — optimizer uses location service |
+
+---
+
+## ⬆️ Upgrade Notes
+
+1. **Cache eviction recommended** — After upgrading, evict both routing and chat caches via the dashboard (or `DELETE /api/prompt-cache` and `DELETE /api/chat-cache`) to clear entries that were stored without embeddings.
+2. **New config properties** — `RouterExecutor:SemanticSimilarityThreshold` (0.95) and `RouterExecutor:ChatCacheSemanticThreshold` (0.98) are now available in dashboard settings. Adjust if you see too many or too few cache hits.
+3. **Skill API breaking changes** — Skills that called `FindLightsByAreaAsync`, `FindLightAsync`, or `GetCachedEntitiesAsync` must migrate to the unified entity tools provided by `EntityLocationService`.
+
+
+---
+
+# [2026.03.01 - Nebula](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.03.01)
+
+**Published:** 2026-03-01
 
 # Release Notes - 2026.03.01
 
-**Release Date:** March 1, 2026  
+**Release Date:** March 1, 2026
 **Code Name:** "Nebula"
 
 ---
@@ -437,11 +3829,26 @@ The plugin system stored version information but never compared installed versio
 | `lucia.Agents/Extensions/McpServerSeedExtensions.cs` | Replaced by MetaMCP plugin |
 | `lucia.Agents/Configuration/PluginRegistryFile.cs` | Replaced by `IPluginRepositorySource` abstraction |
 
+
 ---
+
+# [2026.02.27.2](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.27.2)
+
+**Published:** 2026-02-27
+
+Fixes bugs related to A2A SDK removal.
+
+---
+
+# [2026.02.27 - Keystone](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.27)
+
+**Published:** 2026-02-27
+
+
 
 # Release Notes - 2026.02.27
 
-**Release Date:** February 27, 2026  
+**Release Date:** February 27, 2026
 **Code Name:** "Keystone"
 
 ---
@@ -504,33 +3911,18 @@ The plugin system stored version information but never compared installed versio
 
 - 20 files changed, +1,201 / −528 lines across dashboard, backend, tests, and HA custom component.
 
----
-
-# Release Notes - 2026.02.26
-
-**Release Date:** February 26, 2026  
-**Code Name:** "Scene"
 
 ---
 
-## 🎬 Overview
+# [2026.02.25 - Bastion](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.25.3)
 
-"Scene" adds a new **Scene Agent** to the Lucia catalog for activating Home Assistant scenes via natural language.
-
-## ✨ What's New
-
-### 📽️ Scene Agent
-
-- **SceneControlSkill** — New skill with `ListScenesAsync`, `FindScenesByAreaAsync`, and `ActivateSceneAsync` tools for Home Assistant scene control
-- **SceneAgent** — Specialized agent for scene activation at `/a2a/scene-agent`; routes queries like "activate movie scene", "turn on night mode", "what scenes are in the living room?"
-- **Catalog integration** — Scene agent appears in the agent catalog and is routable via the orchestrator for #scenes domain
+**Published:** 2026-02-26
 
 
----
 
 # Release Notes - 2026.02.25
 
-**Release Date:** February 25, 2026  
+**Release Date:** February 25, 2026
 **Code Name:** "Bastion"
 
 ---
@@ -587,11 +3979,17 @@ The plugin system stored version information but never compared installed versio
 - **A2A 401 in mesh mode** — `InternalAuth__Token` was auto-generated by Aspire AppHost but never injected in Helm chart for Kubernetes deployments.
 - **Setup race window** — 5-second gap between `POST /api/setup/complete` and `MongoConfigurationProvider` config poll allowed anonymous access to setup endpoints.
 
+
 ---
+
+# [2026.02.25 - Zenith](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.25.2)
+
+**Published:** 2026-02-25
+
 
 # Release Notes - 2026.02.25
 
-**Release Date:** February 25, 2026  
+**Release Date:** February 25, 2026
 **Code Name:** "Zenith"
 
 ---
@@ -682,11 +4080,16 @@ The plugin system stored version information but never compared installed versio
 - **Docker port binding** — AgentHost now binds to `0.0.0.0` instead of `localhost` for LAN access from other containers
 - **Docker Compose .env dependency** — Removed `.env` file requirement; all configuration is inline in `docker-compose.yml`
 
+
 ---
+
+# [2026.02.25 - Aurora](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.25)
+
+**Published:** 2026-02-25
 
 # Release Notes - 2026.02.25
 
-**Release Date:** February 25, 2026  
+**Release Date:** February 25, 2026
 **Code Name:** "Aurora"
 
 ---
@@ -746,11 +4149,16 @@ The plugin system stored version information but never compared installed versio
 - **Mesh tool nodes disappearing** — Dashboard dynamically creates tool nodes on `toolCall` events and keeps them visible after requests complete
 - **Trace persistence race condition** — Replaced `AsyncLocal` with `ConcurrentDictionary` for trace capture across workflow boundaries
 
+
 ---
+
+# [2026.02.23 - Solstice](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.23)
+
+**Published:** 2026-02-23
 
 # Release Notes - 2026.02.23
 
-**Release Date:** February 23, 2026  
+**Release Date:** February 23, 2026
 **Code Name:** "Solstice"
 
 ---
@@ -773,7 +4181,7 @@ The plugin system stored version information but never compared installed versio
 
 ## ✨ What's New
 
-### ��� Live Activity Dashboard
+### 📊 Live Activity Dashboard
 
 - **Real-time mesh graph** with React Flow (@xyflow/react) showing orchestrator → agent → tool topology
 - **Custom AgentNode** components with state indicators: Processing Prompt (amber), Calling Tools (blue), Generating Response (green), Error (red), Idle (gray)
@@ -952,12 +4360,16 @@ The plugin system stored version information but never compared installed versio
 - **Refreshed existing screenshots** — Agents (with chat panel), Configuration, Traces, Exports, Tasks, Prompt Cache, Login
 - **Spec 004** — Activity Dashboard specification and task list (`specs/004-activity-dashboard/`)
 
+
 ---
----
+
+# [2026.02.20 - Galaxy](https://github.com/seiggy/lucia-dotnet/releases/tag/2026.02.20)
+
+**Published:** 2026-02-21
 
 # Release Notes - 2026.02.20
 
-**Release Date:** February 20, 2026  
+**Release Date:** February 20, 2026
 **Code Name:** "Galaxy"
 
 ---
@@ -1226,42 +4638,85 @@ See our [Roadmap](https://github.com/seiggy/lucia-dotnet/blob/master/.docs/produ
 - **Local LLM Fine-Tuning** — Use captured training data with local models for privacy-first deployment
 - **Training UI Enhancements** — Batch labeling, inter-annotator agreement, and quality dashboards
 
----
-
-# Release Notes - 2025.11.09
-
-**Release Date:** November 9, 2025  
-**Code Name:** "Constellation"
 
 ---
 
-## 🌌 Overview
+# [2025.11.09](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.11.09)
 
-"Constellation" delivers the feature we've been building toward all year: multi-agent orchestration working end-to-end inside Lucia. Requests can now fan out to the most relevant specialists, combine their output, and respond with a natural narrative backed by contextual awareness. Alongside the orchestration milestone, we introduce a new general-knowledge agent that fills in the gaps when a domain specialist is unavailable, plus targeted refinements to the lighting and music skills that make everyday interactions smoother.
+**Published:** 2025-11-08
 
-## 🚀 Highlights
+## What's Changed
+* Adding general assistant by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/17
 
-- **Multi-Agent Orchestration (GA)** — Router, dispatch, and aggregator executors now coordinate multiple agents in a single workflow, with task persistence and telemetry baked in. Complex requests like "Dim the kitchen lights and play relaxing jazz" are handled as one coherent conversation.
-- **General Knowledge Agent** — A new catalog entry that handles open-ended queries, status questions, and conversation handoffs when no specialist is a clean match. It plugs directly into the orchestrator so fallbacks feel intentional instead of abrupt.
-- **Smarter Light Selection** — Improved semantic matching, room disambiguation, and capability detection make it far easier to target the right fixture on the first try—even when users describe locations conversationally.
-- **Music Skill Enhancements** — Faster player discovery, richer queue summaries, and better error messaging tighten the loop between Music Assistant and Lucia’s orchestration pipeline.
 
-## 🔧 Under the Hood
-
-- Expanded orchestration telemetry with detailed WorkflowErrorEvent parsing and OpenTelemetry spans for traceability.
-- Options flow updated to align with Home Assistant 2025.12 requirements (no more manual `self.config_entry`).
-- HTTP client instrumentation now captures request/response headers and payloads when traces are recorded, aiding diagnostics of A2A traffic.
-
-## ✅ Upgrade Notes
-
-- No breaking schema changes, but existing installations should reload the integration after updating to register the new general agent card.
-- Home Assistant users will no longer see the 2025.12 config-flow deprecation warning.
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.11.08...2025.11.09
 
 ---
+
+# [2025.11.08](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.11.08)
+
+**Published:** 2025-11-08
+
+## What's Changed
+* Refactor MusicAgent and MusicPlaybackSkill for improved clarity and f… by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/16
+
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.11.06...2025.11.08
+
+---
+
+# [2025.11.06](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.11.06)
+
+**Published:** 2025-11-07
+
+## What's Changed
+* 002 infrastructure deployment by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/9
+* Fixing action to use calver instead of semver by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/10
+* renamed dockerfile to fix actions by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/11
+* Fixed the linux docker build issues. by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/12
+* Update Docker permissions and actions in workflow; enhance tech stack… by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/13
+* Fix attestation by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/14
+* Update configuration and program setup for improved Redis and HA integration by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/15
+
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.23...2025.11.06
+
+---
+
+# [2025.10.23](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.23)
+
+**Published:** 2025-10-23
+
+This release completes the implementation of the multi-agent orchestration feature for the lucia .NET platform. It finalizes all major orchestration executors, updates documentation and project guidelines, and marks the result aggregation pipeline as delivered. The changes include updates to spec and task tracking files, new development guidelines, and improved instructions for contributors.
+
+**Feature Implementation Completion**
+
+* All major orchestration components—`RouterExecutor`, `AgentExecutorWrapper`, and `ResultAggregatorExecutor`—are now implemented, tested, and integrated with workflow, error handling, and telemetry support. Task lists in `.docs/specs/2025-10-09-multi-agent-orchestration/tasks.md` are updated to reflect completion and provide implementation details and file references.
+* The result aggregation pipeline is marked as delivered in `.github/.todo.md`, indicating that partial failure handling and response formatting are complete.
+
+**Documentation and Guidelines Updates**
+
+* The multi-agent orchestration spec and task files are renamed to reflect the new creation date (`2025-10-09`) and updated to match the completed implementation. [[1]](diffhunk://#diff-ec883e9944421f6c6b108a406db79dfe531af371ba7eb5f63a97040813b3e77eL4-R4) [[2]](diffhunk://#diff-eb4f1be8e21fbb836c82d60217f646cbc7634fda0a2473c312f19ec94dbf42d2L15-R37)
+* `.github/copilot-instructions.md` is expanded with detailed development guidelines, including project structure, build/test commands, code style (C# 13/.NET 10 RC1), and strict rules such as one class per file. [[1]](diffhunk://#diff-227c2c26cb2ee0ce0f46a320fc48fbcbdf21801a57f59161b1d0861e8aad55f5L1-R68) [[2]](diffhunk://#diff-227c2c26cb2ee0ce0f46a320fc48fbcbdf21801a57f59161b1d0861e8aad55f5R110-R113)
+* Contributor instructions for specification and task execution are clarified in `.github/copilot-instructions.md`.
+
+**Tooling and Analysis**
+
+* A new prompt file, `.github/prompts/speckit.analyze.prompt.md`, is added to enable cross-artifact consistency and quality analysis for specs, plans, and tasks, supporting robust review and remediation workflows.
+
+**Memory and Library Tracking**
+
+* The project memory is updated to track the Microsoft Agent Framework library as a core orchestration SDK, reflecting its use in the newly completed executors. (.github/memory.json, [.github/memory.jsonR69](https://github.com/seiggy/lucia-dotnet/blob/master/diffhunk://#diff-26a4aa7b264dc38856894261a83caae634c655dce74a370e3ea3bad59529cb2cR69))
+
+---
+
+# [2025.10.07](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.07)
+
+**Published:** 2025-10-08
 
 # Release Notes - v2025.10.07
 
-**Release Date:** October 7, 2025  
+**Release Date:** October 7, 2025
 **Code Name:** "Illumination"
 
 ---
@@ -1269,8 +4724,6 @@ See our [Roadmap](https://github.com/seiggy/lucia-dotnet/blob/master/.docs/produ
 ## 🌟 Overview
 
 This release represents a major milestone for Lucia, bringing the autonomous home assistant from concept to working reality. Named after the Nordic sun goddess who brings light through darkness, this release illuminates your smart home with AI-powered agent automation.
-
-> Correction (2026-02-20): references in this historical section to `lucia.HomeAssistant.SourceGenerator` reflect the 2025.10 state. Current runtime uses the hand-written `lucia.HomeAssistant/Services/HomeAssistantClient.cs` implementation.
 
 ## ✨ What's New
 
@@ -1291,7 +4744,7 @@ This release represents a major milestone for Lucia, bringing the autonomous hom
   - API key authentication (optional)
   - System prompt customization with Home Assistant template syntax
   - Max token configuration (10-4000 tokens)
-  
+
 #### Conversation Platform
 - **Natural Language Processing**: Full integration with Home Assistant's conversation system
 - **Intent Response**: Proper `IntentResponse` implementation for speech output
@@ -1314,7 +4767,7 @@ This release represents a major milestone for Lucia, bringing the autonomous hom
   - State queries and control operations
   - Switch entity support (light switches)
   - Embedding-based similarity matching
-  
+
 - **MusicAgent**: Music Assistant integration
   - Playback control (play, pause, stop, skip)
   - Volume management
@@ -1339,7 +4792,7 @@ This release represents a major milestone for Lucia, bringing the autonomous hom
   - `set_light_state`: Control on/off, brightness, color
   - Entity caching with 30-minute refresh
   - Cosine similarity matching for semantic search
-  
+
 - **MusicPlaybackSkill**: Music Assistant control
   - Playback operations
   - Volume control
@@ -1348,8 +4801,8 @@ This release represents a major milestone for Lucia, bringing the autonomous hom
 
 ### 🏗️ Technical Infrastructure
 
-#### .NET 10 RTM
-- **Latest Framework**: Running on .NET 10 RTM
+#### .NET 10 RC1
+- **Latest Framework**: Running on .NET 10 Release Candidate 1
 - **Modern C#**: Using C# 13 features and nullable reference types
 - **Performance**: Optimized async/await patterns throughout
 
@@ -1380,14 +4833,14 @@ This release represents a major milestone for Lucia, bringing the autonomous hom
 - **lucia.AgentHost**: Main agent hosting API (ASP.NET Core)
 - **lucia.Agents**: Agent implementations and skills
 - **lucia.HomeAssistant**: Home Assistant API client library
-- **Home Assistant client generation**: Historical at this release point; now replaced by hand-written client implementation
+- **lucia.HomeAssistant.SourceGenerator**: Roslyn-based API code generation
 - **lucia.AppHost**: .NET Aspire orchestration
 - **lucia.ServiceDefaults**: Shared service configurations
 - **lucia.Tests**: Comprehensive test suite
 - **custom_components/lucia**: Home Assistant Python integration
 
 #### Code Quality
-- **Home Assistant client**: Hand-written, type-safe API implementation
+- **Source Generators**: Automatic Home Assistant API client generation
 - **Dependency Injection**: Full DI throughout the application
 - **Async/Await**: Proper async patterns everywhere
 - **Error Handling**: Comprehensive exception handling with logging
@@ -1586,7 +5039,7 @@ Special thanks to:
 git clone https://github.com/seiggy/lucia-dotnet.git
 cd lucia-dotnet
 
-# Install .NET 10
+# Install .NET 10 RC1
 # Download from https://dotnet.microsoft.com/
 
 # Run the agent host
@@ -1603,7 +5056,7 @@ cp -r custom_components/lucia /path/to/homeassistant/custom_components/
 - **Repository**: https://github.com/seiggy/lucia-dotnet
 - **Issues**: https://github.com/seiggy/lucia-dotnet/issues
 - **Discussions**: https://github.com/seiggy/lucia-dotnet/discussions
-- **Documentation**: https://github.com/seiggy/lucia-dotnet/wiki
+- **Documentation**: https://github.com/seiggy/lucia-dotnet/wiki *(coming soon)*
 
 ## 📄 License
 
@@ -1614,3 +5067,44 @@ MIT License - See [LICENSE](https://github.com/seiggy/lucia-dotnet/blob/master/L
 **Built with ❤️ for the Home Assistant community**
 
 *Bringing light to home automation, one agent at a time.* ☀️
+
+
+---
+
+# [2025.10.06](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.06)
+
+**Published:** 2025-10-08
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.05...2025.10.06
+
+---
+
+# [2025.10.05](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.05)
+
+**Published:** 2025-10-07
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.04...2025.10.05
+
+---
+
+# [2025.10.04](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.04)
+
+**Published:** 2025-10-07
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.03...2025.10.04
+
+---
+
+# [2025.10.03](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.03)
+
+**Published:** 2025-10-07
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.02...2025.10.03
+
+---
+
+# [2025.10.02](https://github.com/seiggy/lucia-dotnet/releases/tag/2025.10.02)
+
+**Published:** 2025-10-07
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/2025.10.01...2025.10.02

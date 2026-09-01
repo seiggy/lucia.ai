@@ -5,33 +5,159 @@ title: Conversation API
 
 # Conversation API
 
-The Lucia Home Assistant integration implements the [Conversation API](https://developers.home-assistant.io/docs/intent_conversation_api/), which is how Home Assistant routes voice and text commands to conversation agents. This page explains the full request and response flow between Home Assistant and the Lucia agent host.
+As of v1.2.0, the Home Assistant integration uses the new `POST /api/conversation` REST endpoint instead of JSON-RPC. This page explains the request/response flow and documents both the new REST endpoint and the command pattern matching system.
 
 ## Overview
 
-When a user speaks or types a command in Home Assistant, the Assist pipeline forwards it to the configured conversation agent. If Lucia is set as the conversation agent, the custom component receives the text and sends it to the Lucia agent host for processing.
+When a user speaks or types a command in Home Assistant, the Assist pipeline forwards it to the configured conversation agent. If Lucia is set as the conversation agent, the custom component receives the text and sends it to the Lucia agent host via REST for processing.
 
-## Request Flow
+## REST Conversation Endpoint
 
-### 1. Input Arrives in Home Assistant
+### POST /api/conversation
 
-A command enters through one of several paths:
+The primary endpoint for processing conversations.
 
-- **Voice satellite** (e.g., Wyoming, ESPHome) -- speech is transcribed to text by the STT engine.
-- **Assist dialog** -- the user types a command in the HA frontend.
-- **Automation** -- a `conversation.process` service call triggers a command programmatically.
+**Request:**
 
-### 2. HA Calls the Conversation API
+```bash
+curl -X POST https://localhost:7235/api/conversation \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Turn on the kitchen lights",
+    "conversationId": "ha-conv-abc123",
+    "context": {
+      "deviceId": "light.kitchen_ceiling",
+      "area": "kitchen",
+      "type": "light",
+      "userId": "ha-user-1",
+      "timestamp": "2026-02-20T10:30:00Z",
+      "location": null
+    }
+  }'
+```
 
-Home Assistant invokes the Lucia integration's `async_process` method with:
+**Structured Context:**
 
-- **text** -- the user's command as a string.
-- **conversation_id** -- a unique identifier for multi-turn conversation tracking (optional).
-- **language** -- the user's language code.
+The `context` object contains:
 
-### 3. JSON-RPC Call to Lucia
+| Field | Type | Description |
+|-------|------|-------------|
+| `deviceId` | string | The Home Assistant entity ID triggering the command |
+| `area` | string | Physical location (e.g., "kitchen", "living room") |
+| `type` | string | Entity domain (light, climate, fan, etc.) |
+| `userId` | string | User identifier for personalization |
+| `timestamp` | ISO 8601 | Request time for temporal commands |
+| `location` | object (optional) | GPS coordinates `{lat, lon}` |
 
-The custom component translates the Conversation API call into a **JSON-RPC request** and sends it to the Lucia agent host:
+### Instant JSON Response (Command Parsed)
+
+When Lucia's command parser pattern-matches a common command (light on/off, climate setpoint, scene activation), it responds instantly with JSON:
+
+```json
+{
+  "response": {
+    "speech": {
+      "plain": {
+        "speech": "I've turned on the kitchen lights."
+      }
+    },
+    "response_type": "action_done",
+    "data": {
+      "targets": [
+        {
+          "id": "light.kitchen_ceiling",
+          "name": "Kitchen Ceiling",
+          "type": "entity"
+        }
+      ],
+      "success": ["light.kitchen_ceiling"],
+      "failed": []
+    }
+  },
+  "conversationId": "ha-conv-abc123"
+}
+```
+
+### SSE Streaming Response (LLM Fallback)
+
+For complex requests that don't match known patterns, Lucia falls back to the LLM orchestrator and streams the response via Server-Sent Events:
+
+```
+data: {"type":"start"}
+data: {"type":"delta","text":"Let me help "}
+data: {"type":"delta","text":"with that."}
+data: {"type":"done","response":{"speech":{"plain":{"speech":"Let me help with that."}}},"conversationId":"ha-conv-abc123"}
+```
+
+### Response Template Interpolation
+
+Lucia uses **response templates** to generate natural language responses. Templates support placeholder interpolation:
+
+- `` `{entity}` `` — friendly name of the target entity
+- `` `{action}` `` — the action performed (on, off, set to, etc.)
+- `` `{area}` `` — the area name
+- `` `{value}` `` — numeric value (brightness, temperature)
+
+Example template:
+```
+I've turned `{action}` the `{entity}` in the `{area}`.
+```
+
+Becomes:
+```
+I've turned on the kitchen ceiling in the kitchen.
+```
+
+### Multi-Turn Continuity
+
+The `conversationId` enables multi-turn conversations. Lucia auto-generates a UUID for first-turn requests and maintains it across follow-ups. This allows the agent to understand context:
+
+**Turn 1:**
+```json
+{"text": "What's the temperature in the living room?", "conversationId": "ha-conv-abc123"}
+```
+Response: `"The living room thermostat reads 72 degrees."`
+
+**Turn 2:**
+```json
+{"text": "Set it to 68.", "conversationId": "ha-conv-abc123"}
+```
+Response: `"I've set the living room thermostat to 68 degrees."` (understands "it" from turn 1)
+
+## Command Pattern Matching
+
+Lucia includes a **fast-path command parser** that recognizes common patterns and executes them directly against Home Assistant, bypassing the LLM:
+
+### Supported Patterns
+
+**Lights:**
+- "turn on/off [the] `{area}` light[s]"
+- "set [the] `{area}` light[s] to `{brightness}`% brightness"
+- "dim the `{area}` light[s]"
+
+**Climate:**
+- "set [the] `{area}` thermostat to `{temperature}` degrees"
+- "turn on/off the `{area}` fan"
+- "set the `{area}` AC to cooling"
+
+**Scenes:**
+- "activate [the] `{area}` `{scene}` scene"
+- "turn on `{scene}`"
+
+### Pattern Matching Details
+
+- Confidence scoring ensures high-quality matches before fast-path execution
+- Non-light device mentions (fan, AC, TV, lock) bail to the LLM
+- Temporal prepositions ("in 5 minutes", "at 7pm") correctly trigger the scheduler, not the device agent
+- Spatial prepositions ("in the kitchen") are preserved for area context
+
+## Legacy JSON-RPC (Deprecated)
+
+:::warning
+The older JSON-RPC 2.0 protocol is **deprecated** as of v1.2.0. It may be removed in a future release. New implementations should use the REST endpoint documented above.
+:::
+
+For reference, the old JSON-RPC flow:
 
 ```json
 {
@@ -41,135 +167,71 @@ The custom component translates the Conversation API call into a **JSON-RPC requ
     "text": "Turn off the kitchen lights",
     "conversationId": "ha-conv-abc123",
     "language": "en",
-    "exposedEntities": ["light.kitchen_ceiling", "light.kitchen_counter"],
-    "context": {
-      "userId": "ha-user-1",
-      "areaId": "kitchen"
-    }
+    "exposedEntities": ["light.kitchen_ceiling"],
+    "context": {"userId": "ha-user-1"}
   },
   "id": 1
 }
 ```
-
-The request includes:
-
-- The user's command text.
-- The conversation ID for context continuity.
-- The list of currently exposed entities (from the [entity management](./entity-management.md) system).
-- Optional context about the user and their location.
-
-### 4. AgentHost Orchestration
-
-The Lucia **AgentHost orchestrator** receives the JSON-RPC request and:
-
-1. Parses the user's intent from the text.
-2. Selects the appropriate specialized agent (e.g., Light Agent for lighting commands).
-3. The agent executes the command, which may involve calling Home Assistant services (via the HA REST API or WebSocket).
-4. The agent produces a natural language response.
-
-## Response Flow
-
-### 5. JSON-RPC Response
-
-The agent host returns a JSON-RPC response to the custom component:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "response": {
-      "speech": {
-        "plain": {
-          "speech": "I've turned off the kitchen lights.",
-          "extra_data": null
-        }
-      },
-      "card": {},
-      "language": "en",
-      "response_type": "action_done",
-      "data": {
-        "targets": [],
-        "success": [
-          {
-            "id": "light.kitchen_ceiling",
-            "name": "Kitchen Ceiling",
-            "type": "entity"
-          },
-          {
-            "id": "light.kitchen_counter",
-            "name": "Kitchen Counter",
-            "type": "entity"
-          }
-        ],
-        "failed": []
-      }
-    },
-    "conversationId": "ha-conv-abc123"
-  },
-  "id": 1
-}
-```
-
-### 6. Response Delivered to Home Assistant
-
-The custom component translates the JSON-RPC response back into a HA `ConversationResult`:
-
-- The **speech text** is passed to the TTS engine for voice output (if using a voice satellite).
-- The **response data** is displayed in the Assist dialog or returned to the calling automation.
-- The **conversation ID** is preserved for multi-turn follow-ups.
-
-## Multi-Turn Conversations
-
-Conversation state is maintained by the `conversationId`. When a user asks a follow-up question, the same ID is sent, allowing the agent to reference previous context:
-
-**Turn 1:**
-> "What's the temperature in the living room?"
-> "The living room thermostat reads 72 degrees."
-
-**Turn 2:**
-> "Set it to 68."
-> "I've set the living room thermostat to 68 degrees."
-
-The agent understands "it" refers to the living room thermostat because the conversation ID links both turns.
 
 ## Error Handling
 
-If the agent host is unreachable or returns an error, the custom component returns a graceful error response to Home Assistant:
+If the command parser fails or the agent host is unreachable, Lucia returns an error response:
 
 ```json
 {
   "response": {
     "speech": {
       "plain": {
-        "speech": "I'm sorry, I wasn't able to process that request. The Lucia agent host may be unavailable."
+        "speech": "I'm sorry, I wasn't able to process that request."
       }
     },
     "response_type": "error",
-    "data": {
-      "code": "agent_unavailable"
-    }
+    "data": {"code": "agent_unavailable"}
   }
 }
 ```
 
-:::info
-Home Assistant will still display or speak the error message, so the user receives feedback even when something goes wrong.
-:::
+Home Assistant displays or speaks the error message so the user receives feedback even when something goes wrong.
 
-## Sequence Diagram
+## Examples
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant HA as Home Assistant
-    participant LC as Lucia Component
-    participant Agent as Lucia Agent Host
+### Turn on lights with cURL
 
-    User->>HA: "Turn off the lights"
-    HA->>LC: async_process()
-    LC->>Agent: JSON-RPC request
-    Note right of Agent: Orchestrator routes<br/>Agent executes<br/>HA service call
-    Agent-->>LC: JSON-RPC response
-    LC-->>HA: ConversationResult
-    HA-->>User: "Done. Lights are off."
+```bash
+curl -X POST https://localhost:7235/api/conversation \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "text": "Turn on the kitchen lights",
+    "conversationId": "conv-001",
+    "context": {
+      "area": "kitchen",
+      "type": "light",
+      "userId": "user-1",
+      "timestamp": "2026-02-20T10:30:00Z"
+    }
+  }'
+```
+
+### Set temperature with multi-turn
+
+```bash
+# First turn: ask temperature
+curl -X POST https://localhost:7235/api/conversation \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "What is the living room temperature?",
+    "conversationId": "conv-002",
+    "context": {"area": "living room", "type": "climate"}
+  }'
+
+# Second turn: adjust it (context preserved via conversationId)
+curl -X POST https://localhost:7235/api/conversation \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Set it to 70 degrees",
+    "conversationId": "conv-002",
+    "context": {"area": "living room", "type": "climate"}
+  }'
 ```

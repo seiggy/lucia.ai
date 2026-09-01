@@ -92,6 +92,24 @@ volumes:
     driver: local
 ```
 
+:::note Minimal Configuration (v1.2.0+)
+As of v1.2.0, Redis and MongoDB are optional. To use lightweight data providers instead:
+
+```yaml
+  lucia:
+    # ... same config as above, but use env vars below:
+    environment:
+      - DataProvider__Cache=InMemory
+      - DataProvider__Store=SQLite
+      - DataProvider__SqliteDbPath=/app/lucia.db
+      # ... rest of environment ...
+    volumes:
+      - lucia-data:/app  # for SQLite persistence
+```
+
+See [Data Providers](../deployment/data-providers.md) for full configuration options.
+:::
+
 ## Start Lucia
 
 Run the following command from the directory containing your `docker-compose.yml`:

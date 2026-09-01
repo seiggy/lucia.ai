@@ -12,11 +12,16 @@ Built on the [Microsoft Agent Framework](https://github.com/microsoft/agent-fram
 ## Key Features
 
 - **Multi-Agent Orchestration** -- A central orchestrator delegates tasks to specialized agents (lighting, climate, media, routines, and more), each optimized for its domain.
+- **Sensor and Security Agents** -- Read live sensor values, check doors and motion, arm alarm panels, and control locks through dedicated agents.
 - **Semantic Understanding** -- Lucia interprets natural language and maps it to Home Assistant entities, services, and automations without rigid command syntax.
+- **Local Voice Control** -- Wyoming protocol integration enables fast, local speech-to-text via multiple inference engines (Sherpa, Granite, Hybrid). See [Voice Platform](../architecture/voice-platform.md) for details.
+- **Fast Command Execution** -- Recognized commands execute in `<50ms` via the [Conversation Command Parser](../api/conversation-api.md), with instant JSON responses for parsed patterns.
 - **Privacy First** -- Run everything locally with Ollama, or choose your own cloud provider. Your conversations and home data never leave your infrastructure unless you decide otherwise.
 - **Deep Home Assistant Integration** -- A custom integration connects Lucia directly to the HA Conversation API, exposing all entities, areas, and automations to the agent framework.
-- **Full Dashboard** -- A built-in web UI for configuration, conversation history, agent monitoring, and diagnostics.
+- **Full Dashboard** -- A built-in web UI with System, Light, and Dark themes for configuration, conversation history, agent monitoring, and diagnostics.
 - **Extensible Plugin System** -- Add custom agents, tools, and integrations to tailor Lucia to your exact setup.
+- **Production Observability** -- Optional OpenTelemetry, Grafana, Tempo, Prometheus, and Loki deployment with service, speech, database, and Jetson dashboards.
+- **Flexible Persistence** -- Choose SQLite, PostgreSQL, or MongoDB for durable data and InMemory or Redis for caching.
 
 ## Supported Inference Platforms
 

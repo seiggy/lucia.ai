@@ -188,4 +188,4 @@ Lists can also be viewed and managed from the [Lists](/docs/dashboard/lists-page
 
 ## Configuration
 
-The Lists Agent stores data in the Lucia MongoDB database. No additional configuration is required beyond the standard connection strings in your deployment.
+The Lists Agent uses the configured Lucia store provider: SQLite, PostgreSQL, or MongoDB. CalDAV-backed Home Assistant todo lists are supported through the Home Assistant todo service fallback.

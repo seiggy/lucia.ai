@@ -3,9 +3,49 @@ sidebar_position: 6
 title: Timer Agent
 ---
 
-# Timer Agent
+## When the Timer Agent Is Invoked
 
-The Timer Agent manages timers and alarms. It runs as an **A2A satellite agent** in its own container, which allows it to maintain background timer state and trigger announcements independently of the orchestrator.
+In v1.2.1, the **Timer Agent receives priority routing** for any request containing time-based language via **Rule 0 — Time-Delayed Action Priority**. This happens before the general domain router evaluates the request.
+
+### Time-Based Request Syntax
+
+The Timer Agent recognizes several time expression formats:
+
+| Format | Example | Parsed As |
+|---|---|---|
+| Relative duration | "in 5 minutes", "in 2 hours" | Countdown timer |
+| Wall-clock time | "at 7 PM", "at 6:30" | Scheduled alarm |
+| Relative seconds | "in 30 seconds" | Countdown timer |
+
+Requests containing any of these expressions automatically route to Timer Agent first, even if they mention other domains like climate or lighting.
+
+### Cross-Domain Guard: Scheduled Actions
+
+When a user requests a time-delayed action across domains (e.g., "turn off the AC in 5 minutes"), the Timer Agent handles the scheduling:
+
+```
+User: "Turn off the AC in 5 minutes"
+      |
+      v
+Rule 0 matches: "in 5 minutes"
+      |
+      v
+TimerAgent.ScheduleAction()
+      |
+      v
+At t+5 minutes:
+      |
+      v
+Orchestrator routes "Turn off the AC" to ClimateAgent
+```
+
+This ensures time-sensitive requests don't get lost in multi-domain classification. The timer fires at the scheduled time, then the action is replayed through the full agent system for proper handling.
+
+## Known Limitations
+
+**ListTimers vs ScheduleAction**: The `ListTimers` endpoint returns active countdown timers only. Scheduled actions created via `ScheduleAction` are stored separately in the task persistence layer and don't appear in the timer list. Use the Tasks dashboard page to view scheduled actions.
+
+For full context on how Timer Agent fits into the routing pipeline, see [Orchestrator Agent — Routing Improvements in v1.2.1](/docs/agents/orchestrator-agent#routing-improvements-in-v121).
 
 ## Capabilities
 

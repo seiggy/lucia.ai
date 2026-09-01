@@ -22,7 +22,7 @@ sequenceDiagram
 
     U->>HA: "Turn off the bedroom lights"
     HA->>CC: Conversation API (async_process)
-    CC->>AH: JSON-RPC request
+    CC->>AH: POST /api/conversation
     AH->>R: Execute routing
     R->>D: RoutingDecision (LightAgent)
     D->>Ag: Dispatch to LightAgent
@@ -30,7 +30,7 @@ sequenceDiagram
     Ag-->>D: AgentResult
     D-->>Agg: Raw result
     Agg-->>AH: Formatted response
-    AH-->>CC: JSON-RPC response
+    AH-->>CC: JSON or SSE response
     CC-->>HA: ConversationResult
     HA-->>U: "Done. The bedroom lights are off."
 ```
@@ -45,31 +45,25 @@ The user speaks or types a command. Home Assistant captures the input through it
 
 Home Assistant invokes the **Conversation API** on the Lucia custom component. The component receives the raw text and the conversation ID.
 
-### Step 3: JSON-RPC Request
+### Step 3: REST Conversation Request
 
-The Lucia custom component serializes the input into a **JSON-RPC 2.0** `message/send` request and sends it to the AgentHost over HTTP.
+The Lucia custom component sends the text and structured Home Assistant context to `POST /api/conversation`.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": "ha-req-001",
-  "method": "message/send",
-  "params": {
-    "message": {
-      "role": "user",
-      "parts": [{ "type": "text", "text": "Turn off the bedroom lights" }]
-    },
-    "context": {
-      "conversationId": "conv-789",
-      "userId": "ha-user-1"
-    }
+  "text": "Turn off the bedroom lights",
+  "conversationId": "conv-789",
+  "context": {
+    "userId": "ha-user-1",
+    "area": "bedroom",
+    "timestamp": "2026-08-30T12:00:00Z"
   }
 }
 ```
 
 ### Step 4: Orchestrator Receives Request
 
-The AgentHost deserializes the JSON-RPC request, creates an `OrchestratorContext`, and enters the pipeline.
+The AgentHost validates the conversation request, creates an `OrchestratorContext`, and enters the pipeline.
 
 ### Step 5: RouterExecutor
 
@@ -112,32 +106,27 @@ The aggregator receives the raw `AgentResult` and:
 - Attaches metadata (agent name, confidence, latency, tokens used).
 - Wraps everything in the standard response envelope.
 
-### Step 9: JSON-RPC Response
+### Step 9: Conversation Response
 
-The AgentHost serializes the aggregated result into a JSON-RPC response and sends it back to the custom component.
+The AgentHost sends an immediate JSON response for a direct command or Server-Sent Events for an LLM-backed request.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": "ha-req-001",
-  "result": {
-    "message": {
-      "role": "agent",
-      "parts": [{ "type": "text", "text": "Done. The bedroom lights are off." }]
+  "response": {
+    "speech": {
+      "plain": {
+        "speech": "Done. The bedroom lights are off."
+      }
     },
-    "metadata": {
-      "agent": "LightAgent",
-      "confidence": 0.97,
-      "latencyMs": 645,
-      "tokensUsed": 98
-    }
-  }
+    "response_type": "action_done"
+  },
+  "conversationId": "conv-789"
 }
 ```
 
 ### Step 10: Home Assistant Speech Output
 
-The custom component converts the JSON-RPC response into a `ConversationResult`. Home Assistant passes the response text to the TTS engine (if using voice) or displays it in the companion app.
+The custom component converts the response into a `ConversationResult`. Home Assistant passes the text to the TTS engine (if using voice) or displays it in the companion app.
 
 ## Data Persistence
 
@@ -145,9 +134,77 @@ At several points during the lifecycle, data is persisted for history and debugg
 
 | Store | Data | Purpose |
 |---|---|---|
-| **MongoDB** | Conversation history, entity aliases, lists, user preferences | Long-term persistence |
+| **SQLite, PostgreSQL, or MongoDB** | Conversation history, entity aliases, lists, memory, user preferences | Long-term persistence |
 | **Redis** | Prompt cache, entity embeddings, session state | Low-latency caching |
 
 :::note
 The full request lifecycle typically completes in **500-1500 ms** depending on the LLM provider and whether prompt caching is warm. Local models via Ollama tend toward the lower end; cloud providers vary with network latency.
 :::
+
+## Command Parser Fast-Path (v1.2.0)
+
+In v1.2.0, Lucia introduced a fast-path for common smart home commands using the **Conversation Command Parser**. This bypasses the LLM entirely for recognized patterns:
+
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant Parser as Pattern Matcher
+    participant Exec as DirectSkillExecutor
+    participant HA as Home Assistant
+
+    U->>Parser: "Turn off the kitchen lights"
+    alt Pattern Match
+        Parser->>Exec: matched(skill=Light, action=off, entity=kitchen_lights)
+        Exec->>HA: call_service(light.turn_off, entity_id=light.kitchen_ceiling)
+        HA-->>Exec: success
+        Exec-->>Parser: Response
+        Parser-->>U: "Done. The kitchen lights are off." (< 50ms)
+    else No Match
+        Parser->>+Parser: LLM Orchestrator (fallback)
+        Parser-->>-U: Response via full pipeline
+    end
+```
+
+**Benefits:**
+- Sub-50ms response time for recognized commands (no network LLM call)
+- Reduced API costs (LLM invoked only for novel/complex requests)
+- Consistent response templates for common operations
+
+**Supported Patterns:**
+- Light control: on/off, brightness, color ("turn on the living room lights", "dim the kitchen to 50%")
+- Climate control: temperature, HVAC mode ("set the temperature to 72", "switch to cooling")
+- Scene activation: ("activate the movie scene", "turn on bedtime")
+
+See [Conversation Command Parser](/docs/api/conversation-api) for full API reference and pattern syntax.
+
+## Wyoming Voice Data Flow (v1.2.0)
+
+The Wyoming Voice Platform processes audio through a complete speech pipeline:
+
+```
+Audio Input
+    |
+    v
+VAD (Voice Activity Detection)
+    |
+    v
+Speech Enhancement (GTCRN)
+    |
+    v
+Multi-Engine STT (Hybrid/Sherpa/Granite ONNX)
+    |
+    v
+Speaker Verification
+    |
+    v
+Text Output → Command Parser or LLM Orchestrator
+```
+
+**Key Stages:**
+1. **VAD** -- detects speech/silence boundaries with configurable thresholds
+2. **Speech Enhancement** -- GTCRN reduces background noise for cleaner transcription
+3. **STT** -- streams audio through HybridSttEngine for low-latency + high-accuracy transcription
+4. **Speaker Verification** -- cosine-similarity matching against enrolled speaker profiles
+5. **Text Dispatch** -- recognized speaker's text goes to the command parser first; fallback to LLM for complex requests
+
+The Wyoming server advertises via mDNS/Zeroconf for automatic Home Assistant satellite discovery. See [Voice Platform](/docs/architecture/voice-platform) for model management and configuration details.

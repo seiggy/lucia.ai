@@ -9,7 +9,7 @@ Lucia integrates with [Home Assistant](https://www.home-assistant.io/) through a
 
 ## Architecture
 
-The integration is a **Python custom component** that runs inside Home Assistant. It communicates with the Lucia .NET agent host over **JSON-RPC**, bridging the gap between HA's Python runtime and Lucia's multi-agent orchestration system.
+The integration is a **Python custom component** that runs inside Home Assistant. It sends structured requests to the Lucia .NET agent host through `POST /api/conversation`, receiving immediate JSON for fast-path commands or streamed events for LLM orchestration.
 
 ```mermaid
 graph LR
@@ -24,8 +24,8 @@ graph LR
         Orch --> Agents
     end
 
-    LC -- "JSON-RPC<br/>Request / Response" --> Orch
-    Orch -- "JSON-RPC<br/>Response" --> LC
+    LC -- "REST Conversation<br/>Request / Response" --> Orch
+    Orch -- "JSON or SSE<br/>Response" --> LC
     Agents -. "Service Calls" .-> HAData
 ```
 
@@ -33,17 +33,17 @@ graph LR
 
 1. **Voice or text input** arrives in Home Assistant (via the Assist pipeline, a dashboard card, or a voice satellite).
 2. The **Lucia custom component** receives the input through the Conversation API.
-3. The component sends the text to the **Lucia agent host** via a JSON-RPC call.
+3. The component sends text and Home Assistant context to the **Lucia agent host** through the REST Conversation API.
 4. The **AgentHost orchestrator** routes the request to the appropriate specialized agent (lighting, climate, media, etc.).
 5. The agent processes the command, calls Home Assistant services as needed, and returns a response.
-6. The response flows back through JSON-RPC to the custom component, which delivers it to Home Assistant for **speech output or display**.
+6. The response returns as JSON or Server-Sent Events, then the custom component delivers it to Home Assistant for **speech output or display**.
 
 ## Key Capabilities
 
 - **Natural language control** -- "Turn off the living room lights" or "Set the thermostat to 72" without rigid command syntax.
 - **Entity awareness** -- Lucia sees your exposed entities, areas, and floors, and uses them to understand context.
 - **Conversation history** -- Multi-turn conversations are maintained so you can issue follow-up commands naturally.
-- **Agent selection** -- Choose which Lucia agent handles your Home Assistant conversations.
+- **Automatic routing** -- Lucia chooses the best specialized agent from the request and Home Assistant context.
 
 ## What's Next?
 

@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const CHANGELOG_URL =
-  'https://raw.githubusercontent.com/seiggy/lucia-dotnet/refs/heads/master/RELEASE_NOTES.md';
+const RELEASES_URL =
+  'https://api.github.com/repos/seiggy/lucia-dotnet/releases?per_page=100';
 const REPO_BLOB_BASE =
   'https://github.com/seiggy/lucia-dotnet/blob/master/';
 const OUTPUT_PATH = path.resolve(
@@ -26,7 +26,12 @@ function rewriteRelativeLinks(md) {
 function fetchUrl(url) {
   return new Promise((resolve, reject) => {
     const get = (targetUrl) => {
-      https.get(targetUrl, (res) => {
+      https.get(targetUrl, {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'User-Agent': 'lucia.ai-docs',
+        },
+      }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           get(res.headers.location);
           return;
@@ -50,9 +55,19 @@ module.exports = function fetchChangelogPlugin(_context, _options) {
     name: 'fetch-changelog',
     async loadContent() {
       try {
-        console.log('[fetch-changelog] Fetching RELEASE_NOTES.md from lucia-dotnet...');
-        let content = await fetchUrl(CHANGELOG_URL);
-        content = rewriteRelativeLinks(content);
+        console.log('[fetch-changelog] Fetching releases from lucia-dotnet...');
+        const releases = JSON.parse(await fetchUrl(RELEASES_URL));
+        const content = releases
+          .filter((release) => !release.draft)
+          .map((release) => {
+            const name = release.name || release.tag_name;
+            const date = new Date(release.published_at).toISOString().slice(0, 10);
+            const body = rewriteRelativeLinks(release.body || 'No release notes provided.')
+              .replace(/\r\n?/g, '\n')
+              .replace(/[ \t]+$/gm, '');
+            return `# [${name}](${release.html_url})\n\n**Published:** ${date}\n\n${body}`;
+          })
+          .join('\n\n---\n\n');
         const frontmatter = `---
 sidebar_position: 5
 title: Changelog
@@ -61,7 +76,7 @@ title: Changelog
 `;
         fs.writeFileSync(OUTPUT_PATH, frontmatter + content, 'utf8');
         console.log(
-          `[fetch-changelog] Wrote ${(content.length / 1024).toFixed(1)}KB to changelog.md`,
+          `[fetch-changelog] Wrote ${releases.length} releases to changelog.md`,
         );
       } catch (err) {
         console.warn(

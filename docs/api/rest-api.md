@@ -61,15 +61,169 @@ curl -X POST http://localhost:5151/api/agents/LightAgent/invoke \
   -d '{"message": "Turn on the kitchen lights"}'
 ```
 
+### Conversation (v1.2.0+)
+
+Process conversation commands with pattern matching and LLM fallback.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/conversation` | Process a conversation request |
+| `GET` | `/api/conversation/patterns` | List registered command patterns |
+
+#### POST /api/conversation
+
+Process a user request with structured context. Returns instant JSON for parsed commands or Server-Sent Events for LLM streaming.
+
+**Request:**
+
+```json
+{
+  "text": "Turn on the kitchen lights",
+  "conversationId": "ha-conv-abc123",
+  "context": {
+    "deviceId": "light.kitchen_ceiling",
+    "area": "kitchen",
+    "type": "light",
+    "userId": "user-1",
+    "timestamp": "2026-02-20T10:30:00Z",
+    "location": null
+  }
+}
+```
+
+**Response (Parsed Command - Instant JSON):**
+
+```json
+{
+  "response": {
+    "speech": {
+      "plain": {
+        "speech": "I've turned on the kitchen lights."
+      }
+    },
+    "response_type": "action_done",
+    "data": {
+      "targets": ["light.kitchen_ceiling"],
+      "success": ["light.kitchen_ceiling"],
+      "failed": []
+    }
+  },
+  "conversationId": "ha-conv-abc123"
+}
+```
+
+**Response (LLM Fallback - Server-Sent Events):**
+
+```
+data: {"type":"start"}
+data: {"type":"delta","text":"Let me help "}
+data: {"type":"delta","text":"with that."}
+data: {"type":"done","response":{...},"conversationId":"ha-conv-abc123"}
+```
+
+#### GET /api/conversation/patterns
+
+Retrieve registered command patterns for dashboard tooling.
+
+**Response:**
+
+```json
+{
+  "patterns": [
+    {
+      "skillId": "LightControlSkill",
+      "action": "toggle",
+      "template": "turn {action:on|off} [the] {area} light[s]",
+      "placeholders": ["action", "area"],
+      "examples": ["turn on the kitchen lights", "turn off bedroom ceiling light"]
+    },
+    {
+      "skillId": "ClimateControlSkill",
+      "action": "setTemperature",
+      "template": "set [the] {area} thermostat to {temperature} degrees",
+      "placeholders": ["area", "temperature"],
+      "examples": ["set the living room thermostat to 72 degrees"]
+    }
+  ]
+}
+```
+
+**Examples:**
+
+```bash
+# Turn on lights (command parsed)
+curl -X POST http://localhost:5151/api/conversation \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Turn on the kitchen lights",
+    "conversationId": "conv-001",
+    "context": {"area": "kitchen", "type": "light", "userId": "user-1"}
+  }'
+
+# List available command patterns
+curl http://localhost:5151/api/conversation/patterns
+```
+
+### Response Templates (v1.2.0+)
+
+Manage customizable response templates used by the command parser.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/response-templates` | List all response templates |
+| `POST` | `/api/response-templates` | Create a new template |
+| `GET` | `/api/response-templates/{id}` | Get a specific template |
+| `PUT` | `/api/response-templates/{id}` | Update a template |
+| `DELETE` | `/api/response-templates/{id}` | Delete a template |
+
+**Response Template Model:**
+
+```json
+{
+  "id": "light-on-001",
+  "skillId": "LightControlSkill",
+  "action": "on",
+  "template": "I've turned on the {entity} in the {area}.",
+  "variants": [
+    "The {entity} is now on.",
+    "Done! {entity} is lit up."
+  ],
+  "placeholders": ["entity", "area"]
+}
+```
+
+**Examples:**
+
+```bash
+# List templates
+curl http://localhost:5151/api/response-templates
+
+# Create a template
+curl -X POST http://localhost:5151/api/response-templates \
+  -H "Content-Type: application/json" \
+  -d '{
+    "skillId": "LightControlSkill",
+    "action": "on",
+    "template": "I've turned on the {entity}.",
+    "variants": ["The {entity} is now on.", "Done!"]
+  }'
+
+# Update a template
+curl -X PUT http://localhost:5151/api/response-templates/light-on-001 \
+  -H "Content-Type: application/json" \
+  -d '{"template": "Successfully activated the {entity}."}'
+```
+
 ### Configuration
 
-Read and update the schema-driven configuration stored in MongoDB.
+Read and update schema-driven configuration through the active SQLite, PostgreSQL, or MongoDB provider.
 
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/configuration` | Get all configuration sections |
 | `GET` | `/api/configuration/{section}` | Get a specific configuration section |
-| `PUT` | `/api/configuration/{section}` | Update a configuration section |
+| `PUT` | `/api/configuration/{section}` | Replace a configuration section |
+| `PATCH` | `/api/configuration/{section}` | Merge fields into a configuration section |
 
 ```bash
 # Get router configuration
@@ -80,6 +234,27 @@ curl -X PUT http://localhost:5151/api/configuration/RouterExecutor \
   -H "Content-Type: application/json" \
   -d '{"semanticSimilarityThreshold": 0.80}'
 ```
+
+Use `PUT` when sending the complete section. Use `PATCH` for a partial update that should preserve unspecified fields.
+
+### Per-User Memory (v1.2.3+)
+
+Authenticated callers can manage durable user-specific memory:
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/memory/{userId}` | List a user's memories |
+| `GET` | `/api/memory/{userId}/{key}` | Get one memory |
+| `PUT` | `/api/memory/{userId}/{key}` | Store or replace one memory |
+| `DELETE` | `/api/memory/{userId}/{key}` | Delete one memory |
+
+```bash
+curl -X PUT http://localhost:5151/api/memory/user-1/preferred_temperature \
+  -H "Content-Type: application/json" \
+  -d '{"value":"70 F","ttlSeconds":31536000}'
+```
+
+The optional TTL can be a .NET `TimeSpan` string in `ttl` or a numeric `ttlSeconds` value up to one year. User-authenticated callers can only access their own memory; API-key and internal-service callers can act on behalf of users.
 
 ### Plugins
 
@@ -150,6 +325,23 @@ curl http://localhost:5151/api/entity-visibility
 curl -X PUT http://localhost:5151/api/entity-visibility \
   -H "Content-Type: application/json" \
   -d '{"entityId": "sensor.bedroom_temperature", "visible": false}'
+```
+
+### Entity Query (v1.2.3+)
+
+`GET /api/entities` returns a paginated entity catalog for dashboard and integration tooling.
+
+| Query | Default | Description |
+|---|---:|---|
+| `nameFilter` | -- | Match entity IDs, friendly names, and aliases |
+| `locationFilter` | -- | Match area or floor IDs, names, and aliases |
+| `domain` | -- | Comma-separated entity domains |
+| `agent` | -- | Include entities visible to an agent |
+| `page` | `1` | Page number |
+| `pageSize` | `100` | Items per page, maximum `500` |
+
+```bash
+curl "http://localhost:5151/api/entities?domain=sensor,binary_sensor&locationFilter=kitchen&pageSize=50"
 ```
 
 ### Matcher Debug

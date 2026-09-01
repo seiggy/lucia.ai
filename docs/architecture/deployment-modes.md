@@ -15,18 +15,18 @@ In standalone mode, all agents run **in-process** inside the AgentHost. This is 
 graph TB
     subgraph Docker Compose
         AH[AgentHost<br/>All agents in-process]
-        Redis[(Redis)]
-        Mongo[(MongoDB)]
+        Cache[(InMemory or Redis)]
+        Store[(SQLite, PostgreSQL,<br/>or MongoDB)]
     end
 
     HA[Home Assistant] <--> AH
-    AH <--> Redis
-    AH <--> Mongo
+    AH <--> Cache
+    AH <--> Store
 ```
 
 ### Characteristics
 
-- Single container for the AgentHost (plus Redis and MongoDB).
+- Single AgentHost container, with embedded or external cache and storage providers.
 - All agent dispatch is in-process (no network overhead).
 - No A2AHost instances needed.
 - Suitable for single-server and Raspberry Pi deployments.

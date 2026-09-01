@@ -5,7 +5,7 @@ title: Configuration Reference
 
 # Configuration Reference
 
-Lucia uses a schema-driven configuration system stored in MongoDB. Configuration is managed through the `luciaconfig` database and can be modified via the Dashboard UI or the REST API. Most settings are hot-reloadable -- changes take effect without restarting the AgentHost.
+Lucia uses a schema-driven configuration system stored by the selected SQLite, PostgreSQL, or MongoDB provider. Configuration can be modified through the Dashboard UI or REST API. Most settings are hot-reloadable -- changes take effect without restarting the AgentHost.
 
 ## Configuration Sections
 
@@ -15,6 +15,10 @@ Lucia uses a schema-driven configuration system stored in MongoDB. Configuration
 | RouterExecutor | Routing model and thresholds | Yes |
 | AgentInvoker | Agent execution settings | Yes |
 | ResultAggregator | Response aggregation | Yes |
+| PersonalityPrompt | Response personality and tone rewriting | Yes |
+| DataProvider | Cache and storage backend selection | No |
+| InputRequiredTimeout | Timeout for tasks awaiting user input | Yes |
+| Observability | OpenTelemetry signal level | No |
 | Redis | Cache and persistence | No |
 | MusicAssistant | Music Agent integration | Yes |
 | TraceCapture | Telemetry and tracing | Yes |
@@ -114,6 +118,89 @@ Controls how responses from multiple agents are combined into a single reply.
   }
 }
 ```
+
+## PersonalityPrompt
+
+Configures optional response personality rewriting (available since v1.2.0). When enabled, the aggregated response is passed through an LLM with your personality instructions, allowing customization of tone and style.
+
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `instructions` | `string` | -- | System prompt defining the personality (multi-line text) |
+| `modelConnectionName` | `string` | -- | Optional: Use a different/cheaper model for rewriting (defaults to primary chat model) |
+
+```json
+{
+  "PersonalityPrompt": {
+    "instructions": "You are a helpful home assistant with a warm, conversational tone. Keep responses concise but friendly. Use casual language and occasional emoji when appropriate.",
+    "modelConnectionName": "gpt-4o-mini"
+  }
+}
+```
+
+**Behavior:**
+- **Hot-reloadable** — Changes take effect on the next request without restart
+- **Zero-cost opt-in** — When `instructions` is empty or not set, the pipeline is unchanged (no LLM call)
+- **Graceful fallback** — If the personality model is misconfigured, a warning is logged and the raw aggregated response is returned for that request
+- **Model flexibility** — Optionally route personality rewriting to a different (faster/cheaper) model than your main orchestrator
+
+:::tip
+Use a smaller model like `gpt-4o-mini` or `claude-3-haiku` for personality rewriting to reduce costs without sacrificing quality.
+:::
+
+## DataProvider
+
+Configures pluggable cache and storage backends (available since v1.2.0). This enables flexible deployment from resource-constrained devices to high-availability clusters.
+
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `cache` | `string` | `Redis` | Cache provider: `InMemory` or `Redis` |
+| `store` | `string` | `MongoDB` | Store provider: `SQLite`, `PostgreSQL`, or `MongoDB` |
+| `sqlitePath` | `string` | `./data/lucia.db` | Path to SQLite database (used when store=`SQLite`) |
+
+```json
+{
+  "DataProvider": {
+    "cache": "InMemory",
+    "store": "SQLite",
+    "sqlitePath": "./data/lucia.db"
+  }
+}
+```
+
+**Common Deployment Patterns:**
+
+| Scenario | Cache | Store | Notes |
+|---|---|---|---|
+| **Development** | `InMemory` | `SQLite` | Single-process, no external services |
+| **Home Assistant Add-on** | `InMemory` | `SQLite` | Minimal resource footprint, embedded |
+| **Production / HA** | `Redis` | `MongoDB` | Clustering, persistent state, high-availability ready |
+| **Production / Jetson** | `Redis` | `PostgreSQL` | Relational persistence, concurrent search, ARM64 stack |
+| **Docker on Raspberry Pi** | `InMemory` | `SQLite` | Limited memory, single-container deployment |
+
+**Requirements:**
+- Changes to DataProvider require an AgentHost restart to take effect
+- When `store=MongoDB`, ensure `ConnectionStrings__Config`, `ConnectionStrings__Traces`, and `ConnectionStrings__Tasks` are configured
+- When `store=PostgreSQL`, configure `ConnectionStrings__luciaconfig`, `ConnectionStrings__luciatraces`, and `ConnectionStrings__luciatasks`
+- When `cache=Redis`, ensure `ConnectionStrings__redis` is configured
+
+## InputRequiredTimeout
+
+Tasks that pause for user input are durable, but should not remain open forever:
+
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `timeout` | `TimeSpan` | `00:01:00` | Time before an unanswered task is canceled |
+| `sweepInterval` | `TimeSpan` | `00:00:10` | Frequency of timeout checks |
+
+## Observability
+
+Select which OpenTelemetry signals Lucia records:
+
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `mode` | `string` | `Trace` | `Off`, `Metrics`, `Trace`, or `Profile` |
+
+`Metrics` exports runtime, process, HTTP, agent, and speech measurements. `Trace` adds correlated logs and 10% parent-based tracing. `Profile` records every span and adds a process correlation ID. See [Observability](../deployment/observability.md).
 
 ## Redis
 

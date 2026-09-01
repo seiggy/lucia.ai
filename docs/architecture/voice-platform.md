@@ -7,6 +7,10 @@ title: Wyoming Voice Platform
 
 The Wyoming Voice Platform transforms Lucia into a **Home Assistant-compatible voice satellite**, enabling local speech processing with zero cloud dependency. It implements the full [Wyoming protocol](https://github.com/rhasspy/wyoming), shipping a streaming speech pipeline, speaker verification, wake word detection, speech enhancement, and intelligent model management—all discoverable via Zeroconf/mDNS.
 
+:::note v1.3.1 defaults
+The generic AgentHost now leaves the VAD and wake-word pipelines disabled unless `FeatureManagement__VadPipeline=true` or `FeatureManagement__WakeWordPipeline=true`. Disabled pipelines do not register engines or activate models, reducing startup work for deployments that receive already-bounded utterances.
+:::
+
 ## Architecture Overview
 
 ```mermaid
@@ -130,6 +134,7 @@ Example: Register "Lucia, listen up" as a custom phrase and the system wakes for
 - Isolated per conversation (no cross-session noise bleed)
 - Raw audio preserved separately for speaker verification (to avoid spectral mismatch with enrollment data)
 - Optional—can be disabled for cleaner/minimal-latency pipelines
+- Reuses FFT, tensor, cache, and ONNX buffers; v1.3.0 reduced warm 256-sample hop allocations from about 144 KB to 1.4 KB
 
 ## Model Management Lifecycle
 
@@ -163,10 +168,14 @@ Lucia implements the full Wyoming satellite protocol for Home Assistant:
 
 ## Configuration
 
-Voice platform configuration is stored in MongoDB and hot-reloaded:
+Voice platform configuration is stored by the selected SQLite, PostgreSQL, or MongoDB provider and hot-reloaded:
 
 ```json
 {
+  "FeatureManagement": {
+    "VadPipeline": false,
+    "WakeWordPipeline": false
+  },
   "Wyoming": {
     "TcpPort": 10700,
     "VadThreshold": 0.7,
@@ -180,6 +189,13 @@ Voice platform configuration is stored in MongoDB and hot-reloaded:
     "EnableSpeechEnhancement": true
   }
 }
+```
+
+Environment-variable equivalents:
+
+```bash
+FeatureManagement__VadPipeline=true
+FeatureManagement__WakeWordPipeline=true
 ```
 
 All settings can be edited from the Voice Platform → Config panel in the dashboard with live persistence.
@@ -284,6 +300,24 @@ graph TD
 | Wake word detection latency | `<100ms` |
 | ONNX model warmup (first inference) | ~500ms–2s |
 | Model hot-reload downtime | `<100ms` |
+
+### Concurrency and Shutdown
+
+STT concurrency is enforced around inference, not around the full Wyoming connection. Idle wake-word listeners can remain connected without consuming STT permits. During shutdown, Lucia drains active sessions under a bounded deadline before aborting remaining transports.
+
+### Speaker Verification Benchmarks
+
+Version 1.3.1 adds a reproducible benchmark for comparing speaker-embedding models against labeled enrollment and test clips:
+
+```bash
+dotnet run --project lucia.VoiceBenchmarks -- speaker \
+  --manifest benchmarks/voice/sample-manifest.json \
+  --model path/to/model.onnx \
+  --model-threshold 0.7 \
+  --output benchmarks/results
+```
+
+Each speaker needs separate enrollment and test sessions. Reports include identification accuracy, model timings, process memory, and managed allocations in stable JSON and Markdown formats.
 
 ## Next Steps
 

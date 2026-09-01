@@ -56,10 +56,10 @@ const features: {title: string; icon: ReactNode; description: string}[] = [
       'Router, dispatcher, and aggregator coordinate specialized agents end-to-end using the A2A protocol where needed.',
   },
   {
-    title: 'Natural-Language Control',
-    icon: '🧠',
+    title: 'Whole-Home Agent Suite',
+    icon: '🎯',
     description:
-      'Lucia maps everyday language to Home Assistant entities, areas, and automations without rigid command syntax.',
+      'Dedicated light, climate, scene, music, timer, lists, sensor, and security agents handle each domain.',
   },
   {
     title: 'Privacy-First By Design',
@@ -71,13 +71,19 @@ const features: {title: string; icon: ReactNode; description: string}[] = [
     title: 'Deep Home Assistant Integration',
     icon: <HomeAssistantLogo />,
     description:
-      'Custom component integration with Home Assistant Conversation API and JSON-RPC communication to Lucia AgentHost.',
+      'Custom component integration with the Home Assistant Conversation API, services, entities, areas, and automations.',
   },
   {
     title: 'Operational Dashboard',
     icon: '📊',
     description:
-      'Inspect agents, traces, configuration, providers, exports, and diagnostics from one focused control plane.',
+      'System, Light, and Dark themes plus traces, configuration, providers, exports, and diagnostics in one control plane.',
+  },
+  {
+    title: 'Production Observability',
+    icon: '📈',
+    description:
+      'Export metrics, traces, and logs to the bundled OpenTelemetry, Grafana, Tempo, Prometheus, and Loki stack.',
   },
   {
     title: 'Extensible Plugin System',
@@ -174,7 +180,7 @@ const orchestrationSteps = [
   {
     title: 'Conversation API forwards to Lucia',
     description:
-      'The Lucia custom component passes the request to AgentHost over JSON-RPC.',
+      'The Lucia custom component sends structured context to the AgentHost REST conversation endpoint.',
   },
   {
     title: 'Router selects the best-fit agent',
@@ -193,6 +199,8 @@ const agentCards = [
   {name: 'ClimateAgent', focus: 'Thermostat mode, targets, climate status'},
   {name: 'SceneAgent', focus: 'Scenes and automation triggers'},
   {name: 'ListsAgent', focus: 'Shopping lists, todos, notes'},
+  {name: 'SensorAgent', focus: 'Sensors, doors, motion, batteries, power'},
+  {name: 'SecurityAgent', focus: 'Alarm panels, locks, security status'},
   {name: 'GeneralAgent', focus: 'Fallback and general conversation'},
   {name: 'MusicAgent', focus: 'Media playback and queue control'},
   {name: 'TimerAgent', focus: 'Default A2A-hosted satellite agent'},
@@ -360,6 +368,7 @@ function ConversationHero() {
           <span className={styles.heroBadge}>Open Source</span>
           <span className={styles.heroBadge}>Local-first</span>
           <span className={styles.heroBadge}>Multi-agent</span>
+          <span className={styles.heroBadge}>v1.3.1</span>
         </div>
         <div className={styles.heroGrid}>
           <div className={styles.heroLead}>
@@ -368,9 +377,9 @@ function ConversationHero() {
               <span className={styles.heroTitleMuted}>Not someone else&apos;s cloud.</span>
             </Heading>
             <p className={styles.heroSubtitle}>
-              Lucia is a privacy-first, multi-agent voice assistant integration for Home
-              Assistant. Powerful like the big platforms, more customizable, and designed to keep
-              your data in your hands.
+              Lucia is a privacy-first, multi-agent voice assistant for Home Assistant, with local
+              voice, sensor and security agents, flexible storage, and production-grade
+              observability.
             </p>
             <div className={clsx(styles.buttons, styles.heroButtons)}>
               <Link className="button button--primary button--lg" to="/docs/getting-started/quickstart">
@@ -1165,6 +1174,20 @@ function ArchitectureSection() {
       toneClass: styles.archAgentToneGeneral,
     },
     {
+      name: 'SensorAgent',
+      description: 'Live home readings',
+      skills: ['Sensors', 'Motion', 'Power'],
+      icon: <Cpu className={styles.archAgentIconSvg} aria-hidden />,
+      toneClass: styles.archAgentToneCustom,
+    },
+    {
+      name: 'SecurityAgent',
+      description: 'Home protection',
+      skills: ['Alarms', 'Locks', 'Status'],
+      icon: <Shield className={styles.archAgentIconSvg} aria-hidden />,
+      toneClass: styles.archAgentToneExternal,
+    },
+    {
       name: 'MusicAgent',
       description: 'Playback control',
       skills: ['Play', 'Queue', 'Volume'],
@@ -1198,8 +1221,8 @@ function ArchitectureSection() {
             Multi-Agent Architecture
           </Heading>
           <p>
-            Lucia uses the A2A (Agent-to-Agent) protocol with JSON-RPC for communication between
-            components and optional satellite hosts.
+            Lucia uses REST for Home Assistant conversations and the A2A protocol with JSON-RPC for
+            optional satellite agents.
           </p>
           <p className={styles.archModeNote}>
             Default standalone deployment keeps all agents in-process. Mesh mode can move selected
@@ -1215,7 +1238,7 @@ function ArchitectureSection() {
           </div>
           <div className={styles.archConnector}>
             <div className={styles.archLine} />
-            <span className={styles.archConnectorLabel}>JSON-RPC</span>
+            <span className={styles.archConnectorLabel}>REST</span>
           </div>
           <div className={styles.archBox}>
             <div className={styles.archBoxHeader}>AgentHost</div>
@@ -1377,8 +1400,7 @@ function QuickStartSection() {
               <span className="step-number">1</span>
               <Heading as="h3">Docker Compose</Heading>
               <p>
-                Start Redis, MongoDB, and Lucia AgentHost using{' '}
-                <code>docker compose up -d</code>.
+                Start AgentHost with SQLite, PostgreSQL, or MongoDB using <code>docker compose up -d</code>.
               </p>
             </div>
           </div>

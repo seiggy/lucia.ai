@@ -18,14 +18,24 @@ When running with Docker Compose, set environment variables in the `environment`
 | `LUCIA_PORT` | `5000` | Port the AgentHost listens on |
 | `LUCIA_ENV` | `development` | Environment name (`development`, `staging`, `production`) |
 | `LUCIA_LOG_LEVEL` | `Information` | Minimum log level (`Trace`, `Debug`, `Information`, `Warning`, `Error`, `Critical`) |
-| `LUCIA_ENABLE_TELEMETRY` | `true` | Enable OpenTelemetry trace export |
+| `Observability__Mode` | `Trace` | OpenTelemetry mode: `Off`, `Metrics`, `Trace`, or `Profile` |
 
 ```bash
 export LUCIA_PORT=5000
 export LUCIA_ENV=production
 export LUCIA_LOG_LEVEL=Warning
-export LUCIA_ENABLE_TELEMETRY=true
+export Observability__Mode=Metrics
 ```
+
+### OpenTelemetry Export
+
+| Variable | Description |
+|---|---|
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP/gRPC or OTLP/HTTP collector endpoint |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Exporter headers, such as an encoded Authorization value |
+| `OTEL_RESOURCE_ATTRIBUTES` | Comma-separated resource attributes such as device and environment |
+
+The legacy `Observability__Enabled=true|false` setting maps to `Trace|Off`. Do not set both old and new options. See [Observability](../deployment/observability.md).
 
 ## Home Assistant
 
@@ -121,6 +131,8 @@ export AGENT_RETRY_POLICY=exponential-backoff
 | `CERTIFICATE_PATH` | -- | Path to the TLS certificate file (`.pem` or `.pfx`) |
 | `CERTIFICATE_KEY_PATH` | -- | Path to the TLS certificate private key |
 | `ALLOWED_ORIGINS` | `*` | Comma-separated list of allowed CORS origins |
+| `DASHBOARD_API_KEY` | -- | Creates or resets the active dashboard API key at startup |
+| `Auth__SessionSigningKey` | Generated and persisted | Optional pre-provisioned dashboard session-signing key |
 
 ```bash
 export ENABLE_HTTPS=true
@@ -133,9 +145,36 @@ export ALLOWED_ORIGINS=http://homeassistant.local:8123,https://lucia.local
 In production, always set `ALLOWED_ORIGINS` to your specific Home Assistant URL rather than using the default wildcard (`*`).
 :::
 
+## Data Provider
+
+The data provider system (available since v1.2.0) enables flexible storage backends. Choose cache and store combinations based on your deployment model.
+
+| Variable | Default | Description |
+|---|---|---|
+| `DataProvider__Cache` | `Redis` | Cache provider: `InMemory` or `Redis` |
+| `DataProvider__Store` | `MongoDB` | Store provider: `SQLite`, `PostgreSQL`, or `MongoDB` |
+| `DataProvider__SqlitePath` | `./data/lucia.db` | Path to SQLite database file (when Store=SQLite) |
+
+```bash
+# Development: In-memory cache + SQLite (no external dependencies)
+export DataProvider__Cache=InMemory
+export DataProvider__Store=SQLite
+export DataProvider__SqlitePath=./data/lucia.db
+
+# Production: Redis cache + MongoDB (recommended for HA)
+export DataProvider__Cache=Redis
+export DataProvider__Store=MongoDB
+```
+
+:::tip
+- **Development and add-ons:** Use `InMemory` + `SQLite` for minimal resource usage.
+- **Production and HA:** Use `Redis` + `MongoDB` for scalability and clustering.
+- **Production and Jetson:** `Redis` + `PostgreSQL` is also fully supported.
+:::
+
 ## MongoDB Connection Strings
 
-MongoDB databases are configured through the `ConnectionStrings__<db>` format.
+MongoDB databases are configured through the `ConnectionStrings__<db>` format. Only required when `DataProvider__Store=MongoDB`.
 
 | Variable | Default | Description |
 |---|---|---|
@@ -149,6 +188,23 @@ export ConnectionStrings__Config=mongodb://localhost:27017/luciaconfig
 export ConnectionStrings__Tasks=mongodb://localhost:27017/luciatasks
 ```
 
+## PostgreSQL Connection Strings
+
+When `DataProvider__Store=PostgreSQL`, configure the same three logical stores with Npgsql connection strings:
+
+```bash
+export ConnectionStrings__luciaconfig="Host=localhost;Database=luciaconfig;Username=lucia;Password=..."
+export ConnectionStrings__luciatraces="Host=localhost;Database=luciatraces;Username=lucia;Password=..."
+export ConnectionStrings__luciatasks="Host=localhost;Database=luciatasks;Username=lucia;Password=..."
+```
+
+## Input-Required Task Timeout
+
+| Variable | Default | Description |
+|---|---|---|
+| `InputRequiredTimeout__Timeout` | `00:01:00` | Auto-cancel tasks that remain waiting for user input |
+| `InputRequiredTimeout__SweepInterval` | `00:00:10` | Frequency of timeout checks |
+
 ## Full Example
 
 A complete `.env` file for a production deployment:
@@ -158,7 +214,8 @@ A complete `.env` file for a production deployment:
 LUCIA_PORT=5000
 LUCIA_ENV=production
 LUCIA_LOG_LEVEL=Warning
-LUCIA_ENABLE_TELEMETRY=true
+Observability__Mode=Metrics
+OTEL_EXPORTER_OTLP_ENDPOINT=https://telemetry.example.internal:4317
 
 # Home Assistant
 HOMEASSISTANT_URL=http://homeassistant.local:8123

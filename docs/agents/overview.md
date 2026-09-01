@@ -18,6 +18,8 @@ Lucia uses a **multi-agent architecture** where a central orchestrator delegates
 | **[MusicAgent](./music-agent.md)** | Media Playback | In-process | Control Music Assistant -- play, pause, skip, volume, queue |
 | **[TimerAgent](./timer-agent.md)** | Timers / Alarms | A2A | Create timers, schedule alarms, voice dismiss/snooze |
 | **[ListsAgent](./lists-agent.md)** | Lists | In-process | Manage todo and reminder lists |
+| **[SensorAgent](./sensor-agent.md)** | Sensors | In-process | Read sensors and binary sensors by name, area, or device type |
+| **[SecurityAgent](./security-agent.md)** | Security | In-process | Arm alarms, control locks, and report security status |
 | **[GeneralAgent](./general-agent.md)** | Fallback | In-process | Open-ended questions, general knowledge, web search |
 
 ## In-Process vs A2A Agents
@@ -50,6 +52,8 @@ Orchestrator (router LLM)
     +---> ClimateAgent     [in-process]
     +---> SceneAgent       [in-process]
     +---> ListsAgent       [in-process]
+    +---> SensorAgent      [in-process]
+    +---> SecurityAgent    [in-process]
     +---> GeneralAgent     [in-process]
     +---> MusicAgent       [in-process]
     +---> TimerAgent       [A2A satellite]
@@ -74,5 +78,7 @@ Explore each agent in detail:
 - [Music Agent](./music-agent.md)
 - [Timer Agent](./timer-agent.md)
 - [Lists Agent](./lists-agent.md)
+- [Sensor Agent](./sensor-agent.md)
+- [Security Agent](./security-agent.md)
 - [General Agent](./general-agent.md)
 - [Custom Agents](./custom-agents.md)

@@ -23,6 +23,7 @@ const sidebars: SidebarsConfig = {
         'architecture/a2a-protocol',
         'architecture/data-flow',
         'architecture/deployment-modes',
+        'architecture/voice-platform',
       ],
     },
     {
@@ -37,6 +38,8 @@ const sidebars: SidebarsConfig = {
         'agents/music-agent',
         'agents/timer-agent',
         'agents/lists-agent',
+        'agents/sensor-agent',
+        'agents/security-agent',
         'agents/general-agent',
         'agents/custom-agents',
       ],
@@ -53,6 +56,9 @@ const sidebars: SidebarsConfig = {
         'dashboard/model-providers',
         'dashboard/mcp-servers',
         'dashboard/configuration',
+        'dashboard/personality-prompt',
+        'dashboard/response-templates',
+        'dashboard/voice-platform',
         'dashboard/exports',
         'dashboard/prompt-cache',
         'dashboard/tasks',
@@ -96,6 +102,7 @@ const sidebars: SidebarsConfig = {
         'reference/environment-variables',
         'reference/model-providers',
         'reference/connection-strings',
+        'reference/command-patterns',
       ],
     },
     {
@@ -106,6 +113,7 @@ const sidebars: SidebarsConfig = {
         'api/a2a-protocol',
         'api/json-rpc',
         'api/dashboard-api',
+        'api/conversation-api',
       ],
     },
     {
@@ -117,7 +125,9 @@ const sidebars: SidebarsConfig = {
         'deployment/kubernetes',
         'deployment/helm',
         'deployment/systemd',
+        'deployment/observability',
         'deployment/comparison',
+        'deployment/data-providers',
       ],
     },
     {

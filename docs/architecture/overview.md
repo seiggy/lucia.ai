@@ -14,6 +14,12 @@ graph TB
     HA[Home Assistant] <--> CC[Lucia Custom Component<br/>Python]
     CC <--> AH[AgentHost<br/>.NET API Server]
 
+    Audio[Audio Input] <--> Voice[Wyoming Voice Platform<br/>STT, Speaker Verification]
+    Voice <--> AH
+
+    User[User] <--> Conv[Conversation Command Parser<br/>Pattern Matcher]
+    Conv <--> AH
+
     AH <--> Orch[Orchestrator]
 
     subgraph Orchestrator Pipeline
@@ -29,6 +35,8 @@ graph TB
         Dispatch --> LiA[ListsAgent]
         Dispatch --> GA[GeneralAgent]
         Dispatch --> MA[MusicAgent]
+        Dispatch --> SeA[SensorAgent]
+        Dispatch --> SecA[SecurityAgent]
     end
 
     subgraph A2A Satellite
@@ -49,9 +57,14 @@ graph TB
     MA --> LLM
     TA --> LLM
 
-    AH <--> MongoDB[(MongoDB)]
-    AH <--> Redis[(Redis)]
+    subgraph Data Persistence
+        AH <--> DP[Pluggable Data Providers]
+        DP <--> Cache[Cache<br/>InMemory / Redis]
+        DP <--> Store[Store<br/>SQLite / PostgreSQL / MongoDB]
+    end
+
     AH <--> Dash[Dashboard<br/>React 19 SPA]
+    AH --> OTel[OpenTelemetry<br/>Metrics, Traces, Logs]
 ```
 
 ## Key Components
@@ -61,8 +74,12 @@ graph TB
 | **AgentHost** | Main .NET API server. Hosts the orchestrator, in-process agents, REST and JSON-RPC endpoints, and the plugin system. |
 | **A2AHost** | Satellite host for agents that run as separate processes or containers. Exposes the same A2A discovery and messaging interface. |
 | **Orchestrator** | Three-stage pipeline: Router, Dispatch, Aggregator. Determines which agent handles a request, dispatches it, and formats the result. |
+| **Conversation Command Parser** | Fast-path pattern matcher that recognizes common smart home commands and executes them directly via DirectSkillExecutor, bypassing the LLM for sub-50ms response times. |
+| **Wyoming Voice Platform** | Multi-engine speech-to-text pipeline with speaker verification, wake word detection, and GTCRN speech enhancement. Implements the Wyoming protocol for Home Assistant satellite integration. |
+| **Pluggable Data Providers** | Agnostic persistence layer with InMemory or Redis caching and SQLite, PostgreSQL, or MongoDB storage. |
+| **Observability** | Fail-open OpenTelemetry modes plus an optional Grafana, Tempo, Prometheus, Loki, Collector, and Caddy deployment. |
 | **Dashboard** | React 19 single-page application for configuration, conversation history, entity management, and real-time monitoring. |
-| **HA Integration** | Python custom component for Home Assistant. Bridges the HA Conversation API to Lucia over JSON-RPC. |
+| **HA Integration** | Python custom component for Home Assistant. Bridges the HA Conversation API to Lucia through the REST conversation endpoint. |
 | **HomeAssistant Client** | .NET client library that communicates with the Home Assistant WebSocket API for entity state, service calls, and event subscriptions. |
 | **EntityLocationService** | Maintains a location graph of areas, floors, and devices. Resolves natural-language room references to HA entity IDs. |
 | **HybridEntityMatcher** | Multi-strategy entity matching combining Levenshtein distance, Jaro-Winkler similarity, phonetic encoding, embedding similarity, and alias resolution. |

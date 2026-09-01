@@ -7,6 +7,21 @@ title: Multi-LLM Setup
 
 Lucia supports multiple LLM providers simultaneously. You can assign different models to different agents -- for example, a fast local model for simple tasks and a cloud model for complex reasoning. This tutorial shows you how to configure providers and assign them to agents.
 
+## Personality Prompt Use Case (v1.2.0+)
+
+One practical multi-LLM scenario is using a **cheaper/faster model for personality rewriting** while keeping your orchestrator on a capable model:
+
+1. **Orchestrator Model** (smart routing): Azure OpenAI (GPT-4o)
+2. **Personality Model** (rewriting output): Ollama (llama3.1 locally) or Anthropic (Claude 3.5 Haiku)
+
+Configure this in the **Personality Prompt** section of the dashboard. When a personality prompt is active, Lucia rewrites the multi-agent response through the designated personality model, giving your assistant a customizable tone — formal, casual, pirate speak, butler, etc.
+
+:::info
+The `ModelConnectionName` field in PersonalityPrompt config lets you select a different model for rewriting. When not configured, it uses the default orchestrator model.
+:::
+
+See [Personality Prompt Configuration](../dashboard/personality-prompt.md) for full setup details.
+
 ## Step 1 -- Navigate to Model Providers
 
 Open the Lucia dashboard and click **Model Providers** in the sidebar. This page lists all configured LLM connections.

@@ -48,18 +48,21 @@ With manual installation you will need to repeat this process for each update. C
 
 ## Configure the Integration
 
-Once the integration is installed and Home Assistant has restarted:
+As of v1.2.0, the setup flow is greatly simplified. You only need to provide:
 
 1. Navigate to **Settings** > **Devices & Services**.
 2. Click **Add Integration** and search for **Lucia**.
 3. Enter the following details:
-   - **Agent Repository URL:** `https://localhost:7235`
+   - **Lucia Host URL:** `https://localhost:7235`
    - **API Key:** The API key generated during the Lucia setup wizard
-4. Select the agent you want to use as the default conversation handler.
-5. Click **Submit**.
+4. Click **Submit**.
 
 :::info
-The Agent Repository URL uses port `7235` and HTTPS by default. If you changed the port mapping or TLS settings in your Docker Compose configuration, adjust the URL accordingly.
+The Lucia Host URL uses port `7235` and HTTPS by default. If you changed the port mapping or TLS settings in your Docker Compose configuration, adjust the URL accordingly.
+:::
+
+:::note
+As of v1.2.0, agent selection is no longer part of the setup flow. The orchestrator automatically routes requests to the best available agent based on intent.
 :::
 
 ## Set Lucia as Your Conversation Agent
@@ -77,9 +80,9 @@ From this point on, any command sent through Assist -- whether typed in the UI, 
 
 Test the integration by opening the Assist dialog in Home Assistant (click the Assist icon in the top bar or press `e`) and typing:
 
-> What devices are in the living room?
+> Turn on the living room lights
 
-Lucia should respond with a list of entities assigned to the living room area.
+Lucia should respond by turning on the lights and confirming the action.
 
 ## Troubleshooting
 
@@ -88,4 +91,4 @@ Lucia should respond with a list of entities assigned to the living room area.
 | Integration not appearing after install | Make sure you restarted Home Assistant after copying files or downloading via HACS. |
 | Connection refused on port 7235 | Verify the Lucia agent host container is running (`docker compose ps`) and the port is not blocked by a firewall. |
 | "Invalid API key" error | Re-check the API key from the Lucia setup wizard. You can view it in the Lucia dashboard under Settings. |
-| Assist not using Lucia | Confirm Lucia is selected as the conversation agent under **Settings** > **Voice Assistants** > **Assist**. |
+| Commands not working | Ensure Lucia is selected as the conversation agent under **Settings** > **Voice Assistants** > **Assist**. Also verify at least one agent is enabled in the Lucia dashboard. |

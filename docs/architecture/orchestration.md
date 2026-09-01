@@ -59,7 +59,7 @@ The **HybridEntityMatcher** combines multiple strategies with weighted scoring:
 | **Jaro-Winkler similarity** | 0.20 | Gives extra weight to matching prefixes. Effective for names that share a common start. |
 | **Phonetic encoding** | 0.15 | Double Metaphone encoding. Matches words that sound alike regardless of spelling. |
 | **Embedding similarity** | 0.30 | Cosine similarity between the query embedding and precomputed entity name embeddings. Best for semantic matches. |
-| **Alias resolution** | 0.15 | Exact match against user-defined aliases stored in MongoDB. Guarantees a match for explicitly configured names. |
+| **Alias resolution** | 0.15 | Exact match against user-defined aliases in the configured store. Guarantees a match for explicitly configured names. |
 
 ### Matching Flow
 

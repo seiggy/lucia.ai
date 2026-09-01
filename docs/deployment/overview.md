@@ -15,12 +15,13 @@ Lucia can be deployed using several methods depending on your infrastructure, sc
 | [Kubernetes](./kubernetes.md) | High availability, scalability, production | 5-10 minutes | Medium |
 | [Helm Chart](./helm.md) | Kubernetes with templated config | 5-10 minutes | Medium |
 | [systemd](./systemd.md) | Traditional Linux, bare metal, no containers | 5-15 minutes | Medium |
+| [Jetson ARM64 CUDA](./docker-compose.md#jetson-arm64-cuda-voice-deployment) | Local GPU voice on Jetson Orin Nano | 10-20 minutes | Medium |
 
 ## Deployment Modes
 
 Lucia supports two deployment topologies via `Deployment__Mode`:
 
-- **Standalone** (default) -- All agents run in the main AgentHost process. Single container + Redis + MongoDB.
+- **Standalone** (default) -- All agents run in the main AgentHost process. Storage and cache providers are selectable.
 - **Mesh** -- Agents run as separate A2A containers. Used for Kubernetes and multi-node deployments.
 
 ## CI/CD
@@ -29,20 +30,20 @@ Lucia includes GitHub Actions workflows for automated builds, testing, and deplo
 
 ## Architecture
 
-Regardless of deployment method, Lucia requires three backing services:
+Every deployment requires Home Assistant and an LLM provider. Persistence and caching can be embedded or external:
 
 ```mermaid
 graph LR
-    AH[AgentHost] --> MongoDB[(MongoDB)]
-    AH --> Redis[(Redis)]
+    AH[AgentHost] --> Store[(SQLite / PostgreSQL / MongoDB)]
+    AH --> Cache[(InMemory / Redis)]
     AH --> HA[Home Assistant]
     AH --> LLM[LLM Provider]
 ```
 
 | Service | Purpose | Required |
 |---|---|---|
-| **MongoDB** | Configuration, traces, and task storage | Yes |
-| **Redis** | Conversation context cache and prompt cache | Yes |
+| **SQLite, PostgreSQL, or MongoDB** | Configuration, traces, memory, and task storage | Yes, choose one |
+| **InMemory or Redis** | Conversation context and prompt cache | Yes, choose one |
 | **Home Assistant** | Smart home platform | Yes |
 | **LLM Provider** | Language model for agent reasoning | Yes |
 
@@ -73,7 +74,7 @@ If you are unsure which method to choose, **start with Docker Compose**. It is t
 | Network | LAN access to Home Assistant | -- |
 
 :::info
-These requirements cover the AgentHost, MongoDB, and Redis. If you are running a local LLM via Ollama, you will need additional resources based on the model size.
+These requirements cover AgentHost and lightweight providers. External databases, the observability stack, local LLMs, and voice models need additional resources.
 :::
 
 ## Next Steps
@@ -82,4 +83,5 @@ These requirements cover the AgentHost, MongoDB, and Redis. If you are running a
 - [Kubernetes](./kubernetes.md) -- For production and high-availability deployments
 - [Helm Chart](./helm.md) -- Kubernetes deployment with Helm
 - [systemd](./systemd.md) -- Bare metal deployment
+- [Observability](./observability.md) -- Remote telemetry and Grafana dashboards
 - [Deployment Comparison](./comparison.md) -- Detailed comparison of all methods

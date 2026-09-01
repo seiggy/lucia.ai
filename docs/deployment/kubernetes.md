@@ -62,6 +62,59 @@ lucia-timer-agent-1b2c3d4e5f-ijk01   1/1     Running   0          2m
 
 ## Configuration
 
+### Data Provider Configuration (v1.2.0+)
+
+As of v1.2.0, you can configure lightweight data providers for Kubernetes deployments without external Redis/MongoDB:
+
+**InMemory + SQLite Example:**
+
+```yaml title="lucia-deployment.yaml"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lucia-agenthost
+  namespace: lucia
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: lucia-agenthost
+        env:
+        - name: DataProvider__Cache
+          value: "InMemory"
+        - name: DataProvider__Store
+          value: "SQLite"
+        - name: DataProvider__SqliteDbPath
+          value: "/app/lucia/lucia.db"
+        volumeMounts:
+        - name: lucia-data
+          mountPath: /app/lucia
+      volumes:
+      - name: lucia-data
+        persistentVolumeClaim:
+          claimName: lucia-sqlite-pvc
+```
+
+**PersistentVolumeClaim for SQLite:**
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lucia-sqlite-pvc
+  namespace: lucia
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+```
+
+:::tip
+When using `InMemory + SQLite`, you can omit the Redis and MongoDB StatefulSets entirely from your manifest. This reduces infrastructure complexity while maintaining data persistence via SQLite.
+:::
+
 ### Secrets
 
 Create or update the Kubernetes Secret with your credentials:

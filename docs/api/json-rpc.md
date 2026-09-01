@@ -5,25 +5,28 @@ title: JSON-RPC
 
 # JSON-RPC
 
-Lucia uses **JSON-RPC 2.0** as the communication protocol between the Home Assistant custom component and the AgentHost. This provides a structured, bidirectional message format for sending user requests and receiving agent responses.
+:::warning Deprecated — Use REST API Instead
+As of v1.2.0, the Home Assistant integration uses the new **REST API** (`POST /api/conversation`) instead of JSON-RPC. The REST endpoint provides instant JSON responses for pattern-matched commands and SSE streaming for LLM fallback, resulting in `<50ms` latency for recognized commands.
+
+See [Conversation API](./conversation-api.md) for the recommended integration path.
+
+JSON-RPC remains functional for backward compatibility and direct agent invocation, but the HA component has migrated to REST.
+:::
 
 ## Protocol Overview
 
-The Home Assistant custom component (Python) sends JSON-RPC requests to the AgentHost (.NET) over HTTP. The AgentHost processes the request through its orchestration pipeline and returns a JSON-RPC response.
+JSON-RPC remains available for legacy clients, direct agent invocation, and A2A satellite communication. New Home Assistant integrations should use `POST /api/conversation`.
 
 ```mermaid
 sequenceDiagram
-    participant HA as Home Assistant
-    participant CC as Custom Component
+    participant Client as Legacy or A2A Client
     participant AH as AgentHost
     participant Orch as Orchestrator
 
-    HA->>CC: User voice/text input
-    CC->>AH: JSON-RPC Request
+    Client->>AH: JSON-RPC Request
     AH->>Orch: Process message
     Orch-->>AH: Agent response
-    AH-->>CC: JSON-RPC Response
-    CC-->>HA: Display result
+    AH-->>Client: JSON-RPC Response
 ```
 
 ## Request Format
