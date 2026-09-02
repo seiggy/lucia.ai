@@ -169,7 +169,7 @@ export DataProvider__Store=MongoDB
 :::tip
 - **Development and add-ons:** Use `InMemory` + `SQLite` for minimal resource usage.
 - **Production and HA:** Use `Redis` + `MongoDB` for scalability and clustering.
-- **Production and Jetson:** `Redis` + `PostgreSQL` is also fully supported.
+- **Production and Jetson Compose:** `Redis` + `PostgreSQL` is also fully supported. Appliance OS uses Redis + SQLite.
 :::
 
 ## MongoDB Connection Strings

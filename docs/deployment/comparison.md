@@ -5,48 +5,42 @@ title: Deployment Comparison
 
 # Deployment Comparison
 
-A detailed comparison of all supported deployment methods to help you choose the right one for your environment.
+Every channel receives the same Lucia application features. Appliance OS owns the host for you; the other paths leave infrastructure choices in your hands.
 
 ## Quick Reference
 
-| | Docker Compose | Kubernetes | systemd | Jetson ARM64 |
+| | Appliance OS | Docker Compose | Kubernetes | systemd |
 |---|---|---|---|---|
-| **Best For** | Home servers, fast setup | HA, scalability, production | Traditional Linux, bare metal | Local CUDA voice |
-| **Difficulty** | Low | High | Medium | Medium |
-| **Setup Time** | < 2 minutes | 5-10 minutes | 5-15 minutes | 10-20 minutes |
-| **High Availability** | No | Yes | No | No |
-| **Auto-Scaling** | No | Yes (HPA) | No | No |
-| **Rolling Updates** | No | Yes | No | Immutable image + rollback |
-| **Resource Overhead** | Low | Medium | Lowest | GPU optimized |
+| **Best For** | New dedicated Lucia system | Existing home servers | Clusters and external operations | Linux hosts without containers |
+| **Difficulty** | Low | Low | High | Medium |
+| **Setup** | Captive portal | Compose file | Manifests or Helm | Unit files |
+| **Host management** | Lucia | You | Cluster operator | You |
+| **High availability** | No | No | Yes | No |
+| **Local GPU voice** | Included | Image and driver setup | Node-specific setup | Manual setup |
+| **Application updates** | Dashboard in v1.4.1 | Pull a new image | Rolling deployment | Replace binaries |
+| **OS updates** | A/B slots in v1.4.1 | Host-managed | Node-managed | Host-managed |
+
+The v1.4.1 update controls aren't available in v1.4.0. Until v1.4.1 ships, Appliance OS can discover releases but can't install them.
 
 ## Feature Comparison
 
-| Feature | Docker Compose | Kubernetes | systemd |
-|---|---|---|---|
-| Auto-restart | Yes | Yes | Yes |
-| Multi-node | No | Yes | No |
-| Auto-failover | No | Yes | No |
-| Rolling updates | No | Yes | No |
-| Resource limits | Via compose | Native | Manual (cgroups) |
-| Secrets handling | `.env` file | K8s Secrets | EnvironmentFile |
-| Log aggregation | `docker compose logs` | kubectl / Loki / EFK | journalctl |
-| Health checks | Docker healthcheck | Liveness/readiness probes | Watchdog |
-| Persistent storage | Docker volumes | PVCs | Filesystem |
-| Network isolation | Docker network | Network policies | Firewall rules |
-| Satellite agents | Additional containers | Separate pods | Separate units |
-| TLS termination | Reverse proxy | Ingress controller | Reverse proxy |
+| Feature | Appliance OS | Docker Compose | Kubernetes | systemd |
+|---|---|---|---|---|
+| Auto-restart | systemd | Docker | Kubernetes | systemd |
+| Multi-node | No | No | Yes | Manual |
+| Secrets handling | Appliance data partition | `.env` file | K8s Secrets | EnvironmentFile |
+| Logs | Appliance dashboard / journal | `docker compose logs` | `kubectl` / log stack | `journalctl` |
+| Persistent storage | Dedicated `LUCIA_DATA` partition | Docker volumes | PVCs | Filesystem |
+| TLS | Per-device certificate | Reverse proxy | Ingress controller | Reverse proxy |
 
 ## Decision Tree
 
-1. **Do you have a Kubernetes cluster?**
-   - Yes: Consider [Kubernetes](./kubernetes.md) or [Helm](./helm.md)
-   - No: Continue
-2. **Are you comfortable with Docker?**
-   - Yes: **[Docker Compose](./docker-compose.md)** (recommended)
-   - No: **[systemd](./systemd.md)**
-3. **Do you need high availability?**
-   - Yes: **[Kubernetes](./kubernetes.md)**
-   - No: **[Docker Compose](./docker-compose.md)**
+1. **Building a new dedicated Lucia device on the supported Jetson?**
+   - Use [Appliance OS](../getting-started/appliance-os.md).
+2. **Already have a server?**
+   - Use [Docker Compose](./docker-compose.md), or [systemd](./systemd.md) when containers don't fit.
+3. **Running a Kubernetes cluster?**
+   - Use [Helm](./helm.md) or the [Kubernetes manifests](./kubernetes.md).
 
 ## Migration Paths
 
@@ -92,6 +86,7 @@ See [Data Providers](./data-providers.md) for full configuration details.
 
 | Deployment Type | Size | Best For |
 |---|---|---|
+| **Appliance OS** | Full Jetson OS and Lucia payload | Dedicated supported Jetson |
 | **Mono-container (HA add-on)** | ~150MB container | Home Assistant add-on, zero dependencies, CPU-only |
 | **Docker Compose (minimal)** | Redis (5MB) + SQLite (variable) | Home labs, constrained devices |
 | **Docker Compose (full stack)** | Redis (5MB) + MongoDB (1GB+) | Production, advanced features |
@@ -104,17 +99,18 @@ The mono-container HA deployment uses `InMemory` cache + `SQLite` store, requiri
 ## Recommendation
 
 :::tip
-**Start with Docker Compose.** It provides the best balance of simplicity, reliability, and performance for most home automation setups. You can always migrate to Kubernetes later if your needs grow.
+**Start with Appliance OS** on the supported Jetson Orin Nano Super. It removes host setup and bundles local GPU-accelerated voice.
 
-For resource-constrained environments (Raspberry Pi, HA add-ons), use the **InMemory + SQLite** data provider configuration.
+Docker Compose remains the default choice for an existing server. Resource-constrained systems can use the **InMemory + SQLite** provider configuration.
 :::
 
 | Scenario | Recommendation |
 |---|---|
+| New dedicated Lucia device | Appliance OS on Jetson Orin Nano Super |
 | Home lab / single host | Docker Compose |
 | Home Assistant add-on / Raspberry Pi | Docker Compose + InMemory + SQLite |
 | Existing K8s cluster | Helm Chart |
-| Jetson Orin Nano voice host | Jetson ARM64 CUDA Compose stack |
+| Existing operator-managed Jetson host | Jetson CUDA Compose stack |
 | Dedicated server, no Docker | systemd |
 | Production with SLA requirements | Kubernetes |
 | Development / testing | Docker Compose |

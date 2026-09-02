@@ -5,146 +5,32 @@ title: Quickstart
 
 # Quickstart
 
-Get Lucia up and running in minutes using Docker Compose.
+## Preferred: Lucia Appliance OS
 
-## Prerequisites
+For a new dedicated Lucia system, use the **Appliance OS Image** on an NVIDIA Jetson Orin Nano Super 8GB Developer Kit. It installs the operating system, local GPU voice stack, storage, dashboard, and device management through a phone-friendly captive portal.
 
-Before you begin, make sure you have:
+[Install Lucia Appliance OS](./appliance-os.md)
 
-- **Docker** (v20.10 or later) and **Docker Compose** (v2.0 or later)
-- **Home Assistant** 2024.12 or newer
-- An **API key** from at least one supported LLM provider (OpenAI, Azure OpenAI, Anthropic, Ollama, etc.)
+The v1.4.0 image supports the P3767-0005 module and an NVMe drive of 64 GB or larger. Other Jetson models need a supported installation path below.
 
-:::info
-If you plan to use Ollama for fully local inference, you don't need an external API key. A running Ollama instance with a chat model and embedding model pulled is enough.
-:::
+## Other Supported Installations
 
-## Docker Compose Setup
+Docker Compose, Kubernetes, Helm, and systemd remain supported with the same Lucia features. Pick one when you're reusing a server, deploying to a cluster, or managing your own Linux host.
 
-Create a `docker-compose.yml` file in your project directory:
+| Method | Use it for |
+|---|---|
+| [Docker Compose](../deployment/docker-compose.md) | Existing home servers and the fastest non-appliance setup |
+| [Kubernetes](../deployment/kubernetes.md) or [Helm](../deployment/helm.md) | Clusters, external secrets, and managed storage |
+| [systemd](../deployment/systemd.md) | Native services on Linux hardware you administer |
 
-```yaml
-services:
-  lucia-redis:
-    image: redis:8.2-alpine
-    container_name: lucia-redis
-    networks: [lucia-network]
-    ports: ["127.0.0.1:6379:6379"]
-    command: >
-      redis-server --appendonly yes
-      --maxmemory 256mb --maxmemory-policy allkeys-lru
-    volumes: [lucia-redis-data:/data]
-    healthcheck:
-      test: ["CMD", "redis-cli", "PING"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
+## Finish in the Dashboard
 
-  lucia-mongo:
-    image: mongo:8.0
-    container_name: lucia-mongo
-    networks: [lucia-network]
-    ports: ["127.0.0.1:27017:27017"]
-    volumes: [lucia-mongo-data:/data/db]
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping').ok"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
+Save the dashboard owner key when setup shows it. Appliance OS displays the key in the captive portal before its first power-off; other installations create it during onboarding.
 
-  lucia:
-    image: seiggy/lucia-agenthost:latest
-    container_name: lucia
-    depends_on:
-      lucia-redis: { condition: service_healthy }
-      lucia-mongo: { condition: service_healthy }
-    networks: [lucia-network]
-    ports: ["7233:8080"]
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__luciatraces=mongodb://lucia-mongo:27017/luciatraces
-      - ConnectionStrings__luciaconfig=mongodb://lucia-mongo:27017/luciaconfig
-      - ConnectionStrings__luciatasks=mongodb://lucia-mongo:27017/luciatasks
-      - ConnectionStrings__redis=lucia-redis:6379
-      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-      - DOTNET_RUNNING_IN_CONTAINER=true
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
+After signing in:
 
-networks:
-  lucia-network:
-    driver: bridge
+1. Configure a chat model and embedding model.
+2. Enter the Home Assistant URL and long-lived access token.
+3. Install the [Home Assistant integration](./home-assistant-setup.md).
 
-volumes:
-  # Redis persistent data
-  lucia-redis-data:
-    driver: local
-  
-  # MongoDB persistent data
-  lucia-mongo-data:
-    driver: local
-```
-
-:::note Minimal Configuration (v1.2.0+)
-As of v1.2.0, Redis and MongoDB are optional. To use lightweight data providers instead:
-
-```yaml
-  lucia:
-    # ... same config as above, but use env vars below:
-    environment:
-      - DataProvider__Cache=InMemory
-      - DataProvider__Store=SQLite
-      - DataProvider__SqliteDbPath=/app/lucia.db
-      # ... rest of environment ...
-    volumes:
-      - lucia-data:/app  # for SQLite persistence
-```
-
-See [Data Providers](../deployment/data-providers.md) for full configuration options.
-:::
-
-## Start Lucia
-
-Run the following command from the directory containing your `docker-compose.yml`:
-
-```bash
-docker compose up -d
-```
-
-Docker will pull the required images and start all three services. You can verify everything is running with:
-
-```bash
-docker compose ps
-```
-
-You should see `lucia-agenthost`, `lucia-redis`, and `lucia-mongo` all in a healthy/running state.
-
-## Open the Setup Wizard
-
-Once the containers are up, open your browser and navigate to:
-
-```
-http://localhost:7233
-```
-
-The setup wizard will guide you through:
-
-1. Choosing your LLM provider and entering your API key
-2. Connecting to your Home Assistant instance
-3. Selecting which agents to enable
-4. Creating your admin credentials
-
-:::warning
-The setup wizard is only available on the first run. Make sure to save your API key and credentials in a safe place.
-:::
-
-## Next Steps
-
-Once the setup wizard completes, head to [First Conversation](./first-conversation.md) to start talking to Lucia.
+Then send a [first conversation](./first-conversation.md).

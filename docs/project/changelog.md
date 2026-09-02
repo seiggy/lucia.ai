@@ -3,6 +3,107 @@ sidebar_position: 5
 title: Changelog
 ---
 
+# [v1.4.0](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.4.0)
+
+**Published:** 2026-09-01
+
+# Release notes - 1.4.0
+
+**Release date:** September 1, 2026
+
+---
+
+## Overview
+
+Version 1.4.0 ships Lucia's first official appliance image for the NVIDIA
+Jetson Orin Nano Super 8GB Developer Kit. It installs a native, Docker-free
+Lucia system from microSD to NVMe, including local voice models, CUDA runtime
+support, Redis, SQLite, the dashboard, and appliance management.
+
+This release also restores deterministic command routing for unresolved entity
+names and adds explicit llama.cpp provider support.
+
+## Appliance image
+
+- Install from a flashable microSD image onto an NVMe drive of at least
+  64 GB. The installer binds erase approval to the selected
+  drive's stable identity and image digest before writing it.
+- Run Jetson Linux 36.5.2 from A/B operating-system slots, with separate
+  partitions for versioned Lucia files and persistent application data.
+- Complete setup through a client-isolated captive network. The first browser
+  claims the setup session, selects Wi-Fi, chooses the hostname and recovery
+  password, and receives the dashboard API key.
+- Recover from a failed Wi-Fi activation without reprovisioning. The installer
+  rolls back the NetworkManager checkpoint and restores setup mode.
+- Use the native Jetson GPU for Lucia's bundled speech models. The image
+  includes the pinned ARM64 ONNX Runtime, CUDA provider, sherpa-onnx libraries,
+  and voice assets needed for offline setup.
+- Open the installed dashboard at `https://HOSTNAME.local:8099`. Each appliance
+  creates its own certificate during setup, so the first browser must accept
+  the local certificate.
+
+See the [appliance release guide](https://github.com/seiggy/lucia-dotnet/blob/master/infra/appliance/release/README.md) for the
+asset layout and release details. ([#257](https://github.com/seiggy/lucia-dotnet/pull/257))
+
+## Appliance management and telemetry
+
+- View appliance, storage, service, Wi-Fi, and operating-system status from the
+  dashboard.
+- Restart Lucia services or reboot the appliance through the authenticated
+  AgentHost adapter and root-owned appliance manager.
+- Configure authenticated OTLP export without exposing telemetry credentials
+  in appliance status responses.
+- Run the OpenTelemetry Collector and Redis exporter when remote telemetry is
+  enabled. Both remain disabled by default.
+- Discover compatible Lucia and operating-system releases from GitHub.
+  Installing discovered updates remains locked in this release.
+
+## Release integrity
+
+- Stable releases publish separate installer, Lucia, and operating-system
+  channels.
+- Large images are split into GitHub Release parts below the 2 GB asset limit.
+- `lucia-appliance-manifest.json` records compatibility, sizes, SHA-256 hashes,
+  ordered parts, and download URLs.
+- GitHub build-provenance attestations cover every release asset. The workflow
+  uploads the manifest last so an incomplete release cannot be discovered by
+  an appliance.
+
+## Command routing
+
+- Retry unresolved locations as entity names through the configured embedding
+  provider instead of dropping out of the deterministic command path.
+- Recognize direct climate commands such as "Set the office to 73" with enough
+  confidence to use the fast path.
+- Add an explicit llama.cpp provider while preserving existing OpenAI-compatible
+  endpoint behavior. ([#256](https://github.com/seiggy/lucia-dotnet/pull/256))
+
+## Read before installing
+
+- The image supports the Jetson Orin Nano Super Developer Kit with the 8GB
+  P3767-0005 module. Other Jetson boards and carrier configurations are not
+  supported by this release.
+- Installation erases the selected NVMe drive after explicit confirmation.
+  Keep the appliance physically controlled while its open setup network is
+  active.
+- The dashboard can discover updates but cannot install them yet. Attestation
+  verification, application rollback, and NVIDIA A/B OTA apply are still in
+  progress.
+- Automatic QSPI compatibility reporting, full occupied-drive layout
+  reporting, physical power-cut recovery, secure boot, and disk encryption are
+  not included in v1.4.0.
+
+## Breaking changes
+
+None. Appliance mode defaults to `Off`, so Docker and other existing
+deployments keep their current routes and behavior.
+
+## Full changelog
+
+[v1.3.1...v1.4.0](https://github.com/seiggy/lucia-dotnet/compare/v1.3.1...v1.4.0)
+
+---
+
 # [v1.3.1](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.3.1)
 
 **Published:** 2026-08-29
@@ -680,7 +781,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
 - **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
 - **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
-- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Speaker identification always returning unknown** ��� Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
 - **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
 - **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
 - **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
@@ -756,7 +857,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
 - **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
 - **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
-- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Conversation Command Parser** ��� New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
 - **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
 - **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
 - **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
@@ -1414,7 +1515,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 ### Multi-Engine Speech-to-Text
 - **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
 - **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
-- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **SherpaOfflineSttEngine** �� Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
 - **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
 - Progressive re-transcription with burst detection and stability-based early stopping
 - Per-engine model catalog with download, install, activate, and delete lifecycle
@@ -1432,7 +1533,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 
 ### ONNX Provider Auto-Detection
 - `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
-- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
+- Automatic selection priority: CUDA → ROCm → OpenVINO ��� DirectML → CoreML → CPU
 - Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
 - Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
 - Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
@@ -1892,7 +1993,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 
 ## 🚀 Highlights
 
-- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Wyoming Protocol Server** ��� Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
 - **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
 - **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
 - **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
@@ -1998,7 +2099,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 - **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
 - **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
 
-## ⚡ Performance
+## ��� Performance
 
 - Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
 - Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
@@ -3396,7 +3497,7 @@ The plugin system stored version information but never compared installed versio
 | `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
 | `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
 | `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
-| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor��Area→Entity search result |
 | `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
 | `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
 | `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
@@ -3636,7 +3737,7 @@ The plugin system stored version information but never compared installed versio
 
 ### 🐳 CI/CD
 
-- **Preview releases** �� Push a tag like `v1.1.0-preview.1` to build and push Docker images without updating the `latest` tag. Also available via `workflow_dispatch` with the "preview" checkbox.
+- **Preview releases** — Push a tag like `v1.1.0-preview.1` to build and push Docker images without updating the `latest` tag. Also available via `workflow_dispatch` with the "preview" checkbox.
 
 ## 🐛 Bug Fixes
 
@@ -3785,7 +3886,7 @@ The plugin system stored version information but never compared installed versio
 - **17 plugin system tests** — Covers script evaluation, plugin loading, management service operations (sync, enable, disable, install, uninstall), manifest validation, `LocalPluginRepositorySource` filesystem operations, `ParseGitHubOwnerRepo` URL parsing, and all three git blob source strategies (release with per-plugin asset, release zipball fallback, release-to-branch fallback, branch archive, tag archive).
 - **456 total tests passing** (excluding Playwright/Eval).
 
-## 📋 New Files
+## ���� New Files
 
 | Path | Purpose |
 |------|---------|

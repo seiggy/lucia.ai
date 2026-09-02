@@ -5,17 +5,18 @@ title: Deployment Overview
 
 # Deployment Overview
 
-Lucia can be deployed using several methods depending on your infrastructure, scale, and operational preferences. All methods deploy the same AgentHost application with the same capabilities.
+Lucia Appliance OS is the preferred path for a new dedicated system. Docker Compose, Kubernetes, Helm, and systemd remain maintained alternatives with the same AgentHost features.
 
 ## Deployment Methods
 
 | Method | Best For | Setup Time | Complexity |
 |---|---|---|---|
+| [Appliance OS](../getting-started/appliance-os.md) | New dedicated Lucia system on supported Jetson hardware | Guided captive portal | Low |
 | [Docker Compose](./docker-compose.md) | Home servers, fast setup, single-node | < 2 minutes | Low |
 | [Kubernetes](./kubernetes.md) | High availability, scalability, production | 5-10 minutes | Medium |
 | [Helm Chart](./helm.md) | Kubernetes with templated config | 5-10 minutes | Medium |
 | [systemd](./systemd.md) | Traditional Linux, bare metal, no containers | 5-15 minutes | Medium |
-| [Jetson ARM64 CUDA](./docker-compose.md#jetson-arm64-cuda-voice-deployment) | Local GPU voice on Jetson Orin Nano | 10-20 minutes | Medium |
+| [Jetson CUDA Compose](./docker-compose.md#jetson-arm64-cuda-compose-deployment) | Operator-managed containers on Jetson | 10-20 minutes | Medium |
 
 ## Deployment Modes
 
@@ -51,17 +52,16 @@ graph LR
 
 ```mermaid
 graph TD
-    Start[How do you want to deploy?] --> Q1{Running on a<br/>dedicated server?}
-    Q1 -->|No, local/dev| Docker[Docker Compose]
-    Q1 -->|Yes| Q2{Need high<br/>availability?}
-    Q2 -->|No| Q3{Prefer containers<br/>or bare metal?}
-    Q2 -->|Yes| K8s[Kubernetes]
-    Q3 -->|Containers| Docker
-    Q3 -->|Bare metal| Systemd[systemd]
+    Start[Supported Jetson Orin Nano Super?] -->|Yes| Appliance[Appliance OS]
+    Start -->|No| Q1{Kubernetes cluster?}
+    Q1 -->|Yes| K8s[Kubernetes or Helm]
+    Q1 -->|No| Q2{Use containers?}
+    Q2 -->|Yes| Docker[Docker Compose]
+    Q2 -->|No| Systemd[systemd]
 ```
 
 :::tip
-If you're unsure which method to choose, **start with Docker Compose**. It's the fastest path to a working deployment. You can migrate to Kubernetes later if needed; all configuration is portable across methods.
+Choose **Appliance OS** for a new supported Jetson. If you're using other hardware, start with Docker Compose; move to Kubernetes or systemd when your host requirements call for them.
 :::
 
 ## Minimum Requirements
@@ -79,7 +79,8 @@ These requirements cover AgentHost and lightweight providers. External databases
 
 ## Next Steps
 
-- [Docker Compose](./docker-compose.md): Recommended for most users
+- [Appliance OS](../getting-started/appliance-os.md): Preferred guided installation on supported Jetson hardware
+- [Docker Compose](./docker-compose.md): Existing servers and non-appliance hardware
 - [Kubernetes](./kubernetes.md): For production and high-availability deployments
 - [Helm Chart](./helm.md): Kubernetes deployment with Helm
 - [systemd](./systemd.md): Bare metal deployment

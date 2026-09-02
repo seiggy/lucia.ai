@@ -49,3 +49,4 @@ The sidebar organizes pages into logical groups. The **Activity** page is the de
 - **Tasks**: Active and archived task management with cancellation
 - **Plugins**: Install, enable/disable, and manage community plugins
 - **API Keys**: Create and rotate authentication keys
+- **Appliance**: On Appliance OS, inspect the Jetson, storage, services, Wi-Fi, telemetry, and available releases

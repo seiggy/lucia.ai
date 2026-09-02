@@ -401,7 +401,7 @@ volumes:
   mongo_data:
 ```
 
-### Scenario 5: PostgreSQL Production or Jetson
+### Scenario 5: PostgreSQL Production or Jetson Compose
 
 ```yaml
 services:
@@ -415,7 +415,7 @@ services:
       ConnectionStrings__luciatasks: Host=postgres;Database=luciatasks;Username=postgres;Password=${POSTGRES_PASSWORD}
 ```
 
-PostgreSQL is also the persistent store in the v1.3 Jetson ARM64 CUDA voice stack.
+PostgreSQL is also the persistent store in the operator-managed Jetson CUDA Compose stack. Appliance OS uses Redis and SQLite instead.
 
 ## Migration from Redis + MongoDB
 
@@ -424,7 +424,7 @@ Existing deployments work unchanged. To migrate to pluggable providers:
 1. **No data loss**: the system is backward compatible
 2. **Choose your target:**
    - InMemory + SQLite (self-hosted, add-on)
-   - Redis + PostgreSQL (production, Jetson)
+   - Redis + PostgreSQL (production, Jetson Compose)
    - Keep Redis + MongoDB (production)
    - Mix (InMemory for cache, SQLite for store)
 3. **Update configuration** and restart

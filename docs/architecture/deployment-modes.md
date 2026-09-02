@@ -9,11 +9,11 @@ Lucia supports two deployment modes: **Standalone** and **Mesh**. The mode deter
 
 ## Standalone Mode (Default)
 
-In standalone mode, all agents run **in-process** inside the AgentHost. This is the simplest deployment and the recommended starting point.
+In standalone mode, all agents run **in-process** inside the AgentHost. Appliance OS uses this mode, as do most Docker and systemd installations.
 
 ```mermaid
 graph TB
-    subgraph Docker Compose
+    subgraph Standalone host
         AH[AgentHost<br/>All agents in-process]
         Cache[(InMemory or Redis)]
         Store[(SQLite, PostgreSQL,<br/>or MongoDB)]
@@ -26,7 +26,7 @@ graph TB
 
 ### Characteristics
 
-- Single AgentHost container, with embedded or external cache and storage providers.
+- One AgentHost process, with embedded or external cache and storage providers.
 - All agent dispatch is in-process (no network overhead).
 - No A2AHost instances needed.
 - Suitable for single-server and Raspberry Pi deployments.

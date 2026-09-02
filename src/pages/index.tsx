@@ -50,6 +50,12 @@ function HomeAssistantLogo() {
 
 const features: {title: string; icon: ReactNode; description: string}[] = [
   {
+    title: 'Lucia Appliance OS',
+    icon: '📦',
+    description:
+      'Flash a supported Jetson Orin Nano Super, finish setup from a phone, and run local GPU voice without Docker.',
+  },
+  {
     title: 'Multi-Agent Orchestration',
     icon: '🤖',
     description:
@@ -368,7 +374,7 @@ function ConversationHero() {
           <span className={styles.heroBadge}>Open Source</span>
           <span className={styles.heroBadge}>Local-first</span>
           <span className={styles.heroBadge}>Multi-agent</span>
-          <span className={styles.heroBadge}>v1.3.1</span>
+          <span className={styles.heroBadge}>v1.4.0</span>
         </div>
         <div className={styles.heroGrid}>
           <div className={styles.heroLead}>
@@ -377,9 +383,8 @@ function ConversationHero() {
               <span className={styles.heroTitleMuted}>Not someone else&apos;s cloud.</span>
             </Heading>
             <p className={styles.heroSubtitle}>
-              Lucia is a privacy-first, multi-agent voice assistant for Home Assistant, with local
-              voice, sensor and security agents, flexible storage, and production-grade
-              observability.
+              Lucia is a privacy-first, multi-agent voice assistant for Home Assistant. Install the
+              Appliance OS on a supported Jetson, or bring the same features to your own server.
             </p>
             <div className={clsx(styles.buttons, styles.heroButtons)}>
               <Link className="button button--primary button--lg" to="/docs/getting-started/quickstart">
@@ -392,7 +397,7 @@ function ConversationHero() {
             <div className={styles.heroTrustRow}>
               <div className={styles.heroTrustItem}>
                 <Container className={styles.heroTrustIcon} aria-hidden />
-                <span>Containerized deployment</span>
+                <span>Purpose-built Appliance OS</span>
               </div>
               <div className={styles.heroTrustItem}>
                 <Cpu className={styles.heroTrustIcon} aria-hidden />
@@ -1398,18 +1403,18 @@ function QuickStartSection() {
           <div className="col col--4">
             <div className="feature-card text--center">
               <span className="step-number">1</span>
-              <Heading as="h3">Docker Compose</Heading>
+              <Heading as="h3">Flash Appliance OS</Heading>
               <p>
-                Start AgentHost with SQLite, PostgreSQL, or MongoDB using <code>docker compose up -d</code>.
+               Write the installer to microSD and boot a supported Jetson Orin Nano Super.
               </p>
             </div>
           </div>
           <div className="col col--4">
             <div className="feature-card text--center">
               <span className="step-number">2</span>
-              <Heading as="h3">Setup Wizard</Heading>
+              <Heading as="h3">Use the Captive Portal</Heading>
               <p>
-                Open Lucia and configure provider, Home Assistant connection, and enabled agents.
+               Pick the NVMe and home Wi-Fi, then save the dashboard owner key.
               </p>
             </div>
           </div>
@@ -1897,7 +1902,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Privacy-First AI Home Assistant"
-      description="Lucia is an open-source, privacy-first AI assistant for Home Assistant with multi-agent orchestration, local-first operation, and an extensible plugin ecosystem.">
+      description="Lucia is an open-source AI assistant for Home Assistant with a guided Jetson Appliance OS, local voice processing, multi-agent orchestration, and supported self-hosted deployments.">
       <ConversationHero />
       <main>
         <HowItWorksSection />

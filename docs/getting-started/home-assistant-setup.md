@@ -53,12 +53,13 @@ As of v1.2.0, the setup flow is greatly simplified. You only need to provide:
 1. Navigate to **Settings** > **Devices & Services**.
 2. Click **Add Integration** and search for **Lucia**.
 3. Enter the following details:
-   - **Lucia Host URL:** `https://localhost:7235`
-   - **API Key:** The API key generated during the Lucia setup wizard
+   - **Appliance OS Host URL:** `https://<hostname>.local:8099`
+   - **Other installations:** Use the AgentHost address reachable from Home Assistant, such as `http://192.168.1.20:7233`
+   - **API Key:** The dashboard owner key shown during setup
 4. Click **Submit**.
 
 :::info
-The Lucia Host URL uses port `7235` and HTTPS by default. If you changed the port mapping or TLS settings in your Docker Compose configuration, adjust the URL accordingly.
+`localhost` points back to Home Assistant, not to a separate Lucia host. Use the appliance hostname or the server's LAN address.
 :::
 
 :::note
@@ -89,6 +90,6 @@ Lucia should respond by turning on the lights and confirming the action.
 | Issue | Solution |
 |---|---|
 | Integration not appearing after install | Make sure you restarted Home Assistant after copying files or downloading via HACS. |
-| Connection refused on port 7235 | Verify the Lucia agent host container is running (`docker compose ps`) and the port is not blocked by a firewall. |
+| Connection refused | Check the appliance at `https://<hostname>.local:8099`, or verify the AgentHost container and published port on a Docker installation. |
 | "Invalid API key" error | Re-check the API key from the Lucia setup wizard. You can view it in the Lucia dashboard under Settings. |
 | Commands not working | Ensure Lucia is selected as the conversation agent under **Settings** > **Voice Assistants** > **Assist**. Also verify at least one agent is enabled in the Lucia dashboard. |

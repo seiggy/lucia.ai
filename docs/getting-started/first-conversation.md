@@ -9,7 +9,7 @@ Once Lucia is running and the setup wizard is complete, send your first message.
 
 ## Using the Dashboard
 
-1. Open the Lucia dashboard at `http://localhost:7233`.
+1. Open `https://<hostname>.local:8099` for Appliance OS, or the published AgentHost URL for another installation.
 2. Sign in with the API key or credentials you created during setup.
 3. You will see the main conversation interface with a text input at the bottom.
 4. Type a message like:
@@ -26,10 +26,11 @@ Try natural language; you don't need rigid commands. Phrases like "make it warme
 
 Lucia exposes an [Agent-to-Agent (A2A)](https://google.github.io/A2A/) endpoint that you can call directly. This is useful for integrations, scripts, and testing.
 
-Send a request to a specific agent using JSON-RPC:
+Set `LUCIA_URL` to the dashboard origin, then send a request to a specific agent using JSON-RPC:
 
 ```bash
-curl -X POST http://localhost:7233/a2a/light-agent \
+export LUCIA_URL=https://lucia.local:8099
+curl --insecure -X POST "$LUCIA_URL/a2a/light-agent" \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: $LUCIA_API_KEY" \
   -d '{
@@ -49,6 +50,8 @@ curl -X POST http://localhost:7233/a2a/light-agent \
     "id": "1"
   }'
 ```
+
+Appliance OS uses a per-device certificate, so this local example allows that self-signed certificate. Don't use `--insecure` with a public Lucia endpoint.
 
 The agent will process the request and return a JSON-RPC response with the result.
 

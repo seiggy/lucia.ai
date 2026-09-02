@@ -11,6 +11,7 @@ Built on the [Microsoft Agent Framework](https://github.com/microsoft/agent-fram
 
 ## Key Features
 
+- **Appliance OS**: The preferred setup installs a native, Docker-free Lucia system on the NVIDIA Jetson Orin Nano Super through a captive portal.
 - **Multi-Agent Orchestration**: A central orchestrator delegates tasks to specialized agents (lighting, climate, media, routines, and more), each optimized for its domain.
 - **Sensor and Security Agents**: Read live sensor values, check doors and motion, arm alarm panels, and control locks through dedicated agents.
 - **Semantic Understanding**: Lucia interprets natural language and maps it to Home Assistant entities, services, and automations without rigid command syntax.
@@ -47,4 +48,4 @@ For the best privacy-first experience, pair Lucia with [Ollama](https://ollama.c
 
 ## What's Next?
 
-Head to the [Quickstart](./quickstart.md) guide to get Lucia running in minutes with Docker Compose.
+Start with the [Appliance OS installation](./appliance-os.md) for a supported Jetson, or use the [Quickstart](./quickstart.md) to choose another maintained installation path.

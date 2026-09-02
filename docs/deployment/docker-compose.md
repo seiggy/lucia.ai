@@ -5,14 +5,14 @@ title: Docker Compose
 
 # Docker Compose
 
-Docker Compose is the recommended deployment method for most users. The full stack bundles the AgentHost, MongoDB, and Redis into a single deployment, but you can also use lighter configurations with embedded SQLite storage.
+Docker Compose is the preferred non-appliance method for an existing home server. The full stack bundles AgentHost, MongoDB, and Redis, while lighter configurations use embedded SQLite storage. New dedicated Jetson installations should use the [Appliance OS Image](../getting-started/appliance-os.md).
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) v20.10 or later and Docker Compose v2.0 or later
 - A supported LLM provider API key (or a local Ollama instance)
 
-## Quick Start: Full Stack (Recommended)
+## Quick Start: Full Stack
 
 The standard configuration with Redis and MongoDB provides the best experience for production deployments.
 
@@ -202,9 +202,9 @@ docker run -d \
 
 This image comes pre-configured for Home Assistant integration without external dependencies.
 
-## Jetson ARM64 CUDA Voice Deployment
+## Jetson ARM64 CUDA Compose Deployment
 
-Version 1.3.0 adds a reproducible deployment for Jetson Orin Nano hardware. The stack combines the CUDA-enabled AgentHost image, PostgreSQL, Redis, private database exporters, and an OpenTelemetry Collector.
+Version 1.3.0 added a managed-container path for Jetson Orin Nano hardware. The stack combines the CUDA-enabled AgentHost image, PostgreSQL, Redis, private database exporters, and an OpenTelemetry Collector.
 
 ```bash
 cd infra/docker
@@ -214,6 +214,8 @@ cd infra/docker
 The deployment script validates required secrets, deploys an immutable image, verifies the CUDA execution provider, and supports rollback. `DASHBOARD_API_KEY` resets the active dashboard key when a lost key must be replaced.
 
 See [`docker-compose.jetson-voice.yml`](https://github.com/seiggy/lucia-dotnet/blob/master/infra/docker/docker-compose.jetson-voice.yml) for required variables and [Observability](./observability.md) for remote telemetry.
+
+For a new Jetson Orin Nano Super, use [Lucia Appliance OS](../getting-started/appliance-os.md) instead. The Compose path stays supported for operators who want to own the containers and PostgreSQL stack.
 
 ## Building from Source
 

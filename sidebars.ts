@@ -8,6 +8,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'getting-started/introduction',
+        'getting-started/appliance-os',
         'getting-started/quickstart',
         'getting-started/first-conversation',
         'getting-started/home-assistant-setup',

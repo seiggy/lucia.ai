@@ -64,6 +64,7 @@ module.exports = function fetchChangelogPlugin(_context, _options) {
             const date = new Date(release.published_at).toISOString().slice(0, 10);
             const body = rewriteRelativeLinks(release.body || 'No release notes provided.')
               .replace(/\r\n?/g, '\n')
+              .replace(/\b61,203,283,968 bytes\b/g, '64 GB')
               .replace(/[ \t]+$/gm, '');
             return `# [${name}](${release.html_url})\n\n**Published:** ${date}\n\n${body}`;
           })

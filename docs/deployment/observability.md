@@ -58,4 +58,4 @@ Speech metrics appear after a completed utterance and the next 30-second metrics
 
 The Jetson voice deployment adds private PostgreSQL and Redis exporters plus a local OpenTelemetry Collector. The collector forwards infrastructure and AgentHost telemetry to the remote stack over authenticated TLS; exporter ports are not published to the host.
 
-See [Docker Compose](./docker-compose.md#jetson-arm64-cuda-voice-deployment) for the application stack.
+See [Docker Compose](./docker-compose.md#jetson-arm64-cuda-compose-deployment) for the operator-managed application stack, or [Appliance OS](../getting-started/appliance-os.md) for the preferred Jetson installation.
