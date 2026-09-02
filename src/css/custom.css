@@ -88,35 +88,6 @@
   border-color: rgba(26, 158, 158, 0.12);
 }
 
-/* ── Gradient text utility ──────────────────── */
-
-.gradient-text {
-  background: linear-gradient(135deg, #3ecbcb, #6366f1, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-[data-theme='light'] .gradient-text {
-  background: linear-gradient(135deg, #1a7a7a, #4f46e5, #7c3aed);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ── Sparkle motif ──────────────────────────── */
-
-.sparkle {
-  color: #d4a44a;
-  font-style: normal;
-  text-shadow: 0 0 8px rgba(212, 164, 74, 0.4);
-}
-
-[data-theme='light'] .sparkle {
-  color: #b8862e;
-  text-shadow: 0 0 6px rgba(184, 134, 46, 0.3);
-}
-
 /* ── Feature cards — glass treatment ────────── */
 
 .feature-card {
@@ -250,4 +221,10 @@
 [data-theme='light'] .cta-section {
   background: rgba(255, 255, 255, 0.7);
   border-color: rgba(26, 158, 158, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero--primary {
+    animation: none;
+  }
 }

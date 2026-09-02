@@ -7,7 +7,6 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
-import * as Tooltip from '@radix-ui/react-tooltip';
 import dagre from '@dagrejs/dagre';
 import {
   Background,
@@ -22,19 +21,30 @@ import '@xyflow/react/dist/style.css';
 
 import styles from './index.module.css';
 import {
-  AlarmClock,
+  Activity,
   Bot,
+  CloudCog,
   Container,
   Cpu,
+  Flame,
+  Gauge,
+  Home as HomeIcon,
+  LayoutDashboard,
   Lightbulb,
-  ListTodo,
-  MessageCircle,
   Minus,
   Music2,
+  Network,
+  PackageOpen,
+  Pause,
+  Play,
+  Plug,
   PlugZap,
+  ServerCog,
   Shield,
+  ShieldCheck,
+  Shuffle,
+  SlidersHorizontal,
   Speaker,
-  Sparkles,
   Square,
   Thermometer,
   X,
@@ -51,25 +61,19 @@ function HomeAssistantLogo() {
 const features: {title: string; icon: ReactNode; description: string}[] = [
   {
     title: 'Lucia Appliance OS',
-    icon: '📦',
+    icon: <PackageOpen aria-hidden />,
     description:
       'Flash a supported Jetson Orin Nano Super, finish setup from a phone, and run local GPU voice without Docker.',
   },
   {
     title: 'Multi-Agent Orchestration',
-    icon: '🤖',
+    icon: <Network aria-hidden />,
     description:
-      'Router, dispatcher, and aggregator coordinate specialized agents end-to-end using the A2A protocol where needed.',
-  },
-  {
-    title: 'Whole-Home Agent Suite',
-    icon: '🎯',
-    description:
-      'Dedicated light, climate, scene, music, timer, lists, sensor, and security agents handle each domain.',
+      'Focused agents coordinate lighting, climate, music, timers, lists, sensors, security, and conversation.',
   },
   {
     title: 'Privacy-First By Design',
-    icon: '🔒',
+    icon: <ShieldCheck aria-hidden />,
     description:
       'Run local with Ollama, hybrid, or cloud-backed. Your data path is configurable to match your trust model.',
   },
@@ -81,19 +85,13 @@ const features: {title: string; icon: ReactNode; description: string}[] = [
   },
   {
     title: 'Operational Dashboard',
-    icon: '📊',
+    icon: <LayoutDashboard aria-hidden />,
     description:
       'System, Light, and Dark themes plus traces, configuration, providers, exports, and diagnostics in one control plane.',
   },
   {
-    title: 'Production Observability',
-    icon: '📈',
-    description:
-      'Export metrics, traces, and logs to the bundled OpenTelemetry, Grafana, Tempo, Prometheus, and Loki stack.',
-  },
-  {
     title: 'Extensible Plugin System',
-    icon: '🔌',
+    icon: <Plug aria-hidden />,
     description:
       'Add custom agents, tools, and integrations through Lucia plugins and repositories.',
   },
@@ -160,13 +158,13 @@ function OpenRouterLogo() {
 }
 
 const providers: Provider[] = [
-  {name: 'OpenAI', logo: <OpenAILogo />, color: '#10a37f'},
-  {name: 'Azure OpenAI', logo: <MicrosoftLogo />, color: '#0078d4'},
-  {name: 'Azure AI Inference', logo: <MicrosoftLogo />, color: '#0078d4'},
-  {name: 'Anthropic', logo: <AnthropicLogo />, color: '#d4a27f'},
-  {name: 'Google Gemini', logo: <GoogleLogo />, color: '#4285f4'},
-  {name: 'Ollama', logo: <OllamaLogo />, color: '#ffffff'},
-  {name: 'OpenRouter', logo: <OpenRouterLogo />, color: '#6366f1'},
+  {name: 'OpenAI', logo: <OpenAILogo />, color: '#10a37f'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'Azure OpenAI', logo: <MicrosoftLogo />, color: '#0078d4'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'Azure AI Inference', logo: <MicrosoftLogo />, color: '#0078d4'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'Anthropic', logo: <AnthropicLogo />, color: '#d4a27f'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'Google Gemini', logo: <GoogleLogo />, color: '#4285f4'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'Ollama', logo: <OllamaLogo />, color: '#ffffff'}, // impeccable-disable-line design-system-color: vendor brand color
+  {name: 'OpenRouter', logo: <OpenRouterLogo />, color: '#6366f1'}, // impeccable-disable-line design-system-color: vendor brand color
 ];
 
 const dashboardScreenshots = [
@@ -175,41 +173,6 @@ const dashboardScreenshots = [
   {src: '/img/dashboard/traces.png', alt: 'Traces', caption: 'Conversation-level traces and diagnostics'},
   {src: '/img/dashboard/configuration.png', alt: 'Configuration', caption: 'Config and environment settings'},
   {src: '/img/dashboard/model-providers.png', alt: 'Model Providers', caption: 'Provider and model controls'},
-];
-
-const orchestrationSteps = [
-  {
-    title: 'Input arrives in Home Assistant',
-    description:
-      'Voice or text enters through Assist, dashboard widgets, or a connected satellite.',
-  },
-  {
-    title: 'Conversation API forwards to Lucia',
-    description:
-      'The Lucia custom component sends structured context to the AgentHost REST conversation endpoint.',
-  },
-  {
-    title: 'Router selects the best-fit agent',
-    description:
-      'AgentHost dispatches to specialized agents such as lighting, climate, scenes, lists, or general fallback.',
-  },
-  {
-    title: 'Result returns to Home Assistant',
-    description:
-      'Response and actions flow back through the same path for speech output or UI display.',
-  },
-];
-
-const agentCards = [
-  {name: 'LightAgent', focus: 'Lights, brightness, color, color temperature'},
-  {name: 'ClimateAgent', focus: 'Thermostat mode, targets, climate status'},
-  {name: 'SceneAgent', focus: 'Scenes and automation triggers'},
-  {name: 'ListsAgent', focus: 'Shopping lists, todos, notes'},
-  {name: 'SensorAgent', focus: 'Sensors, doors, motion, batteries, power'},
-  {name: 'SecurityAgent', focus: 'Alarm panels, locks, security status'},
-  {name: 'GeneralAgent', focus: 'Fallback and general conversation'},
-  {name: 'MusicAgent', focus: 'Media playback and queue control'},
-  {name: 'TimerAgent', focus: 'Default A2A-hosted satellite agent'},
 ];
 
 type DemoStep = {
@@ -374,7 +337,6 @@ function ConversationHero() {
           <span className={styles.heroBadge}>Open Source</span>
           <span className={styles.heroBadge}>Local-first</span>
           <span className={styles.heroBadge}>Multi-agent</span>
-          <span className={styles.heroBadge}>v1.4.0</span>
         </div>
         <div className={styles.heroGrid}>
           <div className={styles.heroLead}>
@@ -383,15 +345,17 @@ function ConversationHero() {
               <span className={styles.heroTitleMuted}>Not someone else&apos;s cloud.</span>
             </Heading>
             <p className={styles.heroSubtitle}>
-              Lucia is a privacy-first, multi-agent voice assistant for Home Assistant. Install the
-              Appliance OS on a supported Jetson, or bring the same features to your own server.
+              Lucia is a privacy-first voice assistant for Home Assistant. Start with the guided
+              Appliance OS on a supported Jetson, or run Lucia on your own server.
             </p>
             <div className={clsx(styles.buttons, styles.heroButtons)}>
               <Link className="button button--primary button--lg" to="/docs/getting-started/quickstart">
-                Install Lucia
+                Install Appliance OS
               </Link>
-              <Link className="button button--outline button--lg" to="/docs/getting-started/introduction">
-                Read the docs
+              <Link
+                className={clsx('button button--outline button--lg', styles.heroSecondaryButton)}
+                to="/docs/deployment/overview">
+                Self-host Lucia
               </Link>
             </div>
             <div className={styles.heroTrustRow}>
@@ -405,7 +369,7 @@ function ConversationHero() {
               </div>
               <div className={styles.heroTrustItem}>
                 <Bot className={styles.heroTrustIcon} aria-hidden />
-                <span>Dynamic agents</span>
+                <span>Inspectable decisions</span>
               </div>
             </div>
           </div>
@@ -447,15 +411,15 @@ function renderHeroNodeIcon(icon: HeroGraphIcon): ReactNode {
       </span>
     ),
     lucia: <img src="/img/lucia.png" alt="" aria-hidden className={styles.flowNodeLogoImage} />,
-    music: '🎵',
-    lights: '💡',
-    climate: '🌡️',
-    shuffle: '🔀',
-    play: '▶️',
-    control: '🎚️',
-    'set-temp': '🌡️',
-    'change-hvac': '♨️',
-    'query-sensors': '📊',
+    music: <Music2 aria-hidden />,
+    lights: <Lightbulb aria-hidden />,
+    climate: <Thermometer aria-hidden />,
+    shuffle: <Shuffle aria-hidden />,
+    play: <Play aria-hidden />,
+    control: <SlidersHorizontal aria-hidden />,
+    'set-temp': <Gauge aria-hidden />,
+    'change-hvac': <Flame aria-hidden />,
+    'query-sensors': <Activity aria-hidden />,
   };
 
   return iconMap[icon];
@@ -645,7 +609,7 @@ function buildHeroFlowGraph(): {nodes: Node[]; edges: Edge[]} {
   return {nodes, edges};
 }
 
-function HeroDataflowGraph() {
+function HeroDataflowGraph({paused}: {paused: boolean}) {
   const {nodes, edges} = useMemo(() => buildHeroFlowGraph(), []);
   const [activeEdge, setActiveEdge] = useState<{
     id: string;
@@ -693,6 +657,13 @@ function HeroDataflowGraph() {
 
   useEffect(() => {
     if (!graphReady || !flowRef.current) {
+      return;
+    }
+
+    if (paused) {
+      setActiveEdge(null);
+      setActiveNodeId(null);
+      flowRef.current.fitView({padding: 0.16, maxZoom: 1.02, duration: 0});
       return;
     }
 
@@ -746,7 +717,7 @@ function HeroDataflowGraph() {
     return () => {
       cancelled = true;
     };
-  }, [graphReady]);
+  }, [graphReady, paused]);
 
   return (
     <ReactFlow
@@ -773,62 +744,65 @@ function HeroDataflowGraph() {
 }
 
 function HeroArchitectureViz() {
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reducedMotion.matches) {
+      setPaused(true);
+    }
+    const pauseForReducedMotion = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setPaused(true);
+      }
+    };
+    reducedMotion.addEventListener('change', pauseForReducedMotion);
+    return () => reducedMotion.removeEventListener('change', pauseForReducedMotion);
+  }, []);
+
   return (
     <div className={styles.heroGraphPanel}>
+      <button
+        type="button"
+        className={styles.heroGraphControl}
+        onClick={() => setPaused((current) => !current)}
+        aria-label={paused ? 'Play architecture animation' : 'Pause architecture animation'}
+        aria-pressed={paused}>
+        {paused ? <Play aria-hidden /> : <Pause aria-hidden />}
+      </button>
       <img src="/img/lucia.png" alt="" aria-hidden className={styles.heroGraphBackdrop} />
       <div className={styles.heroFlowCanvas}>
         <BrowserOnly fallback={<div className={styles.heroFlowFallback}>Loading architecture graph…</div>}>
-          {() => <HeroDataflowGraph />}
+          {() => <HeroDataflowGraph paused={paused} />}
         </BrowserOnly>
+      </div>
+      <div className={styles.heroMobileRoute} aria-label="Home Assistant request route">
+        <div className={styles.heroMobileRouteStep}>
+          <HomeAssistantLogo />
+          <span>Ask through Home Assistant</span>
+        </div>
+        <div className={styles.heroMobileRouteLine} aria-hidden />
+        <div className={styles.heroMobileRouteStep}>
+          <img src="/img/lucia.png" alt="" aria-hidden />
+          <span>Lucia chooses the right specialist</span>
+        </div>
+        <div className={styles.heroMobileRouteLine} aria-hidden />
+        <div className={styles.heroMobileRouteStep}>
+          <Lightbulb aria-hidden />
+          <span>Your home responds</span>
+        </div>
       </div>
     </div>
   );
 }
 
-function HowItWorksSection() {
+function JumpNav() {
   return (
-    <section className={clsx('section section--alt', styles.howSection)}>
-      <div className="container">
-        <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Lucia in motion
-          </Heading>
-          <p>Not one giant prompt. A coordinated system of focused agents.</p>
-        </div>
-        <div className={styles.howGrid}>
-          <div className={styles.flowCard}>
-            <Heading as="h3">Request lifecycle</Heading>
-            <div className={styles.flowSteps}>
-              {orchestrationSteps.map((step, idx) => (
-                <div key={step.title} className={styles.flowStep}>
-                  <div className={styles.flowStepIndex}>{idx + 1}</div>
-                  <div>
-                    <strong>{step.title}</strong>
-                    <p>{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={styles.agentCardGrid}>
-            {agentCards.map((agent) => (
-              <div key={agent.name} className={styles.agentCard}>
-                <strong>{agent.name}</strong>
-                <p>{agent.focus}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="text--center margin-top--lg">
-          <Link className="button button--primary" to="/docs/architecture/multi-agent">
-            Explore Multi-Agent Architecture
-          </Link>
-        </div>
-      </div>
-    </section>
+    <nav className={styles.jumpNav} aria-label="Landing page sections">
+      <a href="#demo">See it work</a>
+      <a href="#compare">Choose a setup</a>
+      <a href="#install">Install</a>
+    </nav>
   );
 }
 
@@ -840,12 +814,7 @@ function DashboardSection() {
     <section className={clsx('section', styles.dashboard)}>
       <div className="container">
         <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Operational visibility built in
-          </Heading>
+          <Heading as="h2">Operational visibility built in</Heading>
           <p>Inspect traces, tune providers, manage agents, and debug decisions without guesswork.</p>
         </div>
           <div className={styles.dashboardShowcase}>
@@ -897,12 +866,7 @@ function FeatureSection() {
     <section className={clsx('section section--alt', styles.features)}>
       <div className="container">
         <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Why Lucia feels different
-          </Heading>
+          <Heading as="h2">Why Lucia feels different</Heading>
           <p>Built for power users, but friendly enough for daily life.</p>
         </div>
         <div className="row">
@@ -1014,15 +978,10 @@ function DemoRoutesSection() {
   const responseReady = typedResponse.length > 0;
 
   return (
-    <section className={clsx('section', styles.demoSection)}>
+    <section id="demo" className={clsx('section', styles.demoSection)}>
       <div className="container">
         <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Pick a scenario, inspect the route
-          </Heading>
+          <Heading as="h2">Pick a scenario, inspect the route</Heading>
           <p>Same assistant experience, but with transparent routing behind the scenes.</p>
           <p className={styles.demoTraceNote}>
             Trace captures for this demo are from my homelab using gpt-oss-120b on Azure OpenAI,
@@ -1136,197 +1095,9 @@ function DemoRoutesSection() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function ArchitectureSection() {
-  const inProcessAgents = [
-    {
-      name: 'LightAgent',
-      description: 'Ambience control',
-      skills: ['Toggle', 'Brightness', 'Color'],
-      icon: <Lightbulb className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneLight,
-    },
-    {
-      name: 'ClimateAgent',
-      description: 'Comfort tuning',
-      skills: ['Temperature', 'Mode', 'Fan'],
-      icon: <Thermometer className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneClimate,
-    },
-    {
-      name: 'SceneAgent',
-      description: 'Routine triggers',
-      skills: ['Activate', 'Create', 'List'],
-      icon: <Sparkles className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneScene,
-    },
-    {
-      name: 'ListsAgent',
-      description: 'Task memory',
-      skills: ['Add', 'Remove', 'Read'],
-      icon: <ListTodo className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneLists,
-    },
-    {
-      name: 'GeneralAgent',
-      description: 'Fallback brain',
-      skills: ['Chat', 'Q&A', 'Fallback'],
-      icon: <MessageCircle className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneGeneral,
-    },
-    {
-      name: 'SensorAgent',
-      description: 'Live home readings',
-      skills: ['Sensors', 'Motion', 'Power'],
-      icon: <Cpu className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneCustom,
-    },
-    {
-      name: 'SecurityAgent',
-      description: 'Home protection',
-      skills: ['Alarms', 'Locks', 'Status'],
-      icon: <Shield className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneExternal,
-    },
-    {
-      name: 'MusicAgent',
-      description: 'Playback control',
-      skills: ['Play', 'Queue', 'Volume'],
-      icon: <Music2 className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneMusic,
-    },
-    {
-      name: 'TimerAgent',
-      description: 'Scheduled reminders',
-      skills: ['Timers', 'Alarms', 'Announce'],
-      icon: <AlarmClock className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneTimer,
-    },
-    {
-      name: 'DynamicAgent (0..N)',
-      description: 'Custom specialists',
-      skills: ['Plugins', 'Tools', 'Domain logic'],
-      icon: <Bot className={styles.archAgentIconSvg} aria-hidden />,
-      toneClass: styles.archAgentToneCustom,
-    },
-  ];
-
-  return (
-    <section className={clsx('section', styles.architecture)}>
-      <div className="container">
-        <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Multi-Agent Architecture
-          </Heading>
-          <p>
-            Lucia uses REST for Home Assistant conversations and the A2A protocol with JSON-RPC for
-            optional satellite agents.
-          </p>
-          <p className={styles.archModeNote}>
-            Default standalone deployment keeps all agents in-process. Mesh mode can move selected
-            agents to A2AHost services without changing routing behavior.
-          </p>
-        </div>
-        <div className={styles.archDiagram}>
-          <div className={clsx(styles.archNode, styles.archNodeHa)}>
-            <span className={styles.archNodeIcon}>
-              <HomeAssistantLogo />
-            </span>
-            <span className={styles.archNodeLabel}>Home Assistant</span>
-          </div>
-          <div className={styles.archConnector}>
-            <div className={styles.archLine} />
-            <span className={styles.archConnectorLabel}>REST</span>
-          </div>
-          <div className={styles.archBox}>
-            <div className={styles.archBoxHeader}>AgentHost</div>
-            <div className={styles.archPipeline}>
-              <div className={clsx(styles.archPipelineStep, styles.archStepRouter)}>
-                <span className={styles.archStepIcon}>🔀</span>
-                <strong>Router</strong>
-                <small>Semantic matching</small>
-              </div>
-              <div className={styles.archArrow} />
-              <div className={clsx(styles.archPipelineStep, styles.archStepDispatch)}>
-                <span className={styles.archStepIcon}>📡</span>
-                <strong>Dispatcher</strong>
-                <small>Agent routing</small>
-              </div>
-              <div className={styles.archArrow} />
-              <div className={clsx(styles.archPipelineStep, styles.archStepAggregator)}>
-                <span className={styles.archStepIcon}>📋</span>
-                <strong>Aggregator</strong>
-                <small>Response formatting</small>
-              </div>
-            </div>
-            <div className={styles.archSectionLabel}>In-process Agents (default)</div>
-            <div className={styles.archAgentGrid}>
-              {inProcessAgents.map((agent) => (
-                <div key={agent.name} className={clsx(styles.archAgentCard, agent.toneClass)}>
-                  <div className={styles.archAgentHeader}>
-                    <span className={styles.archAgentIconWrap}>{agent.icon}</span>
-                    <div>
-                      <strong className={styles.archAgentName}>{agent.name}</strong>
-                      <small className={styles.archAgentDesc}>{agent.description}</small>
-                    </div>
-                  </div>
-                  <div className={styles.archSkillRow}>
-                    {agent.skills.map((skill) => (
-                      <span key={skill} className={styles.archSkill}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className={styles.archSectionLabel}>A2A Support (optional mesh mode)</div>
-            <div className={styles.archDynamicRow}>
-              <div className={clsx(styles.archAgentCard, styles.archAgentDynamic, styles.archAgentToneA2A)}>
-                <div className={styles.archAgentHeader}>
-                  <span className={styles.archAgentIconWrap}>
-                    <PlugZap className={styles.archAgentIconSvg} aria-hidden />
-                  </span>
-                  <div>
-                    <strong className={styles.archAgentName}>Any Agent via A2AHost</strong>
-                    <small className={styles.archAgentDesc}>Move selected agents out-of-process when needed</small>
-                  </div>
-                </div>
-                <div className={styles.archSkillRow}>
-                  <span className={styles.archSkill}>JSON-RPC</span>
-                  <span className={styles.archSkill}>agent cards</span>
-                  <span className={styles.archSkill}>optional remote</span>
-                </div>
-              </div>
-              <div className={clsx(styles.archAgentCard, styles.archAgentDynamic, styles.archAgentToneExternal)}>
-                <div className={styles.archAgentHeader}>
-                  <span className={styles.archAgentIconWrap}>
-                    <Sparkles className={styles.archAgentIconSvg} aria-hidden />
-                  </span>
-                  <div>
-                    <strong className={styles.archAgentName}>External Specialist Agent</strong>
-                    <small className={styles.archAgentDesc}>Bring Python/TS/.NET services into Lucia routing</small>
-                  </div>
-                </div>
-                <div className={styles.archSkillRow}>
-                  <span className={styles.archSkill}>A2A</span>
-                  <span className={styles.archSkill}>language agnostic</span>
-                  <span className={styles.archSkill}>A2A card</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="text--center margin-top--lg">
-          <Link className="button button--primary" to="/docs/architecture/overview">
-            Learn More
+          <Link className="button button--outline" to="/docs/architecture/multi-agent">
+            Explore the full architecture
           </Link>
         </div>
       </div>
@@ -1339,32 +1110,27 @@ function TrustSection() {
     <section className={clsx('section section--alt', styles.trustSection)}>
       <div className="container">
         <div className="text--center margin-bottom--lg">
-          <div className={styles.sectionSparkle}>
-            <span className="sparkle">✦</span>
-          </div>
-          <Heading as="h2" className="gradient-text">
-            Privacy and deployment choice
-          </Heading>
+          <Heading as="h2">Privacy and deployment choice</Heading>
           <p>Your home, your data, your provider decisions.</p>
         </div>
         <div className={styles.trustGrid}>
           <div className={styles.trustPrivacy}>
             <div className={styles.trustItem}>
-              <span className={styles.trustIcon}>🏠</span>
+              <HomeIcon className={styles.trustIcon} aria-hidden />
               <div>
                 <strong>Local-first operation</strong>
                 <p>Run on your infrastructure and keep telemetry boundaries under your control.</p>
               </div>
             </div>
             <div className={styles.trustItem}>
-              <span className={styles.trustIcon}>🔒</span>
+              <ShieldCheck className={styles.trustIcon} aria-hidden />
               <div>
                 <strong>Transparent architecture</strong>
                 <p>Inspect routing, traces, and behavior directly from the dashboard and logs.</p>
               </div>
             </div>
             <div className={styles.trustItem}>
-              <span className={styles.trustIcon}>☁️</span>
+              <CloudCog className={styles.trustIcon} aria-hidden />
               <div>
                 <strong>Cloud optional</strong>
                 <p>Use OpenAI, Anthropic, Gemini, Azure, OpenRouter, or stay local with Ollama.</p>
@@ -1392,12 +1158,10 @@ function TrustSection() {
 
 function QuickStartSection() {
   return (
-    <section className={clsx('section', styles.quickstart)}>
+    <section id="install" className={clsx('section', styles.quickstart)}>
       <div className="container">
         <div className="text--center margin-bottom--lg">
-          <Heading as="h2" className="gradient-text">
-            Get running in minutes
-          </Heading>
+          <Heading as="h2">Get running in minutes</Heading>
         </div>
         <div className="row">
           <div className="col col--4">
@@ -1430,258 +1194,44 @@ function QuickStartSection() {
           <Link className="button button--primary button--lg" to="/docs/getting-started/quickstart">
             Full Quickstart Guide
           </Link>
+          <div className={styles.selfHostPrompt}>
+            <ServerCog aria-hidden />
+            <Link to="/docs/deployment/overview">Prefer your own server? Compare deployment options.</Link>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-type ComparisonValue = 'yes' | 'partial' | 'no';
-type ComparisonCell =
-  | {kind: 'indicator'; value: ComparisonValue; detail?: string; asterisk?: boolean}
-  | {kind: 'metric'; value: string; detail?: string};
-
-const localHardwareQualifier =
-  'Depends on sufficient local hardware and model/runtime setup for fully local execution.';
-
-const comparisonData: Array<{
-  feature: string;
-  lucia: ComparisonCell;
-  google: ComparisonCell;
-  alexa: ComparisonCell;
-  apple: ComparisonCell;
-}> = [
-  {
-    feature: 'Runs locally',
-    lucia: {kind: 'indicator', value: 'yes', asterisk: true, detail: localHardwareQualifier},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {
-      kind: 'indicator',
-      value: 'partial',
-      detail: 'Some local automation execution exists, but many Siri requests still depend on cloud processing.',
-    },
-  },
-  {
-    feature: 'Open source',
-    lucia: {kind: 'indicator', value: 'yes'},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'Choose your LLM',
-    lucia: {kind: 'indicator', value: 'yes'},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'Multi-agent routing',
-    lucia: {kind: 'indicator', value: 'yes'},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'Custom agents',
-    lucia: {kind: 'indicator', value: 'yes'},
-    google: {
-      kind: 'indicator',
-      value: 'partial',
-      detail: 'Integrations and routines exist, but no open user-defined agent runtime with orchestration semantics.',
-    },
-    alexa: {
-      kind: 'indicator',
-      value: 'partial',
-      detail: 'Alexa Skills are extensible, but not an open multi-agent orchestration model.',
-    },
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'Data stays home',
-    lucia: {kind: 'indicator', value: 'yes', asterisk: true, detail: localHardwareQualifier},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {
-      kind: 'indicator',
-      value: 'partial',
-      detail: 'Some on-device processing is available, but cloud services still handle part of the assistant workflow.',
-    },
-  },
-  {
-    feature: 'Transparent traces',
-    lucia: {kind: 'indicator', value: 'yes'},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'No cloud dependency',
-    lucia: {kind: 'indicator', value: 'yes', asterisk: true, detail: localHardwareQualifier},
-    google: {kind: 'indicator', value: 'no'},
-    alexa: {kind: 'indicator', value: 'no'},
-    apple: {kind: 'indicator', value: 'no'},
-  },
-  {
-    feature: 'Average response time',
-    lucia: {
-      kind: 'metric',
-      value: '~3-8s',
-      detail: 'Typical observed range with self-hosted orchestration; depends on model, hardware, and tool latency.',
-    },
-    google: {kind: 'metric', value: '~1-2s'},
-    alexa: {kind: 'metric', value: '~1-2s'},
-    apple: {kind: 'metric', value: '~1-2s'},
-  },
-];
-
-function ComparisonIndicator({
-  value,
-  detail,
-  asterisk = false,
-}: {
-  value: ComparisonValue;
-  detail?: string;
-  asterisk?: boolean;
-}) {
-  const labels: Record<ComparisonValue, string> = {yes: '\u2713', partial: '~', no: '\u2715'};
-  const meanings: Record<ComparisonValue, string> = {
-    yes: 'Supported',
-    partial: 'Partially supported',
-    no: 'Not supported',
-  };
-  const tooltip = detail ?? meanings[value];
-  const indicator = (
-    <span
-      aria-label={tooltip}
-      className={clsx(
-        styles.comparisonIndicator,
-        value === 'yes' && styles.comparisonYes,
-        value === 'partial' && styles.comparisonPartial,
-        value === 'no' && styles.comparisonNo,
-        tooltip && styles.comparisonIndicatorDetailed,
-      )}>
-      {labels[value]}
-      {asterisk && <sup className={styles.comparisonIndicatorAsterisk}>*</sup>}
-    </span>
-  );
-  return (
-    <ComparisonTooltip content={tooltip}>
-      {indicator}
-    </ComparisonTooltip>
-  );
-}
-
-function ComparisonTooltip({content, children}: {content?: string; children: ReactNode}) {
-  if (!content) {
-    return <>{children}</>;
-  }
-  return (
-    <Tooltip.Root>
-      <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Content
-          className={styles.comparisonTooltipContent}
-          side="top"
-          align="center"
-          sideOffset={8}
-          collisionPadding={8}>
-          {content}
-          <Tooltip.Arrow className={styles.comparisonTooltipArrow} />
-        </Tooltip.Content>
-      </Tooltip.Portal>
-    </Tooltip.Root>
-  );
-}
-
-function ComparisonCellView({cell}: {cell: ComparisonCell}) {
-  if (cell.kind === 'metric') {
-    const metricChip = (
-      <span
-        className={clsx(styles.comparisonMetricChip, cell.detail && styles.comparisonMetricDetailed)}
-        aria-label={cell.detail ?? cell.value}>
-        {cell.value}
-      </span>
-    );
-    return (
-      <ComparisonTooltip content={cell.detail}>
-        {metricChip}
-      </ComparisonTooltip>
-    );
-  }
-  return <ComparisonIndicator value={cell.value} detail={cell.detail} asterisk={cell.asterisk} />;
-}
-
 function ComparisonSection() {
   return (
-    <Tooltip.Provider delayDuration={120}>
-      <section className={clsx('section section--alt', styles.comparisonSection)}>
-        <div className="container">
-          <div className="text--center margin-bottom--lg">
-            <div className={styles.sectionSparkle}>
-              <span className="sparkle">✦</span>
-            </div>
-            <Heading as="h2" className="gradient-text">
-              How Lucia stacks up
-            </Heading>
-            <p>An honest look at what you get when you opt out of the cloud.</p>
-          </div>
-          <div className={styles.comparisonTableWrap}>
-            <table className={styles.comparisonTable}>
-              <colgroup>
-                <col className={styles.comparisonColFeature} />
-                <col className={styles.comparisonColLucia} />
-                <col className={styles.comparisonColVendor} />
-                <col className={styles.comparisonColVendor} />
-                <col className={styles.comparisonColVendor} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Capability</th>
-                  <th className={styles.comparisonLuciaCell}>Lucia</th>
-                  <th>Google Home</th>
-                  <th>Alexa</th>
-                  <th>Apple Home</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonData.map((row) => (
-                  <tr key={row.feature}>
-                    <td className={styles.comparisonFeature}>{row.feature}</td>
-                    <td className={styles.comparisonLuciaCell}>
-                      <ComparisonCellView cell={row.lucia} />
-                    </td>
-                    <td><ComparisonCellView cell={row.google} /></td>
-                    <td><ComparisonCellView cell={row.alexa} /></td>
-                    <td><ComparisonCellView cell={row.apple} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.comparisonLegend} aria-label="Comparison legend">
-            <span className={styles.comparisonLegendItem}>
-              <ComparisonIndicator value="yes" />
-              Yes
-            </span>
-            <span className={styles.comparisonLegendItem}>
-              <ComparisonIndicator value="partial" />
-              Partial / limited support
-            </span>
-            <span className={styles.comparisonLegendItem}>
-              <ComparisonIndicator value="no" />
-              Not supported
-            </span>
-          </div>
-          <p className={styles.comparisonLegendNote}>
-            Hover any <strong>~</strong> to see what partial support means for that platform. Response
-            times are approximate consumer-observed ranges and vary by network, region, and workload.
-            Items marked <strong>*</strong> in Lucia depend on sufficient local hardware and model setup.
-          </p>
+    <section id="compare" className={clsx('section section--alt', styles.comparisonSection)}>
+      <div className="container">
+        <div className="text--center margin-bottom--lg">
+          <Heading as="h2">Choose how Lucia runs</Heading>
+          <p>Both paths keep the same Home Assistant integration, specialist agents, and transparent traces.</p>
         </div>
-      </section>
-    </Tooltip.Provider>
+        <div className={styles.deploymentChoices}>
+          <article className={styles.deploymentChoice}>
+            <PackageOpen aria-hidden />
+            <Heading as="h3">Lucia Appliance OS</Heading>
+            <p>For a guided, phone-friendly setup with local GPU voice on supported Jetson hardware.</p>
+            <Link className="button button--primary" to="/docs/getting-started/appliance-os">
+              Explore Appliance OS
+            </Link>
+          </article>
+          <article className={styles.deploymentChoice}>
+            <ServerCog aria-hidden />
+            <Heading as="h3">Your own server</Heading>
+            <p>For operators who want control over deployment, storage, models, and infrastructure.</p>
+            <Link className="button button--outline" to="/docs/deployment/overview">
+              Compare self-hosted options
+            </Link>
+          </article>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1812,7 +1362,7 @@ function DisappointmentMeter() {
         The “I Installed It, Forgot to Star It” Meter&trade;
       </Heading>
       <div className={styles.disappointmentBarTrack}>
-        <div className={styles.disappointmentBarFill} style={{width: `${barPercent}%`}} />
+        <div className={styles.disappointmentBarFill} style={{transform: `scaleX(${barPercent / 100})`}} />
       </div>
       <div className={styles.disappointmentStats}>
         <span>
@@ -1830,43 +1380,45 @@ function DisappointmentMeter() {
         <span><strong>{forks.toLocaleString()}</strong> repo remixes in the wild</span>
         <span><strong>{openIssues.toLocaleString()}</strong> active “what if Lucia also…” ideas</span>
       </div>
-      <div className={styles.disappointmentMetricsGrid}>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Estimated Agent Requests</p>
-          <p className={styles.disappointmentMetricValue}>{estimatedRequests.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>tiny household asks, now fully unionized</p>
-        </article>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Ads Averted</p>
-          <p className={styles.disappointmentMetricValue}>{adsAverted.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>fewer “have you tried premium?” interruptions</p>
-        </article>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Lights Toggled</p>
-          <p className={styles.disappointmentMetricValue}>{lightsToggled.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>calibrated by vibes, moon phases, and suspiciously busy weekends</p>
-        </article>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Playlists Started</p>
-          <p className={styles.disappointmentMetricValue}>{playlistsStarted.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>music-agent optimism coefficient enabled</p>
-        </article>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Timers Set</p>
-          <p className={styles.disappointmentMetricValue}>{timersSet.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>includes pasta, tea, and existential dread</p>
-        </article>
-        <article className={styles.disappointmentMetricCard}>
-          <p className={styles.disappointmentMetricLabel}>Boardroom Panic Index</p>
-          <p className={styles.disappointmentMetricValue}>{boardroomPanicIndex.toLocaleString()}</p>
-          <p className={styles.disappointmentMetricNote}>measured in emergency strategy off-sites</p>
-        </article>
+      <div className={styles.playfulEstimates}>
+        <p className={styles.playfulEstimatesLabel}>Playful estimates — not telemetry</p>
+        <div className={styles.disappointmentMetricsGrid}>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Estimated Agent Requests</p>
+            <p className={styles.disappointmentMetricValue}>{estimatedRequests.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>tiny household asks, now fully unionized</p>
+          </article>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Ads Averted</p>
+            <p className={styles.disappointmentMetricValue}>{adsAverted.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>fewer “have you tried premium?” interruptions</p>
+          </article>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Lights Toggled</p>
+            <p className={styles.disappointmentMetricValue}>{lightsToggled.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>calibrated by vibes, moon phases, and suspiciously busy weekends</p>
+          </article>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Playlists Started</p>
+            <p className={styles.disappointmentMetricValue}>{playlistsStarted.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>music-agent optimism coefficient enabled</p>
+          </article>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Timers Set</p>
+            <p className={styles.disappointmentMetricValue}>{timersSet.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>includes pasta, tea, and existential dread</p>
+          </article>
+          <article className={styles.disappointmentMetricCard}>
+            <p className={styles.disappointmentMetricLabel}>Boardroom Panic Index</p>
+            <p className={styles.disappointmentMetricValue}>{boardroomPanicIndex.toLocaleString()}</p>
+            <p className={styles.disappointmentMetricNote}>measured in emergency strategy off-sites</p>
+          </article>
+        </div>
+        <p className={styles.disappointmentQuip}>{quip}</p>
+        <p className={styles.disappointmentDisclaimer}>
+          Privacy means these figures cannot be measured. They are intentionally invented for fun.
+        </p>
       </div>
-      <p className={styles.disappointmentQuip}>{quip}</p>
-      <p className={styles.disappointmentDisclaimer}>
-        We literally cannot know these true numbers because everything runs on your infrastructure and
-        data stays yours. These are intentionally made-up estimates for fun.
-      </p>
     </div>
   );
 }
@@ -1876,9 +1428,7 @@ function CommunitySection() {
     <section className="section">
       <div className="container">
         <div className="cta-section">
-          <Heading as="h2" className="gradient-text">
-            Join the quiet rebellion
-          </Heading>
+          <Heading as="h2">Join the quiet rebellion</Heading>
           <p className="margin-bottom--lg">
             Lucia is MIT licensed and community-driven. Contribute docs, build plugins, improve
             routing, or ship new agents.
@@ -1905,12 +1455,11 @@ export default function Home(): ReactNode {
       description="Lucia is an open-source AI assistant for Home Assistant with a guided Jetson Appliance OS, local voice processing, multi-agent orchestration, and supported self-hosted deployments.">
       <ConversationHero />
       <main>
-        <HowItWorksSection />
+        <JumpNav />
+        <TrustSection />
+        <DemoRoutesSection />
         <DashboardSection />
         <FeatureSection />
-        <DemoRoutesSection />
-        <ArchitectureSection />
-        <TrustSection />
         <ComparisonSection />
         <QuickStartSection />
         <CommunitySection />

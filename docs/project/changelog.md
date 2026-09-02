@@ -781,7 +781,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **Activating Parakeet crashes server** — `ModelManager.SwitchActiveModelAsync(string)` hardcoded `EngineType.Stt`, causing the streaming `OnlineRecognizer` to load an offline transducer model (native crash: `'window_size' does not exist in the metadata`). Now resolves engine type from the catalog, routing offline models to HybridSttEngine correctly.
 - **Cannot switch back to streaming STT after activating offline model** — Both engines remained ready with no user preference tracking, so `FirstOrDefault(e => e.IsReady)` always picked HybridSttEngine (registered first). Added `ModelManager.PreferredSttEngineType` that tracks the user's last activation choice. Status endpoint, session engine selection, and active model API all respect the preference.
 - **HuggingFace API key not persisting in dashboard** — `ConfigurationPage.entriesToValues` stripped only the first colon segment from stored keys (e.g., `Wyoming:HuggingFace:ApiToken` → `HuggingFace:ApiToken`). For nested config sections, this didn't match the schema property name `ApiToken`. Fixed to strip the full section prefix.
-- **Speaker identification always returning unknown** ��� Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
+- **Speaker identification always returning unknown** — Speech enhancement was altering audio used for embedding extraction, causing ~0.39 cosine similarity against enrollment profiles. Now uses raw (unenhanced) audio for speaker verification.
 - **Verification threshold changes from GUI ignored** — `SpeakerVerificationThreshold` config was never passed to `IdentifySpeaker()`. Now read via `IOptionsMonitor.CurrentValue` at identification time.
 - **Embedding dimension mismatches silently failed** — After model changes, `CosineSimilarity` threw for mismatched dimensions, caught by outer try/catch returning null. Now gracefully skips with a warning log.
 - **Voice config written to local JSON file** — `VoiceConfigApi` was writing to `voiceconfig.json` instead of the platform's MongoDB `ConfigStoreWriter`. Migrated to match established pattern.
@@ -827,7 +827,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
 - **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
 - **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
-- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **Existing voice config** �� If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
 - **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
 
 
@@ -857,7 +857,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **GTCRN Speech Enhancement** — Real-time streaming noise reduction for cleaner audio in noisy environments.
 - **Voice Platform Dashboard** — New unified control room for model management, speaker profiles, wake words, engine status, and real-time session monitoring.
 - **Personality Prompt** — Configurable system prompt that rewrites the fan-in aggregated response through an LLM, giving Lucia a customizable personality (pirate speak, formal assistant, casual friend — you name it).
-- **Conversation Command Parser** ��� New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
+- **Conversation Command Parser** — New `POST /api/conversation` endpoint with pattern-matching pipeline that executes common smart home commands (lights, climate, scenes) directly via skills — zero LLM latency for recognized commands, SSE-streamed LLM fallback for everything else.
 - **Response Templates** — Customizable response templates stored in MongoDB with `{placeholder}` interpolation. Manage templates per skill/action from the dashboard with guided dropdowns and token insertion buttons.
 - **Home Assistant Component v1.2** — Simplified integration migrated from A2A JSON-RPC to structured REST. No more agent catalog selection — just point to the host and go.
 - **Separate Model Support** — Personality rewriting can use a different (cheaper/faster) model than the orchestrator, selectable from a dropdown of configured chat-type providers.
@@ -1515,7 +1515,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 ### Multi-Engine Speech-to-Text
 - **HybridSttEngine** — Streams audio through a lightweight online model, then re-transcribes the full utterance with a high-accuracy offline model for best-of-both-worlds latency and accuracy
 - **SherpaSttEngine** — Pure streaming CTC/transducer inference for ultra-low-latency transcription
-- **SherpaOfflineSttEngine** �� Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
+- **SherpaOfflineSttEngine** — Offline NeMo Parakeet TDT+CTC support for high-quality batch transcription
 - **GraniteOnnxEngine** — IBM Granite 4.0 1B Speech ONNX with 3-model pipeline (audio encoder, embed tokens, auto-regressive decoder with 40-layer KV cache)
 - Progressive re-transcription with burst detection and stability-based early stopping
 - Per-engine model catalog with download, install, activate, and delete lifecycle
@@ -1533,7 +1533,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 
 ### ONNX Provider Auto-Detection
 - `OnnxProviderDetector` singleton probes `OrtEnv.Instance().GetAvailableProviders()` at startup
-- Automatic selection priority: CUDA → ROCm → OpenVINO ��� DirectML → CoreML → CPU
+- Automatic selection priority: CUDA → ROCm → OpenVINO → DirectML → CoreML → CPU
 - Applied to all six engines: SherpaDiarization, HybridSTT, SherpaStt, SherpaOfflineSTT, GraniteOnnx, GtcrnSpeechEnhancer
 - Detected provider exposed in `/api/wyoming/status` and displayed on the dashboard status card with GPU badge
 - Graceful fallback — if an accelerated provider fails to initialize, falls through to CPU
@@ -1993,7 +1993,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 
 ## 🚀 Highlights
 
-- **Wyoming Protocol Server** ��� Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
+- **Wyoming Protocol Server** — Native TCP server implementing the Home Assistant Wyoming satellite protocol for real-time voice processing.
 - **Multi-Engine STT Pipeline** — Hybrid streaming STT with progressive re-transcription, Sherpa streaming, Sherpa offline (Parakeet TDT/CTC), and IBM Granite 4.0 1B Speech ONNX engines.
 - **Speaker Verification & Profiling** — Cosine-similarity speaker identification with enrolled profiles, provisional auto-discovery, adaptive profile updates, and guided voice enrollment onboarding.
 - **ONNX Auto-Detection** — Automatic GPU/accelerator selection (CUDA, ROCm, OpenVINO, DirectML, CoreML) across all six inference engines — no manual configuration required.
@@ -2099,7 +2099,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 - **Progressive re-transcription mixing raw and enhanced audio** — STT now always receives raw audio; enhanced audio used only for clip storage.
 - **WAV protocol wire format corrections** — Proper transcribe/transcript event ordering per Wyoming protocol spec.
 
-## ��� Performance
+## ⚡ Performance
 
 - Hybrid STT achieves ~90ms finalization latency at 0% WER on benchmark audio
 - Redis-cached speaker profiles reduce diarization lookup from ~500ms to ~1ms
@@ -3288,7 +3288,7 @@ The plugin system stored version information but never compared installed versio
 - **Prompt cache embeddings never persisted** — Fixed serialization of embedding fields.
 - **Chat cache replayed incorrect actions** — Prevented cross-action semantic collisions by splitting routing/chat thresholds.
 - **Routing cache hit count not persisted** — Exact-hit `HitCount` now writes back to Redis.
-- **Cache config changes required restart** — Migrated to `IOptionsMonitor<T>` for hot-reload.
+- **Cache config changes required restart** ��� Migrated to `IOptionsMonitor<T>` for hot-reload.
 - **Embedding provider concurrency issue** — Replaced unsafe dictionary usage with concurrency-safe coordination.
 - **Tracing duration always reported 0ms** — Routing completion timing now measures elapsed request duration correctly.
 - **Unsupported tool-chain config caused provider errors** — Removed invalid configuration path.
@@ -3497,7 +3497,7 @@ The plugin system stored version information but never compared installed versio
 | `lucia.Agents/Models/HybridMatchOptions.cs` | Matcher configuration (weights, thresholds) |
 | `lucia.Agents/Models/MatchableEntityInfo.cs` | Searchable entity wrapper |
 | `lucia.Agents/Models/EntityMatchResult.cs` | Scored match result with signal breakdown |
-| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor��Area→Entity search result |
+| `lucia.Agents/Models/HierarchicalSearchResult.cs` | Floor→Area→Entity search result |
 | `lucia.Agents/Models/ResolutionStrategy.cs` | Entity resolution strategy enum |
 | `lucia.Agents/Integration/SearchTermCache.cs` | Cached search term normalization |
 | `lucia.Agents/Integration/SearchTermNormalizer.cs` | Query normalization pipeline |
@@ -3886,7 +3886,7 @@ The plugin system stored version information but never compared installed versio
 - **17 plugin system tests** — Covers script evaluation, plugin loading, management service operations (sync, enable, disable, install, uninstall), manifest validation, `LocalPluginRepositorySource` filesystem operations, `ParseGitHubOwnerRepo` URL parsing, and all three git blob source strategies (release with per-plugin asset, release zipball fallback, release-to-branch fallback, branch archive, tag archive).
 - **456 total tests passing** (excluding Playwright/Eval).
 
-## ���� New Files
+## 📋 New Files
 
 | Path | Purpose |
 |------|---------|

@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T13:49:10.113Z",
+  "title": "Design System: Lucia",
+  "extensions": {
+    "colorMeta": {
+      "lucia-cyan": {
+        "role": "primary",
+        "displayName": "Lucia Cyan",
+        "canonical": "#3ecbcb",
+        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#3ecbcb", "#5ad6d6", "#7ee2e2", "#a8eded"]
+      },
+      "lucia-cyan-hover": {
+        "role": "primary",
+        "displayName": "Lucia Cyan Hover",
+        "canonical": "#2fb5b5",
+        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#2fb5b5", "#5ad6d6", "#7ee2e2", "#a8eded"]
+      },
+      "lucia-cyan-light-mode": {
+        "role": "primary",
+        "displayName": "Lucia Cyan Light Mode",
+        "canonical": "#1a9e9e",
+        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#3ecbcb", "#5ad6d6", "#7ee2e2", "#a8eded"]
+      },
+      "alert-gold": {
+        "role": "secondary",
+        "displayName": "Alert Gold",
+        "canonical": "#d4a44a",
+        "tonalRamp": ["#2b1c06", "#5c3b0b", "#8d5f16", "#b8862e", "#d4a44a", "#e4bc73", "#f0d39d", "#faeccf"]
+      },
+      "status-amber": {
+        "role": "secondary",
+        "displayName": "Status Amber",
+        "canonical": "#f59e0b",
+        "tonalRamp": ["#2c1a02", "#5b3505", "#8a5007", "#b86c08", "#f59e0b", "#fbbf24", "#fcd46a", "#fef0c7"]
+      },
+      "deep-space": {
+        "role": "neutral",
+        "displayName": "Deep Space",
+        "canonical": "#0d0b08",
+        "tonalRamp": ["#050403", "#0d0b08", "#1a1610", "#302b25", "#575048", "#867d73", "#bdb5ab", "#f0ebe4"]
+      },
+      "deep-space-surface": {
+        "role": "neutral",
+        "displayName": "Deep Space Surface",
+        "canonical": "#1a1610",
+        "tonalRamp": ["#050403", "#0d0b08", "#1a1610", "#302b25", "#575048", "#867d73", "#bdb5ab", "#f0ebe4"]
+      },
+      "frosted-cream": {
+        "role": "neutral",
+        "displayName": "Frosted Cream",
+        "canonical": "#faf9f7",
+        "tonalRamp": ["#211f1b", "#454039", "#6b645b", "#938b81", "#b9b2a9", "#d8d3cc", "#eeeae5", "#faf9f7"]
+      },
+      "frosted-cream-text": {
+        "role": "neutral",
+        "displayName": "Frosted Cream Text",
+        "canonical": "#e8e2d8",
+        "tonalRamp": ["#211f1b", "#454039", "#6b645b", "#938b81", "#b9b2a9", "#d0c9bf", "#e8e2d8", "#faf9f7"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Heavy, tight hero statements that establish operational authority."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Major section and documentation headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Cards, panels, and grouped control titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Readable explanations, documentation, and interface guidance."
+      },
+      "label": {
+        "displayName": "Operational Label",
+        "purpose": "Uppercase metadata, status, connectors, and compact wayfinding."
+      },
+      "mono": {
+        "displayName": "Trace Mono",
+        "purpose": "Prompts, metrics, traces, and machine-readable output."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Bold, compact action labels inherited from the Docusaurus control system."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-card",
+        "value": "0 8px 32px rgba(0, 0, 0, 0.2)",
+        "purpose": "Lift a hovered dark glass card without introducing a hard edge."
+      },
+      {
+        "name": "framed-media",
+        "value": "0 4px 24px rgba(212, 164, 74, 0.12), 0 8px 48px rgba(0, 0, 0, 0.4)",
+        "purpose": "Frame screenshots and other high-value visual evidence."
+      },
+      {
+        "name": "hero-control-plane",
+        "value": "0 20px 54px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(62, 203, 203, 0.08) inset",
+        "purpose": "Create cinematic depth around the hero orchestration surface."
+      },
+      {
+        "name": "active-signal",
+        "value": "0 0 0 1px rgba(255, 214, 143, 0.32) inset, 0 8px 24px rgba(255, 179, 71, 0.18)",
+        "purpose": "Identify selected traces, active nodes, and current route stages."
+      },
+      {
+        "name": "floating-tooltip",
+        "value": "0 14px 34px rgba(0, 0, 0, 0.3)",
+        "purpose": "Lift transient explanatory overlays above dense operational data."
+      }
+    ],
+    "motion": [
+      {
+        "name": "micro-fast",
+        "value": "150ms ease",
+        "purpose": "Small card movement, icon opacity, and border feedback."
+      },
+      {
+        "name": "state-standard",
+        "value": "200ms ease",
+        "purpose": "Default button, card, thumbnail, and response transitions."
+      },
+      {
+        "name": "state-trace",
+        "value": "220ms ease",
+        "purpose": "Trace chips, outcome panels, and execution timeline state changes."
+      },
+      {
+        "name": "entrance",
+        "value": "500ms ease-out",
+        "purpose": "Staggered first-view entrance motion."
+      },
+      {
+        "name": "progress",
+        "value": "600ms ease",
+        "purpose": "Roadmap bar width changes."
+      },
+      {
+        "name": "ambient",
+        "value": "20s ease-in-out infinite",
+        "purpose": "Slow background atmosphere that never competes with reading."
+      }
+    ],
+    "breakpoints": [
+      {"name": "docs-compact", "value": "576px"},
+      {"name": "roadmap-stack", "value": "768px"},
+      {"name": "control-plane-stack", "value": "996px"}
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The canonical cyan action for installation, navigation, and primary calls to action.",
+      "html": "<button class=\"ds-btn-primary\">Install Lucia</button>",
+      "css": ".ds-btn-primary { background: var(--ifm-color-primary, #3ecbcb); color: #fff; border: 1px solid var(--ifm-color-primary, #3ecbcb); border-radius: .4rem; padding: .375rem 1.5rem; font: 700 .875rem/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: color 200ms ease, background 200ms ease, border-color 200ms ease; } .ds-btn-primary:hover { background: var(--ifm-color-primary-dark, #2fb5b5); border-color: var(--ifm-color-primary-dark, #2fb5b5); } .ds-btn-primary:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-btn-primary:active { background: var(--ifm-color-primary-darker, #259e9e); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "A secondary action that stays transparent until hover.",
+      "html": "<button class=\"ds-btn-outline\">Read the docs</button>",
+      "css": ".ds-btn-outline { background: transparent; color: var(--ifm-color-primary, #3ecbcb); border: 1px solid var(--ifm-color-primary, #3ecbcb); border-radius: .4rem; padding: .375rem 1.5rem; font: 700 .875rem/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: color 200ms ease, background 200ms ease; } .ds-btn-outline:hover { background: var(--ifm-color-primary, #3ecbcb); color: #fff; } .ds-btn-outline:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-btn-outline:active { background: var(--ifm-color-primary-dark, #2fb5b5); }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "The compact gallery and filter field on a raised neutral surface.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Search plugins</span><input class=\"ds-input-search\" type=\"search\" placeholder=\"Search plugins…\"></label>",
+      "css": ".ds-field { display: grid; gap: .4rem; color: var(--ifm-font-color-base, #e8e2d8); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-field-label { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .72; } .ds-input-search { min-width: 250px; padding: .5rem 1rem; border-radius: 8px; border: 1px solid var(--ifm-color-emphasis-300, rgba(232,226,216,.24)); background: var(--ifm-background-surface-color, #1a1610); color: inherit; font-size: 1rem; transition: border-color 200ms ease, box-shadow 200ms ease; } .ds-input-search:hover { border-color: rgba(62,203,203,.5); } .ds-input-search:focus-visible { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 2px; border-color: var(--ifm-color-primary, #3ecbcb); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "A pill filter that uses fill and border together to communicate selection.",
+      "html": "<button class=\"ds-chip\" aria-pressed=\"true\">Local-first</button>",
+      "css": ".ds-chip { padding: .4rem .8rem; border-radius: 999px; border: 1px solid var(--ifm-color-primary, #3ecbcb); background: var(--ifm-color-primary, #3ecbcb); color: #fff; font: 600 .85rem/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: transform 150ms ease, background 200ms ease; } .ds-chip:hover { transform: translateY(-1px); background: var(--ifm-color-primary-dark, #2fb5b5); } .ds-chip:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-chip[aria-pressed=\"false\"] { background: transparent; color: var(--ifm-font-color-base, #e8e2d8); border-color: var(--ifm-color-emphasis-300, rgba(232,226,216,.24)); }"
+    },
+    {
+      "name": "Glass Feature Card",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "The reusable translucent surface for capabilities, plugins, and quick-start steps.",
+      "html": "<article class=\"ds-glass-card\"><h3>Operational Dashboard</h3><p>Inspect traces, tune providers, and debug decisions without guesswork.</p></article>",
+      "css": ".ds-glass-card { max-width: 360px; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(212,164,74,.15); background: rgba(26,22,16,.6); color: var(--ifm-font-color-base, #e8e2d8); backdrop-filter: blur(12px); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease; } .ds-glass-card h3 { margin: 0 0 .75rem; font-size: 1.25rem; line-height: 1.25; } .ds-glass-card p { margin: 0; line-height: 1.65; opacity: .82; } .ds-glass-card:hover { transform: translateY(-2px); border-color: rgba(212,164,74,.4); box-shadow: 0 8px 32px rgba(0,0,0,.2); } .ds-glass-card:focus-within { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "description": "A framework-native navigation item with cyan hover and active states.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link-active\" href=\"#\">Docs</a><a class=\"ds-nav-link\" href=\"#\">Plugins</a><a class=\"ds-nav-link\" href=\"#\">Blog</a></nav>",
+      "css": ".ds-nav { min-height: 3.75rem; display: flex; align-items: center; gap: 1.5rem; padding: .5rem 1rem; background: var(--ifm-background-surface-color, #1a1610); box-shadow: 0 1px 2px rgba(0,0,0,.1); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-nav-link { color: var(--ifm-font-color-base, #e8e2d8); text-decoration: none; font-weight: 500; transition: color 200ms ease; } .ds-nav-link:hover, .ds-nav-link-active { color: var(--ifm-color-primary, #3ecbcb); } .ds-nav-link:focus-visible { outline: 2px solid #f0d39d; outline-offset: 4px; border-radius: 4px; }"
+    },
+    {
+      "name": "Scenario Selector",
+      "kind": "button",
+      "description": "A selectable trace scenario combining title, duration, prompt, and machine metadata.",
+      "html": "<button class=\"ds-scenario\" aria-pressed=\"true\"><span class=\"ds-scenario-head\"><strong>Trace replay: Office lights</strong><span>1.74s</span></span><span class=\"ds-scenario-prompt\">Turn on the office lights.</span><span class=\"ds-scenario-meta\">light-agent • trace.json</span></button>",
+      "css": ".ds-scenario { width: 100%; max-width: 420px; display: grid; gap: .42rem; padding: .95rem 1rem; text-align: left; color: var(--ifm-font-color-base, #e8e2d8); border-radius: 14px; border: 1px solid rgba(212,164,74,.2); background: linear-gradient(180deg, rgba(34,28,18,.7), rgba(20,17,13,.64)); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease; } .ds-scenario-head { display: flex; justify-content: space-between; gap: .5rem; align-items: center; } .ds-scenario-head > span { padding: .14rem .44rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; } .ds-scenario-prompt { font-size: .92rem; opacity: .86; } .ds-scenario-meta { font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .76; } .ds-scenario:hover { transform: translateY(-1px); border-color: rgba(255,214,143,.46); box-shadow: 0 8px 22px rgba(0,0,0,.22); } .ds-scenario[aria-pressed=\"true\"] { border-color: rgba(255,214,143,.7); box-shadow: 0 0 0 1px rgba(255,214,143,.32) inset, 0 8px 24px rgba(255,179,71,.18); } .ds-scenario:focus-visible { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "description": "The roadmap status capsule for shipped, active, and planned work.",
+      "html": "<span class=\"ds-status ds-status-active\">◔ In Progress</span>",
+      "css": ".ds-status { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font: 700 .7rem/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; letter-spacing: .06em; text-transform: uppercase; } .ds-status-active { background: rgba(245,158,11,.15); color: #f59e0b; } .ds-status-active:hover { background: rgba(245,158,11,.22); } .ds-status:focus-visible { outline: 2px solid #f59e0b; outline-offset: 3px; }"
+    },
+    {
+      "name": "Trace Console",
+      "kind": "custom",
+      "description": "The signature mono surface for request state, metrics, route progress, and output.",
+      "html": "<section class=\"ds-console\"><header>lucia://assistant</header><div class=\"ds-console-metrics\"><span>agent: <strong>light-agent</strong></span><span>confidence: <strong>95%</strong></span></div><p><b>&gt;</b> Turn on the office lights.</p><p class=\"ds-console-response\"><b>✓</b> Done — office lights turned on.</p><div class=\"ds-console-route\"><span class=\"ds-route-done\">Home Assistant</span><span class=\"ds-route-active\">Lucia Router</span><span>Response</span></div></section>",
+      "css": ".ds-console { max-width: 520px; padding: 1rem; border-radius: 14px; border: 1px solid rgba(62,203,203,.22); background: rgba(4,8,14,.8); color: #e8e2d8; font: 400 .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; } .ds-console header { margin-bottom: .62rem; font-size: .73rem; opacity: .6; } .ds-console-metrics, .ds-console-route { display: flex; flex-wrap: wrap; gap: .38rem; } .ds-console-metrics { margin-bottom: .76rem; } .ds-console-metrics span, .ds-console-route span { padding: .16rem .42rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); font-size: .66rem; letter-spacing: .05em; text-transform: uppercase; } .ds-console p { margin: .45rem 0 0; } .ds-console b { opacity: .62; } .ds-console-response { color: #a8eded; } .ds-console-route { margin-top: 1rem; } .ds-console-route span { opacity: .62; transition: opacity 220ms ease, border-color 220ms ease, background 220ms ease; } .ds-console-route .ds-route-done { opacity: .95; border-color: rgba(62,203,203,.45); background: rgba(62,203,203,.14); } .ds-console-route .ds-route-active { opacity: 1; border-color: rgba(255,214,143,.74); background: rgba(255,214,143,.18); box-shadow: 0 0 0 1px rgba(255,214,143,.28) inset; } .ds-console:focus-within { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Domestic Control Room",
+    "overview": "Lucia is capable, technical, and operational without feeling industrial. Its public surfaces translate a private home-intelligence stack into a domestic control room: live routes, compact status language, observable systems, and clear actions sit inside a warm, approachable shell.\n\nThe material philosophy is an ambient command center. Luminous glass, floating surfaces, soft atmospheric gradients, and restrained motion create cinematic depth; the experience should not collapse into flat documentation styling. Dark mode is the primary expression, while light mode preserves the same layered hierarchy with frosted, warm surfaces.",
+    "keyCharacteristics": [
+      "Dark-first, warm-black environments with cyan routing signals and gold attention states.",
+      "Translucent, blurred surfaces edged by low-contrast borders.",
+      "Operational diagrams, traces, badges, and metadata presented as understandable household controls.",
+      "Compact system labels paired with direct, high-contrast headings and readable body copy.",
+      "Responsive compositions that simplify from multi-column control planes to single-column flows."
+    ],
+    "rules": [
+      {
+        "name": "The Signal Hierarchy Rule",
+        "body": "Lucia Cyan carries routing, links, progress, and supported states; Alert Gold marks attention, active playback, or in-progress work. Never swap their semantic jobs.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Neutral Rule",
+        "body": "Use warm blacks and creams for structural surfaces; pure black and white are limited to contrast-critical details and embedded assets.",
+        "section": "colors"
+      },
+      {
+        "name": "The Operational Label Rule",
+        "body": "Uppercase, tracked labels are reserved for compact metadata, status, and system wayfinding—not paragraphs or promotional headings.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Sans Rule",
+        "body": "Keep the system stack for display and reading roles; technical distinction comes from weight, scale, tracking, and the dedicated mono role rather than a decorative display face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Control Plane Collapse Rule",
+        "body": "Preserve the sequence and relationships of operational content on small screens; convert columns and horizontal pipelines into stacked flows rather than shrinking controls until they become unreadable.",
+        "section": "layout"
+      },
+      {
+        "name": "The Ambient Command Center Rule",
+        "body": "Major surfaces combine translucency, blur, a quiet border, and diffuse shadow; depth is cinematic and luminous rather than flat or hard-edged.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Responsive Lift Rule",
+        "body": "Use stronger shadow only for hierarchy, interaction, or evidence frames; ordinary surfaces establish depth through tint, border, and blur first.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Lucia Cyan for system flow and Alert Gold for attention so operational meaning remains stable.",
+      "Do build major surfaces from tint, translucent border, blur, and selective diffuse shadow.",
+      "Do preserve both dark and light expressions; Frosted Cream should retain the same depth hierarchy as Deep Space.",
+      "Do stack dense diagrams and tables responsively while preserving their reading order and minimum legibility.",
+      "Do honor reduced-motion preferences for decorative or repeating motion."
+    ],
+    "donts": [
+      "Don't flatten cards, diagrams, and controls into undifferentiated documentation panels.",
+      "Don't use hard offset shadows; they conflict with the incumbent ambient depth model.",
+      "Don't use Alert Gold as a general-purpose link or primary-action color.",
+      "Don't introduce a decorative display face; hierarchy comes from the incumbent system sans and mono pairing.",
+      "Don't propagate the incumbent emoji and text-glyph icons as system primitives; future surfaces use the existing Lucide/SVG pattern instead."
+    ]
+  }
+}
