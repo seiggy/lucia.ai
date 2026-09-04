@@ -3,6 +3,18 @@ sidebar_position: 5
 title: Changelog
 ---
 
+# [v1.4.1](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.4.1)
+
+**Published:** 2026-09-03
+
+## What's Changed
+* feat(appliance): add signed updates and rollback by @seiggy in https://github.com/seiggy/lucia-dotnet/pull/263
+
+
+**Full Changelog**: https://github.com/seiggy/lucia-dotnet/compare/v1.4.0...v1.4.1
+
+---
+
 # [v1.4.0](https://github.com/seiggy/lucia-dotnet/releases/tag/v1.4.0)
 
 **Published:** 2026-09-01
@@ -773,7 +785,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 `OnnxProviderDetector` now verifies each accelerated provider by attempting `SessionOptions.AppendExecutionProvider_*()` before selecting it. This prevents sherpa-onnx native crashes when CUDA shared libraries are absent — the detector gracefully falls back to `CPUExecutionProvider`.
 
 
-## 🐛 Bug Fixes
+## ��� Bug Fixes
 
 - **CUDA GPU acceleration not activating** — `Microsoft.ML.OnnxRuntime` NuGet package was CPU-only. Replaced with `Microsoft.ML.OnnxRuntime.Gpu.Linux` 1.23.2 and aligned managed/native versions (was mismatched 1.23.2/1.22.0), enabling automatic `CUDAExecutionProvider` detection on hosts with NVIDIA GPUs. Docker voice image verified working with RTX 4090 + CUDA 12.8 + cuDNN 9.20.
 - **Wyoming describe response missing STT** — `WyomingServiceInfo` injected a single `ISttEngine?` via DI, which resolved to the last registered engine (SherpaSttEngine). If that engine wasn't ready, STT was omitted from the `info` response even when HybridSttEngine was ready. Now injects `IEnumerable<ISttEngine>` and reports STT available if any engine is ready.
@@ -827,7 +839,7 @@ New `infra/docker/Dockerfile.ha` for resource-constrained deployment:
 - **Model downloads required** — On first launch, navigate to the Voice Platform → Models tab to download and activate at least one STT model and supporting models (VAD, Wake Word, Speaker Embedding).
 - **Wyoming integration** — Add the Lucia Wyoming satellite in Home Assistant under Settings → Devices & Services → Add Integration → Wyoming. The server advertises via Zeroconf automatically.
 - **GPU acceleration** — The project now ships with `Microsoft.ML.OnnxRuntime.Gpu.Linux` for automatic CUDA support. For local development, install CUDA Toolkit 12.x and cuDNN 9.x. The `OnnxProviderDetector` will find and use CUDA automatically — no configuration required. The Docker voice image (`Dockerfile.voice`) includes all GPU dependencies out of the box.
-- **Existing voice config** �� If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
+- **Existing voice config** — If you previously had a `voiceconfig.json`, those settings will need to be re-entered through the dashboard Voice Platform config panel (they now persist to MongoDB).
 - **No breaking changes for data providers** — Default behavior (Redis + MongoDB) is unchanged. The new `DataProvider` configuration section is optional; omitting it preserves existing behavior. Set `DataProvider:Cache` to `InMemory` and `DataProvider:Store` to `SQLite` to switch to the embedded providers.
 
 
@@ -2072,7 +2084,7 @@ Users can now define a personality prompt on the `/configuration` page under the
 - **Cancellation-safe** — `OperationCanceledException` propagates correctly through the personality rewrite path.
 
 ### 🖥️ Dashboard
-- **Model provider dropdown** — The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
+- **Model provider dropdown** ��� The `ModelConnectionName` field renders as a searchable dropdown populated from configured chat-type model providers, matching the pattern used in Agent Definitions.
 - **Textarea field type** — New `textarea` field type in the configuration page for multi-line prompt editing with vertical resize support.
 - **Auto-discovery** — The Personality Prompt section appears automatically in the configuration sidebar via schema API.
 
@@ -3288,7 +3300,7 @@ The plugin system stored version information but never compared installed versio
 - **Prompt cache embeddings never persisted** — Fixed serialization of embedding fields.
 - **Chat cache replayed incorrect actions** — Prevented cross-action semantic collisions by splitting routing/chat thresholds.
 - **Routing cache hit count not persisted** — Exact-hit `HitCount` now writes back to Redis.
-- **Cache config changes required restart** ��� Migrated to `IOptionsMonitor<T>` for hot-reload.
+- **Cache config changes required restart** — Migrated to `IOptionsMonitor<T>` for hot-reload.
 - **Embedding provider concurrency issue** — Replaced unsafe dictionary usage with concurrency-safe coordination.
 - **Tracing duration always reported 0ms** — Routing completion timing now measures elapsed request duration correctly.
 - **Unsupported tool-chain config caused provider errors** — Removed invalid configuration path.

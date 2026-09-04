@@ -35,3 +35,7 @@ functions/**/obj/
 .wrangler/
 .dev.vars*
 !.dev.vars.example
+
+# Impeccable run artifacts (screenshots and transient decision-server state)
+.impeccable/review/
+.impeccable/questions/

@@ -94,15 +94,21 @@ The network isolates connected clients and blocks forwarding beyond the installe
 2. Wait for the captive portal to open. If it doesn't, browse to [http://lucia.setup/install](http://lucia.setup/install).
 3. Select **Begin setup**.
 
+![Captive portal welcome screen with a Begin setup button](/img/wifi_setup/desktop-1920x1080-step-1.png)
+
 The first browser claims the installer until the Jetson restarts. A second browser receives an "already being set up" message and can't change the installation.
 
 ### Choose the NVMe
+
+![Storage step listing a detected NVMe drive with its size, serial, and device path](/img/wifi_setup/desktop-1920x1080-step-2.png)
 
 The storage page lists whole NVMe drives. Lucia rejects mounted drives and drives smaller than 64 GB. Occupied drives remain selectable but show a warning.
 
 Select the intended NVMe carefully. The installer binds approval to that drive's model, serial or WWN, current partition layout, and the installer image hash; approval can't move to another drive after you review it.
 
 ### Set Network and Identity
+
+![Network step with fields for home Wi-Fi, Lucia name, and recovery password](/img/wifi_setup/desktop-1920x1080-step-3.png)
 
 Choose the home Wi-Fi network that Lucia should use after installation. The portal lists WPA2 Personal networks; it doesn't list enterprise 802.1X networks.
 
@@ -115,6 +121,8 @@ If the Wi-Fi test fails, the installer rolls back the temporary NetworkManager c
 
 ### Approve the Erase
 
+![Review step showing appliance address, network, and installation drive above the erase confirmation field](/img/wifi_setup/desktop-1920x1080-step-4.png)
+
 The review page shows the hostname, Wi-Fi network, and selected NVMe. To continue, type the exact phrase shown by the portal:
 
 ```text
@@ -126,6 +134,8 @@ Lucia verifies that phrase and the drive identity again before it wipes anything
 ### Save the Dashboard Key
 
 Installation moves through six visible stages: image verification, NVMe erase, image write, A/B slot setup, storage sync, and power-off.
+
+![Installation progress screen with the dashboard owner key and the six installation stages](/img/wifi_setup/desktop-1920x1080-step-5.png)
 
 The portal shows a `lk_...` dashboard owner key once. Copy it to a password manager, then confirm that you've saved it. The installer waits for this confirmation before powering off.
 

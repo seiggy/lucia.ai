@@ -1,289 +1,361 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-02T13:49:10.113Z",
+  "generatedAt": "2026-09-04T17:30:54.000Z",
   "title": "Design System: Lucia",
   "extensions": {
     "colorMeta": {
+      "garden": {
+        "role": "neutral",
+        "displayName": "Garden",
+        "canonical": "#273532",
+        "tonalRamp": ["#080d0c", "#111b1a", "#1d2927", "#273532", "#3b4f4a", "#587068", "#8aa79e", "#c3d6d0"]
+      },
+      "garden-band": {
+        "role": "neutral",
+        "displayName": "Garden Band",
+        "canonical": "#1d2927",
+        "tonalRamp": ["#080d0c", "#111b1a", "#1d2927", "#273532", "#3b4f4a", "#587068", "#8aa79e", "#c3d6d0"]
+      },
+      "garden-deep": {
+        "role": "neutral",
+        "displayName": "Garden Deep",
+        "canonical": "#111b1a",
+        "tonalRamp": ["#080d0c", "#111b1a", "#1d2927", "#273532", "#3b4f4a", "#587068", "#8aa79e", "#c3d6d0"]
+      },
+      "flower-black": {
+        "role": "neutral",
+        "displayName": "Flower Black",
+        "canonical": "#080d0c",
+        "tonalRamp": ["#080d0c", "#111b1a", "#1d2927", "#273532", "#3b4f4a", "#587068", "#8aa79e", "#c3d6d0"]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "#dbe5dd",
+        "tonalRamp": ["#141a17", "#222c27", "#38463f", "#546559", "#7b8d80", "#a3b4a8", "#c4d2c7", "#dbe5dd"]
+      },
+      "moss": {
+        "role": "secondary",
+        "displayName": "Moss",
+        "canonical": "#8fc8b6",
+        "tonalRamp": ["#0d1f1a", "#153029", "#1f483c", "#2d6754", "#40886f", "#5da78b", "#8fc8b6", "#c2e2d7"]
+      },
+      "rain-blue": {
+        "role": "primary",
+        "displayName": "Rain Blue",
+        "canonical": "#4ca4e8",
+        "tonalRamp": ["#07202f", "#0b3350", "#0f4a75", "#17639b", "#2380c4", "#4ca4e8", "#82c2f1", "#bcdefa"]
+      },
+      "rain-red": {
+        "role": "primary",
+        "displayName": "Rain Red",
+        "canonical": "#d75a4a",
+        "tonalRamp": ["#2a0d09", "#451610", "#63211a", "#853026", "#a94134", "#d75a4a", "#e78c80", "#f3c1ba"]
+      },
+      "pollen": {
+        "role": "secondary",
+        "displayName": "Pollen",
+        "canonical": "#dfbd63",
+        "tonalRamp": ["#2b2109", "#443410", "#5f4a18", "#7d6222", "#9d7c2e", "#bf9a44", "#dfbd63", "#efdaa4"]
+      },
       "lucia-cyan": {
         "role": "primary",
         "displayName": "Lucia Cyan",
         "canonical": "#3ecbcb",
-        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#3ecbcb", "#5ad6d6", "#7ee2e2", "#a8eded"]
-      },
-      "lucia-cyan-hover": {
-        "role": "primary",
-        "displayName": "Lucia Cyan Hover",
-        "canonical": "#2fb5b5",
-        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#2fb5b5", "#5ad6d6", "#7ee2e2", "#a8eded"]
+        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#2fb5b5", "#3ecbcb", "#7ee2e2", "#a8eded"]
       },
       "lucia-cyan-light-mode": {
         "role": "primary",
-        "displayName": "Lucia Cyan Light Mode",
+        "displayName": "Lucia Cyan (Light Mode)",
         "canonical": "#1a9e9e",
-        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#3ecbcb", "#5ad6d6", "#7ee2e2", "#a8eded"]
+        "tonalRamp": ["#082b2b", "#0f5e5e", "#147a7a", "#1a9e9e", "#2fb5b5", "#3ecbcb", "#7ee2e2", "#a8eded"]
       },
       "alert-gold": {
         "role": "secondary",
         "displayName": "Alert Gold",
         "canonical": "#d4a44a",
-        "tonalRamp": ["#2b1c06", "#5c3b0b", "#8d5f16", "#b8862e", "#d4a44a", "#e4bc73", "#f0d39d", "#faeccf"]
+        "tonalRamp": ["#2a1f08", "#443311", "#61491a", "#7f6124", "#a07c31", "#c19244", "#d4a44a", "#e8c98e"]
       },
       "status-amber": {
-        "role": "secondary",
+        "role": "tertiary",
         "displayName": "Status Amber",
         "canonical": "#f59e0b",
-        "tonalRamp": ["#2c1a02", "#5b3505", "#8a5007", "#b86c08", "#f59e0b", "#fbbf24", "#fcd46a", "#fef0c7"]
+        "tonalRamp": ["#301c02", "#4d2d04", "#6d4006", "#8f5408", "#b8700a", "#e08a0b", "#f59e0b", "#fbbf24"]
       },
       "deep-space": {
         "role": "neutral",
         "displayName": "Deep Space",
         "canonical": "#0d0b08",
-        "tonalRamp": ["#050403", "#0d0b08", "#1a1610", "#302b25", "#575048", "#867d73", "#bdb5ab", "#f0ebe4"]
+        "tonalRamp": ["#0d0b08", "#1a1610", "#2a231a", "#3d3325", "#564733", "#7a6547", "#a89070", "#d6c4a5"]
       },
       "deep-space-surface": {
         "role": "neutral",
         "displayName": "Deep Space Surface",
         "canonical": "#1a1610",
-        "tonalRamp": ["#050403", "#0d0b08", "#1a1610", "#302b25", "#575048", "#867d73", "#bdb5ab", "#f0ebe4"]
+        "tonalRamp": ["#0d0b08", "#1a1610", "#2a231a", "#3d3325", "#564733", "#7a6547", "#a89070", "#d6c4a5"]
       },
       "frosted-cream": {
         "role": "neutral",
         "displayName": "Frosted Cream",
         "canonical": "#faf9f7",
-        "tonalRamp": ["#211f1b", "#454039", "#6b645b", "#938b81", "#b9b2a9", "#d8d3cc", "#eeeae5", "#faf9f7"]
-      },
-      "frosted-cream-text": {
-        "role": "neutral",
-        "displayName": "Frosted Cream Text",
-        "canonical": "#e8e2d8",
-        "tonalRamp": ["#211f1b", "#454039", "#6b645b", "#938b81", "#b9b2a9", "#d0c9bf", "#e8e2d8", "#faf9f7"]
+        "tonalRamp": ["#1a1917", "#2e2c29", "#474441", "#65625d", "#8a8681", "#b0aca6", "#dedbd6", "#faf9f7"]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Heavy, tight hero statements that establish operational authority."
+        "purpose": "Hero headline only. Self-hosted Bricolage Grotesque 800, capped at 11ch so it stacks; the final line indents 0.52em and turns moss. Drops to clamp(3.25rem, 15.5vw, 4.6rem) below 768px."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Major section and documentation headings."
+        "purpose": "The wide section h2 in Bricolage Grotesque 700, used by the two section-intro headings. Capped at 12ch so it always wraps."
+      },
+      "headline-compact": {
+        "displayName": "Headline Compact",
+        "purpose": "The same voice one step down, used by the plugin, evidence, and closing h2s. The evidence heading caps at 9ch."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Cards, panels, and grouped control titles."
+        "purpose": "Step and card headings in Bricolage Grotesque. Steps set 1.45rem; deployment cards set one step larger at 1.55rem."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Section and closing body copy at 1.05rem/1.7. The hero lede runs 1.08rem on a 35rem measure."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Readable explanations, documentation, and interface guidance."
+        "purpose": "Row and step descriptions at 1rem/1.6, capped at 54rem. Tinted mist 0.62-0.68."
       },
       "label": {
-        "displayName": "Operational Label",
-        "purpose": "Uppercase metadata, status, connectors, and compact wayfinding."
+        "displayName": "Label",
+        "purpose": "Jump-nav links at 0.82rem/700. Hero fact rows run 0.84rem at mist 0.68."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "The hero evidence caption rail: 0.78rem, 0.08em tracking, uppercase, mist 0.55, with the real measured count in pollen. The trace figure caption uses the same size at weight 700 without uppercasing."
       },
       "mono": {
-        "displayName": "Trace Mono",
-        "purpose": "Prompts, metrics, traces, and machine-readable output."
-      },
-      "button": {
-        "displayName": "Button",
-        "purpose": "Bold, compact action labels inherited from the Docusaurus control system."
+        "displayName": "Mono",
+        "purpose": "Zero-padded step indices only (01, 02, 03), set 0.8rem in rain red. Never used for prose."
       }
     },
     "shadows": [
       {
-        "name": "ambient-card",
+        "name": "evidence-anchor",
+        "value": "0 2.5rem 5.5rem rgba(8, 13, 12, 0.72)",
+        "purpose": "The hero capture frame. A large, very soft zero-offset pool in flower-black."
+      },
+      {
+        "name": "framed-capture",
+        "value": "0 30px 70px rgba(0, 0, 0, 0.3)",
+        "purpose": "The secondary trace figure in the evidence section."
+      },
+      {
+        "name": "glass-card-hover",
         "value": "0 8px 32px rgba(0, 0, 0, 0.2)",
-        "purpose": "Lift a hovered dark glass card without introducing a hard edge."
-      },
-      {
-        "name": "framed-media",
-        "value": "0 4px 24px rgba(212, 164, 74, 0.12), 0 8px 48px rgba(0, 0, 0, 0.4)",
-        "purpose": "Frame screenshots and other high-value visual evidence."
-      },
-      {
-        "name": "hero-control-plane",
-        "value": "0 20px 54px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(62, 203, 203, 0.08) inset",
-        "purpose": "Create cinematic depth around the hero orchestration surface."
-      },
-      {
-        "name": "active-signal",
-        "value": "0 0 0 1px rgba(255, 214, 143, 0.32) inset, 0 8px 24px rgba(255, 179, 71, 0.18)",
-        "purpose": "Identify selected traces, active nodes, and current route stages."
-      },
-      {
-        "name": "floating-tooltip",
-        "value": "0 14px 34px rgba(0, 0, 0, 0.3)",
-        "purpose": "Lift transient explanatory overlays above dense operational data."
+        "purpose": "Incumbent documentation shell only: hovered translucent card in docs, plugins, and roadmap surfaces."
       }
     ],
     "motion": [
       {
-        "name": "micro-fast",
-        "value": "150ms ease",
-        "purpose": "Small card movement, icon opacity, and border feedback."
-      },
-      {
         "name": "state-standard",
-        "value": "200ms ease",
-        "purpose": "Default button, card, thumbnail, and response transitions."
+        "value": "180ms ease",
+        "purpose": "Color, background, and transform on the primary action and deployment paths."
       },
       {
-        "name": "state-trace",
-        "value": "220ms ease",
-        "purpose": "Trace chips, outcome panels, and execution timeline state changes."
+        "name": "state-quick",
+        "value": "160ms ease",
+        "purpose": "Opacity and transform on the jump-nav dot."
       },
       {
-        "name": "entrance",
-        "value": "500ms ease-out",
-        "purpose": "Staggered first-view entrance motion."
+        "name": "lift",
+        "value": "translateY(-2px)",
+        "purpose": "The only positional hover movement in the garden. Removed under prefers-reduced-motion."
       },
       {
-        "name": "progress",
-        "value": "600ms ease",
-        "purpose": "Roadmap bar width changes."
-      },
-      {
-        "name": "ambient",
-        "value": "20s ease-in-out infinite",
-        "purpose": "Slow background atmosphere that never competes with reading."
+        "name": "gravity-field",
+        "value": "requestAnimationFrame; 340px pointer influence, 1.7 x falloff^2 x depth acceleration, 0.9 tangential to 0.45 radial, 54px repulsive core, 0.972/0.978 damping, speed cap 16",
+        "purpose": "The single authored motion. Gated by IntersectionObserver (120px root margin), DPR capped at 2, pointer tracking gated on (pointer: fine), and reduced to one static frame under prefers-reduced-motion."
       }
     ],
     "breakpoints": [
-      {"name": "docs-compact", "value": "576px"},
-      {"name": "roadmap-stack", "value": "768px"},
-      {"name": "control-plane-stack", "value": "996px"}
+      {"name": "wide", "value": "1100px"},
+      {"name": "compact", "value": "768px"},
+      {"name": "narrow", "value": "520px"}
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
+      "name": "Primary Action",
       "kind": "button",
-      "refersTo": "button-primary",
-      "description": "The canonical cyan action for installation, navigation, and primary calls to action.",
-      "html": "<button class=\"ds-btn-primary\">Install Lucia</button>",
-      "css": ".ds-btn-primary { background: var(--ifm-color-primary, #3ecbcb); color: #fff; border: 1px solid var(--ifm-color-primary, #3ecbcb); border-radius: .4rem; padding: .375rem 1.5rem; font: 700 .875rem/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: color 200ms ease, background 200ms ease, border-color 200ms ease; } .ds-btn-primary:hover { background: var(--ifm-color-primary-dark, #2fb5b5); border-color: var(--ifm-color-primary-dark, #2fb5b5); } .ds-btn-primary:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-btn-primary:active { background: var(--ifm-color-primary-darker, #259e9e); }"
+      "refersTo": "action-primary",
+      "description": "The leaf-cornered primary call to action; mist fill at rest, rain blue on hover.",
+      "html": "<a class=\"ds-action-primary\" href=\"#\">Deploy Lucia<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
+      "css": ".ds-action-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; min-height: 48px; padding: 0.75rem 1rem 0.75rem 1.25rem; color: #080d0c; background: #dbe5dd; border: 1px solid #dbe5dd; border-radius: 0 1.5rem 1.5rem 1.5rem; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight: 800; text-decoration: none; transition: color 180ms ease, background-color 180ms ease, transform 180ms ease; } .ds-action-primary svg { width: 1rem; height: 1rem; } .ds-action-primary:hover { color: #080d0c; background: #4ca4e8; border-color: #4ca4e8; transform: translateY(-2px); } .ds-action-primary:focus-visible { outline: 3px solid #dfbd63; outline-offset: 4px; } @media (prefers-reduced-motion: reduce) { .ds-action-primary { transition: none; } }"
     },
     {
-      "name": "Outline Button",
+      "name": "Text Action",
       "kind": "button",
-      "refersTo": "button-outline",
-      "description": "A secondary action that stays transparent until hover.",
-      "html": "<button class=\"ds-btn-outline\">Read the docs</button>",
-      "css": ".ds-btn-outline { background: transparent; color: var(--ifm-color-primary, #3ecbcb); border: 1px solid var(--ifm-color-primary, #3ecbcb); border-radius: .4rem; padding: .375rem 1.5rem; font: 700 .875rem/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: color 200ms ease, background 200ms ease; } .ds-btn-outline:hover { background: var(--ifm-color-primary, #3ecbcb); color: #fff; } .ds-btn-outline:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-btn-outline:active { background: var(--ifm-color-primary-dark, #2fb5b5); }"
+      "refersTo": "action-text",
+      "description": "The ghost secondary: underlined mist text that turns rain blue on hover.",
+      "html": "<a class=\"ds-action-text\" href=\"#\">Build a custom agent</a>",
+      "css": ".ds-action-text { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; color: #dbe5dd; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight: 700; text-decoration: underline; text-decoration-color: rgba(219, 229, 221, 0.35); text-underline-offset: 0.3em; } .ds-action-text:hover { color: #4ca4e8; text-decoration-color: currentColor; } .ds-action-text:focus-visible { outline: 3px solid #dfbd63; outline-offset: 4px; }"
     },
     {
-      "name": "Search Input",
-      "kind": "input",
-      "refersTo": "input-search",
-      "description": "The compact gallery and filter field on a raised neutral surface.",
-      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Search plugins</span><input class=\"ds-input-search\" type=\"search\" placeholder=\"Search plugins…\"></label>",
-      "css": ".ds-field { display: grid; gap: .4rem; color: var(--ifm-font-color-base, #e8e2d8); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-field-label { font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .72; } .ds-input-search { min-width: 250px; padding: .5rem 1rem; border-radius: 8px; border: 1px solid var(--ifm-color-emphasis-300, rgba(232,226,216,.24)); background: var(--ifm-background-surface-color, #1a1610); color: inherit; font-size: 1rem; transition: border-color 200ms ease, box-shadow 200ms ease; } .ds-input-search:hover { border-color: rgba(62,203,203,.5); } .ds-input-search:focus-visible { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 2px; border-color: var(--ifm-color-primary, #3ecbcb); }"
+      "name": "Evidence Frame",
+      "kind": "card",
+      "refersTo": "evidence-frame",
+      "description": "The signature anchor: a square flower-black frame holding a real product capture, with an uppercase caption rail carrying one real number in pollen.",
+      "html": "<figure class=\"ds-evidence-frame\"><div class=\"ds-evidence-frame__plate\"></div><figcaption><span>Traces &mdash; every request, kept</span><span>480 handled in this capture</span></figcaption></figure>",
+      "css": ".ds-evidence-frame { position: relative; min-width: 0; margin: 0; padding: 0.75rem 0.75rem 0; background: #080d0c; border: 1px solid rgba(143, 200, 182, 0.2); border-radius: 0; box-shadow: 0 2.5rem 5.5rem rgba(8, 13, 12, 0.72); } .ds-evidence-frame__plate { display: block; width: 100%; aspect-ratio: 1440 / 900; background: repeating-linear-gradient(112deg, #131c1b 0 22px, #182220 22px 44px); } .ds-evidence-frame figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.9rem 0.25rem 0.75rem; color: rgba(219, 229, 221, 0.55); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; } .ds-evidence-frame figcaption span:last-child { color: #dfbd63; white-space: nowrap; }"
     },
     {
-      "name": "Filter Chip",
-      "kind": "chip",
-      "refersTo": "chip-selected",
-      "description": "A pill filter that uses fill and border together to communicate selection.",
-      "html": "<button class=\"ds-chip\" aria-pressed=\"true\">Local-first</button>",
-      "css": ".ds-chip { padding: .4rem .8rem; border-radius: 999px; border: 1px solid var(--ifm-color-primary, #3ecbcb); background: var(--ifm-color-primary, #3ecbcb); color: #fff; font: 600 .85rem/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: transform 150ms ease, background 200ms ease; } .ds-chip:hover { transform: translateY(-1px); background: var(--ifm-color-primary-dark, #2fb5b5); } .ds-chip:focus-visible { outline: 2px solid #f0d39d; outline-offset: 3px; } .ds-chip[aria-pressed=\"false\"] { background: transparent; color: var(--ifm-font-color-base, #e8e2d8); border-color: var(--ifm-color-emphasis-300, rgba(232,226,216,.24)); }"
+      "name": "Trace Figure",
+      "kind": "card",
+      "refersTo": "trace-figure",
+      "description": "The secondary capture frame, carrying the large diagonal leaf radius instead of the anchor's square corners.",
+      "html": "<figure class=\"ds-trace-figure\"><div class=\"ds-trace-figure__plate\"></div><figcaption>Real Lucia dashboard capture<span>Platform metrics and live agent mesh</span></figcaption></figure>",
+      "css": ".ds-trace-figure { margin: 0; overflow: hidden; border: 1px solid rgba(76, 164, 232, 0.22); border-radius: 2.5rem 0.5rem 2.5rem 0.5rem; background: #080d0c; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3); } .ds-trace-figure__plate { display: block; width: 100%; aspect-ratio: 16 / 9; background: repeating-linear-gradient(108deg, #131c1b 0 26px, #182220 26px 52px); } .ds-trace-figure figcaption { display: flex; justify-content: space-between; gap: 1rem; padding: 0.8rem 1rem; color: #dbe5dd; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 0.78rem; font-weight: 700; } .ds-trace-figure figcaption span { color: rgba(219, 229, 221, 0.56); font-weight: 400; }"
     },
     {
-      "name": "Glass Feature Card",
+      "name": "Jump Nav",
+      "kind": "nav",
+      "refersTo": "jump-nav",
+      "description": "Sticky section nav on blurred garden-deep, crossed by a diagonal rain hairline; a rain-blue dot rises under each link on hover.",
+      "html": "<nav class=\"ds-jump-nav\" aria-label=\"Landing page sections\"><a href=\"#\">Extend</a><a href=\"#\">Deploy</a><a href=\"#\">Architecture</a><a href=\"#\">Traces</a></nav>",
+      "css": ".ds-jump-nav { display: flex; justify-content: center; gap: 0.5rem; padding: 0.85rem; border: 0; background: linear-gradient(176deg, transparent 47%, rgba(76, 164, 232, 0.34) 48% 48.5%, transparent 49%), rgba(17, 27, 26, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); } .ds-jump-nav a { position: relative; padding: 0.4rem 0.8rem; color: rgba(219, 229, 221, 0.72); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 0.82rem; font-weight: 700; text-decoration: none; } .ds-jump-nav a:hover { color: #dbe5dd; } .ds-jump-nav a::after { content: ''; position: absolute; left: 50%; bottom: 0.1rem; width: 0.35rem; height: 0.35rem; border-radius: 50%; background: #4ca4e8; opacity: 0; transform: translate(-50%, 0.4rem); transition: opacity 160ms ease, transform 160ms ease; } .ds-jump-nav a:hover::after, .ds-jump-nav a:focus-visible::after { opacity: 1; transform: translate(-50%, 0); } .ds-jump-nav a:focus-visible { outline: 3px solid #dfbd63; outline-offset: 4px; }"
+    },
+    {
+      "name": "Ledger Row",
+      "kind": "custom",
+      "refersTo": "ledger-row",
+      "description": "The garden's replacement for a card: a hairline-separated row that washes rain blue from the left on hover.",
+      "html": "<a class=\"ds-ledger-row\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z\"/><path d=\"m2 22 3-3\"/><path d=\"M7.5 13.5 10 11\"/><path d=\"M10.5 16.5 13 14\"/><path d=\"m18 3-4 4h6l-4 4\"/></svg><strong>Weather</strong><span>Forecasts and conditions from your own station or provider.</span><svg class=\"ds-ledger-row__go\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
+      "css": ".ds-ledger-row { display: grid; grid-template-columns: 2rem minmax(9rem, 0.4fr) minmax(15rem, 1fr) 1.5rem; gap: 1rem; align-items: center; padding: 1.2rem 0; border-top: 1px solid rgba(219, 229, 221, 0.16); border-bottom: 1px solid rgba(219, 229, 221, 0.16); color: #dbe5dd; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; text-decoration: none; } .ds-ledger-row > svg { width: 1.2rem; height: 1.2rem; color: #d75a4a; } .ds-ledger-row__go { color: #8fc8b6 !important; } .ds-ledger-row span { color: rgba(219, 229, 221, 0.62); line-height: 1.5; } .ds-ledger-row:hover { background: linear-gradient(90deg, rgba(76, 164, 232, 0.08), transparent); } .ds-ledger-row:focus-visible { outline: 3px solid #dfbd63; outline-offset: 4px; }"
+    },
+    {
+      "name": "Deployment Path",
+      "kind": "card",
+      "refersTo": "deployment-path",
+      "description": "A borderless column in a three-up rail, separated by vertical hairlines and washed rain blue on hover.",
+      "html": "<a class=\"ds-deployment-path\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"16\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"2\" y=\"16\" width=\"6\" height=\"6\" rx=\"1\"/><rect x=\"9\" y=\"2\" width=\"6\" height=\"6\" rx=\"1\"/><path d=\"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3\"/><path d=\"M12 12V8\"/></svg><h3>Kubernetes + Helm</h3><p>Run mesh deployments and move selected agents behind A2AHost services.</p><span>Open guide<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></span></a>",
+      "css": ".ds-deployment-path { display: grid; align-content: start; gap: 0.8rem; min-height: 19rem; padding: 2rem; border-top: 1px solid rgba(219, 229, 221, 0.16); border-bottom: 1px solid rgba(219, 229, 221, 0.16); border-right: 1px solid rgba(219, 229, 221, 0.16); color: #dbe5dd; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; text-decoration: none; transition: background-color 180ms ease; } .ds-deployment-path > svg { width: 2rem; height: 2rem; color: #4ca4e8; } .ds-deployment-path h3 { margin: 1rem 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 1.55rem; font-weight: 700; } .ds-deployment-path p { margin: 0; color: rgba(219, 229, 221, 0.66); line-height: 1.6; } .ds-deployment-path > span { display: flex; align-items: center; gap: 0.45rem; align-self: end; margin-top: auto; color: #8fc8b6; font-weight: 800; } .ds-deployment-path > span svg { width: 1rem; height: 1rem; } .ds-deployment-path:hover { background: rgba(76, 164, 232, 0.08); } .ds-deployment-path:focus-visible { outline: 3px solid #dfbd63; outline-offset: 4px; }"
+    },
+    {
+      "name": "Section Heading with Petal Mark",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "Every h2 in the garden ends with a falling petal: a rotated open ellipse in rain blue with a transparent left border.",
+      "html": "<h2 class=\"ds-heading-petal\">The whole mesh, measured.</h2>",
+      "css": ".ds-heading-petal { position: relative; max-width: 12ch; margin: 0; color: #dbe5dd; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: clamp(2.5rem, 5vw, 4.4rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.035em; } .ds-heading-petal::after { content: ''; display: inline-block; width: 0.72em; height: 0.32em; margin-left: 0.14em; border: 1px solid #4ca4e8; border-left-color: transparent; border-radius: 50%; transform: rotate(-18deg) translateY(-0.35em); }"
+    },
+    {
+      "name": "Glass Card (documentation shell)",
       "kind": "card",
       "refersTo": "card-glass",
-      "description": "The reusable translucent surface for capabilities, plugins, and quick-start steps.",
-      "html": "<article class=\"ds-glass-card\"><h3>Operational Dashboard</h3><p>Inspect traces, tune providers, and debug decisions without guesswork.</p></article>",
-      "css": ".ds-glass-card { max-width: 360px; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(212,164,74,.15); background: rgba(26,22,16,.6); color: var(--ifm-font-color-base, #e8e2d8); backdrop-filter: blur(12px); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease; } .ds-glass-card h3 { margin: 0 0 .75rem; font-size: 1.25rem; line-height: 1.25; } .ds-glass-card p { margin: 0; line-height: 1.65; opacity: .82; } .ds-glass-card:hover { transform: translateY(-2px); border-color: rgba(212,164,74,.4); box-shadow: 0 8px 32px rgba(0,0,0,.2); } .ds-glass-card:focus-within { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
-    },
-    {
-      "name": "Navigation Link",
-      "kind": "nav",
-      "description": "A framework-native navigation item with cyan hover and active states.",
-      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link-active\" href=\"#\">Docs</a><a class=\"ds-nav-link\" href=\"#\">Plugins</a><a class=\"ds-nav-link\" href=\"#\">Blog</a></nav>",
-      "css": ".ds-nav { min-height: 3.75rem; display: flex; align-items: center; gap: 1.5rem; padding: .5rem 1rem; background: var(--ifm-background-surface-color, #1a1610); box-shadow: 0 1px 2px rgba(0,0,0,.1); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; } .ds-nav-link { color: var(--ifm-font-color-base, #e8e2d8); text-decoration: none; font-weight: 500; transition: color 200ms ease; } .ds-nav-link:hover, .ds-nav-link-active { color: var(--ifm-color-primary, #3ecbcb); } .ds-nav-link:focus-visible { outline: 2px solid #f0d39d; outline-offset: 4px; border-radius: 4px; }"
-    },
-    {
-      "name": "Scenario Selector",
-      "kind": "button",
-      "description": "A selectable trace scenario combining title, duration, prompt, and machine metadata.",
-      "html": "<button class=\"ds-scenario\" aria-pressed=\"true\"><span class=\"ds-scenario-head\"><strong>Trace replay: Office lights</strong><span>1.74s</span></span><span class=\"ds-scenario-prompt\">Turn on the office lights.</span><span class=\"ds-scenario-meta\">light-agent • trace.json</span></button>",
-      "css": ".ds-scenario { width: 100%; max-width: 420px; display: grid; gap: .42rem; padding: .95rem 1rem; text-align: left; color: var(--ifm-font-color-base, #e8e2d8); border-radius: 14px; border: 1px solid rgba(212,164,74,.2); background: linear-gradient(180deg, rgba(34,28,18,.7), rgba(20,17,13,.64)); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; cursor: pointer; transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease; } .ds-scenario-head { display: flex; justify-content: space-between; gap: .5rem; align-items: center; } .ds-scenario-head > span { padding: .14rem .44rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; } .ds-scenario-prompt { font-size: .92rem; opacity: .86; } .ds-scenario-meta { font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .76; } .ds-scenario:hover { transform: translateY(-1px); border-color: rgba(255,214,143,.46); box-shadow: 0 8px 22px rgba(0,0,0,.22); } .ds-scenario[aria-pressed=\"true\"] { border-color: rgba(255,214,143,.7); box-shadow: 0 0 0 1px rgba(255,214,143,.32) inset, 0 8px 24px rgba(255,179,71,.18); } .ds-scenario:focus-visible { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
-    },
-    {
-      "name": "Status Badge",
-      "kind": "chip",
-      "description": "The roadmap status capsule for shipped, active, and planned work.",
-      "html": "<span class=\"ds-status ds-status-active\">◔ In Progress</span>",
-      "css": ".ds-status { display: inline-block; padding: .2rem .6rem; border-radius: 999px; font: 700 .7rem/1.2 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; letter-spacing: .06em; text-transform: uppercase; } .ds-status-active { background: rgba(245,158,11,.15); color: #f59e0b; } .ds-status-active:hover { background: rgba(245,158,11,.22); } .ds-status:focus-visible { outline: 2px solid #f59e0b; outline-offset: 3px; }"
-    },
-    {
-      "name": "Trace Console",
-      "kind": "custom",
-      "description": "The signature mono surface for request state, metrics, route progress, and output.",
-      "html": "<section class=\"ds-console\"><header>lucia://assistant</header><div class=\"ds-console-metrics\"><span>agent: <strong>light-agent</strong></span><span>confidence: <strong>95%</strong></span></div><p><b>&gt;</b> Turn on the office lights.</p><p class=\"ds-console-response\"><b>✓</b> Done — office lights turned on.</p><div class=\"ds-console-route\"><span class=\"ds-route-done\">Home Assistant</span><span class=\"ds-route-active\">Lucia Router</span><span>Response</span></div></section>",
-      "css": ".ds-console { max-width: 520px; padding: 1rem; border-radius: 14px; border: 1px solid rgba(62,203,203,.22); background: rgba(4,8,14,.8); color: #e8e2d8; font: 400 .88rem/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; } .ds-console header { margin-bottom: .62rem; font-size: .73rem; opacity: .6; } .ds-console-metrics, .ds-console-route { display: flex; flex-wrap: wrap; gap: .38rem; } .ds-console-metrics { margin-bottom: .76rem; } .ds-console-metrics span, .ds-console-route span { padding: .16rem .42rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); font-size: .66rem; letter-spacing: .05em; text-transform: uppercase; } .ds-console p { margin: .45rem 0 0; } .ds-console b { opacity: .62; } .ds-console-response { color: #a8eded; } .ds-console-route { margin-top: 1rem; } .ds-console-route span { opacity: .62; transition: opacity 220ms ease, border-color 220ms ease, background 220ms ease; } .ds-console-route .ds-route-done { opacity: .95; border-color: rgba(62,203,203,.45); background: rgba(62,203,203,.14); } .ds-console-route .ds-route-active { opacity: 1; border-color: rgba(255,214,143,.74); background: rgba(255,214,143,.18); box-shadow: 0 0 0 1px rgba(255,214,143,.28) inset; } .ds-console:focus-within { outline: 2px solid var(--ifm-color-primary, #3ecbcb); outline-offset: 3px; }"
+      "description": "The incumbent warm expression retained on docs, plugins, and roadmap surfaces. Do not use on a garden surface.",
+      "html": "<div class=\"ds-card-glass\"><h3>Prompt Caching</h3><p>Two-tier cache with split routing and chat thresholds.</p></div>",
+      "css": ".ds-card-glass { background: rgba(26, 22, 16, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(212, 164, 74, 0.15); border-radius: 12px; padding: 1.5rem; color: #faf9f7; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; } .ds-card-glass h3 { margin: 0 0 0.5rem; font-size: 1.25rem; font-weight: 700; } .ds-card-glass p { margin: 0; opacity: 0.8; line-height: 1.6; } .ds-card-glass:hover { transform: translateY(-2px); border-color: rgba(212, 164, 74, 0.4); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }"
     }
   ],
   "narrative": {
-    "northStar": "The Domestic Control Room",
-    "overview": "Lucia is capable, technical, and operational without feeling industrial. Its public surfaces translate a private home-intelligence stack into a domestic control room: live routes, compact status language, observable systems, and clear actions sit inside a warm, approachable shell.\n\nThe material philosophy is an ambient command center. Luminous glass, floating surfaces, soft atmospheric gradients, and restrained motion create cinematic depth; the experience should not collapse into flat documentation styling. Dark mode is the primary expression, while light mode preserves the same layered hierarchy with frosted, warm surfaces.",
+    "northStar": "The Gravity Garden",
+    "overview": "Lucia's public face is a dusk garden seen from inside: green-gray air, a slow directional rain of blue and red hairlines, and one black frame holding a real capture of the product's own record. The garden is not decoration around the product — it is the medium the product hangs in. Every surface is a tone of the same damp green, every divider is a hairline, and the only object allowed to be genuinely opaque and black is the frame around real evidence. The world earns attention by making one thing solid in a field of atmosphere.\n\nThe system proves rather than illustrates. There are no feature cards, no invented diagrams, and no stock imagery; the two hero-weight images are unretouched captures of the Lucia dashboard, and their captions carry real counts. Density is editorial rather than dashboard-like: long hairline ledgers of steps, plugins, and deployment paths, each row separated by a single pixel instead of a container. Type carries the drama — Bricolage Grotesque set enormous, tight, and sub-one leading against small quiet body copy — so the layout itself can stay calm.\n\nMotion is singular and physical. One authored moment exists: the hero's canvas rain, in which the pointer behaves as a mass that bends drops into an orbit and slings them back out. Everything else in the system moves in short 160–180ms state changes and a two-pixel lift. The documentation shell retains the earlier warm teal-and-amber glass expression; that world still ships and is legitimate, but the garden is the normative world for new marketing and landing surfaces.",
     "keyCharacteristics": [
-      "Dark-first, warm-black environments with cyan routing signals and gold attention states.",
-      "Translucent, blurred surfaces edged by low-contrast borders.",
-      "Operational diagrams, traces, badges, and metadata presented as understandable household controls.",
-      "Compact system labels paired with direct, high-contrast headings and readable body copy.",
-      "Responsive compositions that simplify from multi-column control planes to single-column flows."
+      "A four-step green-black surface ladder, separated by tone and hairline rather than by cards or shadows.",
+      "Blue and red rain that only ever appears as a stroke, a wash, or a canvas hairline — never as a fill.",
+      "Self-hosted Bricolage Grotesque at 700/800 only, set huge with negative tracking and sub-one leading.",
+      "Asymmetric \"leaf\" corner radii on controls and figures, against a hard-square evidence anchor.",
+      "Real product captures as the only imagery, framed in flower-black and captioned with real numbers.",
+      "One authored motion (the pointer-as-mass gravity field), gated by visibility and reduced-motion."
     ],
     "rules": [
       {
-        "name": "The Signal Hierarchy Rule",
-        "body": "Lucia Cyan carries routing, links, progress, and supported states; Alert Gold marks attention, active playback, or in-progress work. Never swap their semantic jobs.",
+        "name": "The Four Floors Rule",
+        "body": "Garden surfaces come from exactly four tones — flower-black, garden-deep, garden-band, garden. A new section picks one of the four. It does not invent a fifth tint, and it does not separate itself from its neighbour with a border when a tone change will do it.",
         "section": "colors"
       },
       {
-        "name": "The Warm Neutral Rule",
-        "body": "Use warm blacks and creams for structural surfaces; pure black and white are limited to contrast-critical details and embedded assets.",
+        "name": "The Rain Never Fills Rule",
+        "body": "Rain blue and rain red exist only as 1px strokes, canvas hairlines, and washes at ≤0.34 alpha (section rain runs as low as 0.045). Neither color is ever a solid background, a button fill at rest, or a block of text. Their thinness is what makes them read as weather.",
         "section": "colors"
       },
       {
-        "name": "The Operational Label Rule",
-        "body": "Uppercase, tracked labels are reserved for compact metadata, status, and system wayfinding—not paragraphs or promotional headings.",
+        "name": "The Pollen Grain Rule",
+        "body": "Pollen is punctuation, not a palette entry to spend. It marks focus, the one real number in the hero caption, and the appliance note. If a fourth pollen use appears on a surface, one of them is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mist Ladder Rule",
+        "body": "Text below headline level is mist at descending alpha — 0.82 lede, 0.72 section body, 0.68 supporting copy, 0.62 row detail, 0.55 caption — and hairlines are moss at 0.12–0.26 or mist at 0.14–0.18. Reach for an alpha step before reaching for a new gray.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Weights Rule",
+        "body": "Only 700 and 800 exist as font files. Never specify another Bricolage weight, and never an italic — there is no face behind it, and the browser will synthesize a counterfeit.",
         "section": "typography"
       },
       {
-        "name": "The One Sans Rule",
-        "body": "Keep the system stack for display and reading roles; technical distinction comes from weight, scale, tracking, and the dedicated mono role rather than a decorative display face.",
+        "name": "The Sub-One Leading Rule",
+        "body": "Display and headline set below 1.0 line-height (0.86 and 0.95) with negative tracking; body and lead never go below 1.5. The compression is reserved for the voice, never applied to reading copy.",
         "section": "typography"
       },
       {
-        "name": "The Control Plane Collapse Rule",
-        "body": "Preserve the sequence and relationships of operational content on small screens; convert columns and horizontal pipelines into stacked flows rather than shrinking controls until they become unreadable.",
+        "name": "The Quiet Body Rule",
+        "body": "The system stack is not a fallback that lost — it is the deliberate second voice. Do not promote body copy to Bricolage to add emphasis; change size, alpha, or measure instead.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Ledger Rule",
+        "body": "Repeating content is separated by 1px rules at mist 0.16, not by cards, backgrounds, or gaps. A row's only container is the line above and below it.",
         "section": "layout"
       },
       {
-        "name": "The Ambient Command Center Rule",
-        "body": "Major surfaces combine translucency, blur, a quiet border, and diffuse shadow; depth is cinematic and luminous rather than flat or hard-edged.",
+        "name": "The Reach Rule",
+        "body": "Interactive rows and controls hold real touch targets — 48px minimum on the primary action, 44px on text actions — even though the visual language is thin.",
+        "section": "layout"
+      },
+      {
+        "name": "The Two Shadows Rule",
+        "body": "Only frames holding real product captures cast a shadow. Every other surface in the garden is flat and is separated from its neighbour by tone and hairline. A new shadow on a new element is a signal that the element should have been a hairline.",
         "section": "elevation"
       },
       {
-        "name": "The Responsive Lift Rule",
-        "body": "Use stronger shadow only for hierarchy, interaction, or evidence frames; ordinary surfaces establish depth through tint, border, and blur first.",
+        "name": "The Zero-Offset Rule",
+        "body": "Depth is a pool directly beneath, never a hard offset slab. Both shadows have no horizontal offset and a blur several times their vertical drop.",
         "section": "elevation"
+      },
+      {
+        "name": "The Leaf Corner Rule",
+        "body": "Controls and figures use asymmetric radii with one deliberately sharp corner; evidence frames stay square. Never apply a uniform radius to a garden control, and never round the corners of a frame holding a real capture.",
+        "section": "shapes"
+      },
+      {
+        "name": "The One Field Rule",
+        "body": "The system carries exactly one authored motion. Everything else is a 160–180ms state transition and a ≤2px lift. A second ambient animation anywhere on a garden surface is a defect, not an enhancement.",
+        "section": "components"
       }
     ],
     "dos": [
-      "Do use Lucia Cyan for system flow and Alert Gold for attention so operational meaning remains stable.",
-      "Do build major surfaces from tint, translucent border, blur, and selective diffuse shadow.",
-      "Do preserve both dark and light expressions; Frosted Cream should retain the same depth hierarchy as Deep Space.",
-      "Do stack dense diagrams and tables responsively while preserving their reading order and minimum legibility.",
-      "Do honor reduced-motion preferences for decorative or repeating motion."
+      "Do build sections from the four garden tones and separate them with 1px hairlines (moss 0.12–0.26, mist 0.14–0.18) instead of borders-plus-cards.",
+      "Do step body copy down the mist alpha ladder (0.82 → 0.55) rather than introducing new gray tokens.",
+      "Do give controls and figures asymmetric leaf radii, and keep frames around real captures square.",
+      "Do use real, unretouched Lucia dashboard captures as imagery, with real numbers in the caption rail and explicit width/height on every <img>.",
+      "Do set display type huge, tight, and clamped to a character count so it wraps into stacked lines.",
+      "Do gate any canvas work behind IntersectionObserver, cap device pixel ratio at 2, and render a single static frame under prefers-reduced-motion.",
+      "Do keep the 3px pollen focus ring at 4px offset on every interactive element.",
+      "Do draw icons as inline Lucide SVGs sized 1rem–2rem and marked aria-hidden when adjacent text carries the meaning."
     ],
     "donts": [
-      "Don't flatten cards, diagrams, and controls into undifferentiated documentation panels.",
-      "Don't use hard offset shadows; they conflict with the incumbent ambient depth model.",
-      "Don't use Alert Gold as a general-purpose link or primary-action color.",
-      "Don't introduce a decorative display face; hierarchy comes from the incumbent system sans and mono pairing.",
-      "Don't propagate the incumbent emoji and text-glyph icons as system primitives; future surfaces use the existing Lucide/SVG pattern instead."
+      "Don't fill any surface, button rest state, or text block with rain blue or rain red; they are stroke and wash colors only.",
+      "Don't spend pollen beyond focus, the one real caption number, and the appliance mark.",
+      "Don't request a Bricolage Grotesque weight other than 700 or 800, or an italic — no font file exists and the browser will synthesize one.",
+      "Don't promote body copy to the display face for emphasis; change size, alpha, or measure.",
+      "Don't add a shadow to anything that isn't a frame holding a real product capture, and never use a hard offset shadow — the depth model is a soft zero-offset pool.",
+      "Don't add a second ambient animation to a garden surface; the gravity field is the only authored motion.",
+      "Don't use uppercase tracked type outside figure captions and compact metadata labels; headings and prose are never set in caps.",
+      "Don't blend the incumbent teal/amber glass shell into a garden surface, and don't swap the semantic jobs of Lucia Cyan (routing) and Alert Gold (attention) where that shell still ships.",
+      "Don't propagate the incumbent emoji glyph icons from the roadmap component into new surfaces; they are a carried defect, not a system primitive — use inline Lucide SVGs."
     ]
   }
 }
